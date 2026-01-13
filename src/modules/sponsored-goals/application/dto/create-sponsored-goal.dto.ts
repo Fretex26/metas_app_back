@@ -1,0 +1,90 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsNotEmpty,
+  IsString,
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsObject,
+  IsUUID,
+  IsNumber,
+  Min,
+  MaxLength,
+} from 'class-validator';
+import { VerificationMethod } from '../../../../shared/types/enums';
+
+/**
+ * DTO para crear un nuevo sponsored goal
+ */
+export class CreateSponsoredGoalDto {
+  @ApiProperty({
+    description: 'Nombre del objetivo patrocinado',
+    example: 'Completa 10 tareas este mes',
+    maxLength: 255,
+  })
+  @IsNotEmpty({ message: 'El nombre es requerido' })
+  @IsString({ message: 'El nombre debe ser una cadena de texto' })
+  @MaxLength(255, { message: 'El nombre no puede exceder 255 caracteres' })
+  name: string;
+
+  @ApiPropertyOptional({
+    description: 'Descripción del objetivo patrocinado',
+    example: 'Completa 10 tareas en tu proyecto personal durante este mes',
+  })
+  @IsOptional()
+  @IsString({ message: 'La descripción debe ser una cadena de texto' })
+  description?: string;
+
+  @ApiPropertyOptional({
+    description: 'Criterios de cumplimiento (JSON)',
+    example: { min_tasks: 10, period: 'month' },
+  })
+  @IsOptional()
+  @IsObject({ message: 'Los criterios deben ser un objeto JSON' })
+  criteria?: Record<string, any>;
+
+  @ApiProperty({
+    description: 'Fecha de inicio del objetivo',
+    example: '2024-01-01',
+  })
+  @IsNotEmpty({ message: 'La fecha de inicio es requerida' })
+  @IsDateString({}, { message: 'La fecha de inicio debe tener un formato válido' })
+  startDate: string;
+
+  @ApiProperty({
+    description: 'Fecha de fin del objetivo',
+    example: '2024-01-31',
+  })
+  @IsNotEmpty({ message: 'La fecha de fin es requerida' })
+  @IsDateString({}, { message: 'La fecha de fin debe tener un formato válido' })
+  endDate: string;
+
+  @ApiProperty({
+    description: 'Método de verificación',
+    enum: VerificationMethod,
+    example: VerificationMethod.CHECKLIST,
+  })
+  @IsNotEmpty({ message: 'El método de verificación es requerido' })
+  @IsEnum(VerificationMethod, {
+    message: 'El método de verificación debe ser uno de: qr, checklist, manual, external_api',
+  })
+  verificationMethod: VerificationMethod;
+
+  @ApiPropertyOptional({
+    description: 'ID de la recompensa asociada',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID de la recompensa debe ser un UUID válido' })
+  rewardId?: string;
+
+  @ApiProperty({
+    description: 'Número máximo de usuarios que pueden inscribirse',
+    example: 100,
+    minimum: 1,
+  })
+  @IsNotEmpty({ message: 'El número máximo de usuarios es requerido' })
+  @IsNumber({}, { message: 'El número máximo de usuarios debe ser un número' })
+  @Min(1, { message: 'El número máximo de usuarios debe ser al menos 1' })
+  maxUsers: number;
+}

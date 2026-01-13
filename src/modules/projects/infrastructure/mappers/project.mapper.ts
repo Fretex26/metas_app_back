@@ -1,0 +1,42 @@
+import { Project } from '../../domain/entities/project.entity';
+import { ProjectOrmEntity } from '../persistence/project.orm-entity';
+
+/**
+ * Mapper para convertir entre entidades de dominio y entidades ORM de Project
+ */
+export class ProjectMapper {
+  static toDomain(ormEntity: ProjectOrmEntity): Project {
+    return new Project(
+      ormEntity.id,
+      ormEntity.userId,
+      ormEntity.name,
+      ormEntity.description,
+      ormEntity.purpose,
+      ormEntity.budget ? parseFloat(ormEntity.budget.toString()) : null,
+      ormEntity.finalDate,
+      ormEntity.resourcesAvailable,
+      ormEntity.resourcesNeeded,
+      ormEntity.schedule,
+      ormEntity.createdAt,
+    );
+  }
+
+  static toOrmEntity(domainEntity: Project): Partial<ProjectOrmEntity> {
+    return {
+      id: domainEntity.id,
+      userId: domainEntity.userId,
+      name: domainEntity.name,
+      description: domainEntity.description,
+      purpose: domainEntity.purpose,
+      budget: domainEntity.budget,
+      finalDate: domainEntity.finalDate,
+      resourcesAvailable: domainEntity.resourcesAvailable,
+      resourcesNeeded: domainEntity.resourcesNeeded,
+      schedule: domainEntity.schedule,
+    };
+  }
+
+  static toDomainList(ormEntities: ProjectOrmEntity[]): Project[] {
+    return ormEntities.map((entity) => this.toDomain(entity));
+  }
+}
