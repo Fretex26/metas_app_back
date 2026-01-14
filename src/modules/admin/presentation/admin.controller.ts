@@ -23,7 +23,6 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { UserRole, SponsorStatus } from '../../../shared/types/enums';
-import { ApproveSponsorDto } from '../application/dto/approve-sponsor.dto';
 import { RejectSponsorDto } from '../application/dto/reject-sponsor.dto';
 import { SponsorListItemDto } from '../application/dto/sponsor-list-response.dto';
 import { SponsorDetailResponseDto } from '../application/dto/sponsor-detail-response.dto';
@@ -160,7 +159,6 @@ export class AdminController {
   })
   async approveSponsor(
     @Param('sponsorId') sponsorId: string,
-    @Body() _dto: ApproveSponsorDto,
     @CurrentUser() user: UserPayload,
   ): Promise<SponsorDetailResponseDto> {
     const sponsor = await this.approveSponsorUseCase.execute(
