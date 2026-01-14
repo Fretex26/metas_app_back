@@ -28,6 +28,13 @@ export class MilestoneResponseDto {
   description?: string;
 
   @ApiProperty({
+    description: 'Estado del milestone',
+    example: 'pending',
+    enum: ['pending', 'in_progress', 'completed'],
+  })
+  status: string;
+
+  @ApiProperty({
     description: 'Fecha de creación',
     example: '2024-01-01T00:00:00.000Z',
   })

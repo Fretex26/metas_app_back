@@ -37,6 +37,14 @@ export class ProjectRepositoryImpl implements IProjectRepository {
     return ProjectMapper.toDomainList(ormEntities);
   }
 
+  async findByEnrollmentId(enrollmentId: string): Promise<Project | null> {
+    const ormEntity = await this.projectRepository.findOne({
+      where: { enrollmentId },
+      relations: ['user'],
+    });
+    return ormEntity ? ProjectMapper.toDomain(ormEntity) : null;
+  }
+
   async update(project: Project): Promise<Project> {
     const ormEntity = await this.projectRepository.findOne({
       where: { id: project.id },

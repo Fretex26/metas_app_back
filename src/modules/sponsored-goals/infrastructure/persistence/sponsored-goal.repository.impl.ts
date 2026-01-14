@@ -40,6 +40,14 @@ export class SponsoredGoalRepositoryImpl
     return SponsoredGoalMapper.toDomainList(ormEntities);
   }
 
+  async findByProjectId(projectId: string): Promise<SponsoredGoal | null> {
+    const ormEntity = await this.sponsoredGoalRepository.findOne({
+      where: { projectId },
+      relations: ['sponsor'],
+    });
+    return ormEntity ? SponsoredGoalMapper.toDomain(ormEntity) : null;
+  }
+
   async findAvailableGoals(): Promise<SponsoredGoal[]> {
     const now = new Date();
     const ormEntities = await this.sponsoredGoalRepository.find({

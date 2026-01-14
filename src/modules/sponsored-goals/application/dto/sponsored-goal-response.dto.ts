@@ -18,6 +18,12 @@ export class SponsoredGoalResponseDto {
   sponsorId: string;
 
   @ApiProperty({
+    description: 'ID del proyecto asociado',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  projectId: string;
+
+  @ApiProperty({
     description: 'Nombre del objetivo patrocinado',
     example: 'Completa 10 tareas este mes',
   })

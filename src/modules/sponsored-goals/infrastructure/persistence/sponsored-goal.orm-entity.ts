@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { SponsorOrmEntity } from '../../../sponsors/infrastructure/persistence/sponsor.orm-entity';
+import { ProjectOrmEntity } from '../../../projects/infrastructure/persistence/project.orm-entity';
 import { VerificationMethod } from '../../../../shared/types/enums';
 
 /**
@@ -24,6 +25,13 @@ export class SponsoredGoalOrmEntity {
   @ManyToOne(() => SponsorOrmEntity)
   @JoinColumn({ name: 'sponsor_id' })
   sponsor: SponsorOrmEntity;
+
+  @Column({ type: 'uuid', name: 'project_id' })
+  projectId: string;
+
+  @ManyToOne(() => ProjectOrmEntity)
+  @JoinColumn({ name: 'project_id' })
+  project: ProjectOrmEntity;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;

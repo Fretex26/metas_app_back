@@ -3,6 +3,7 @@ import type { IMilestoneRepository } from '../../domain/repositories/milestone.r
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import { Milestone } from '../../domain/entities/milestone.entity';
 import { CreateMilestoneDto } from '../dto/create-milestone.dto';
+import { MilestoneStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -37,6 +38,7 @@ export class CreateMilestoneUseCase {
       projectId,
       createMilestoneDto.name,
       createMilestoneDto.description || '',
+      MilestoneStatus.PENDING,
       new Date(),
     );
 

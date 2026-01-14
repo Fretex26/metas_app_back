@@ -8,6 +8,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
+import { SponsoredGoalOrmEntity } from '../../../sponsored-goals/infrastructure/persistence/sponsored-goal.orm-entity';
+import { SponsorEnrollmentOrmEntity } from '../../../sponsored-goals/infrastructure/persistence/sponsor-enrollment.orm-entity';
 
 /**
  * Entidad ORM para Project
@@ -47,6 +49,23 @@ export class ProjectOrmEntity {
 
   @Column({ type: 'jsonb', nullable: true })
   schedule: Record<string, any> | null;
+
+  @Column({ type: 'uuid', nullable: true, name: 'sponsored_goal_id' })
+  sponsoredGoalId: string | null;
+
+  @ManyToOne(() => SponsoredGoalOrmEntity, { nullable: true })
+  @JoinColumn({ name: 'sponsored_goal_id' })
+  sponsoredGoal: SponsoredGoalOrmEntity | null;
+
+  @Column({ type: 'uuid', nullable: true, name: 'enrollment_id' })
+  enrollmentId: string | null;
+
+  @ManyToOne(() => SponsorEnrollmentOrmEntity, { nullable: true })
+  @JoinColumn({ name: 'enrollment_id' })
+  enrollment: SponsorEnrollmentOrmEntity | null;
+
+  @Column({ type: 'boolean', default: true, name: 'is_active' })
+  isActive: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

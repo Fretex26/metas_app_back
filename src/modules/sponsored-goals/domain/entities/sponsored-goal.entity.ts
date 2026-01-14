@@ -8,6 +8,7 @@ export class SponsoredGoal {
   constructor(
     public readonly id: string,
     public readonly sponsorId: string,
+    public readonly projectId: string,
     public readonly name: string,
     public readonly description: string,
     public readonly criteria: Record<string, any> | null,

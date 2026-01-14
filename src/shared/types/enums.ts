@@ -29,12 +29,21 @@ export enum VerificationMethod {
 
 /**
  * Estado de inscripción a un objetivo patrocinado
+ * Las inscripciones son automáticas (siempre empiezan en ACTIVE)
  */
 export enum EnrollmentStatus {
-  PENDING = 'pending',
   ACTIVE = 'active',
+  INACTIVE = 'inactive',
   COMPLETED = 'completed',
-  REJECTED = 'rejected',
+}
+
+/**
+ * Estado de una milestone
+ */
+export enum MilestoneStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
 }
 
 /**

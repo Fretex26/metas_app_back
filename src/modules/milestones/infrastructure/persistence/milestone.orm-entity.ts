@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ProjectOrmEntity } from '../../../projects/infrastructure/persistence/project.orm-entity';
+import { MilestoneStatus } from '../../../../shared/types/enums';
 
 /**
  * Entidad ORM para Milestone
@@ -29,6 +30,13 @@ export class MilestoneOrmEntity {
 
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @Column({
+    type: 'enum',
+    enum: MilestoneStatus,
+    default: MilestoneStatus.PENDING,
+  })
+  status: MilestoneStatus;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -7,6 +7,7 @@ export interface IProjectRepository {
   create(project: Project): Promise<Project>;
   findById(id: string): Promise<Project | null>;
   findByUserId(userId: string): Promise<Project[]>;
+  findByEnrollmentId(enrollmentId: string): Promise<Project | null>;
   update(project: Project): Promise<Project>;
   delete(id: string): Promise<void>;
   countByUserId(userId: string): Promise<number>;

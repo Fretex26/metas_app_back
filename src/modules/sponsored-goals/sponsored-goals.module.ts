@@ -8,7 +8,19 @@ import { SponsoredGoalRepositoryImpl } from './infrastructure/persistence/sponso
 import type { ISponsoredGoalRepository } from './domain/repositories/sponsored-goal.repository';
 import { CreateSponsoredGoalUseCase } from './application/use-cases/create-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from './application/use-cases/list-available-sponsored-goals.use-case';
+import { EnrollInSponsoredGoalUseCase } from './application/use-cases/enroll-in-sponsored-goal.use-case';
+import { DuplicateSponsoredProjectUseCase } from './application/use-cases/duplicate-sponsored-project.use-case';
+import { UpdateEnrollmentStatusUseCase } from './application/use-cases/update-enrollment-status.use-case';
+import { VerifyMilestoneCompletionUseCase } from './application/use-cases/verify-milestone-completion.use-case';
+import { GetUserSponsoredProjectsUseCase } from './application/use-cases/get-user-sponsored-projects.use-case';
+import { SponsorEnrollmentRepositoryImpl } from './infrastructure/persistence/sponsor-enrollment.repository.impl';
+import type { ISponsorEnrollmentRepository } from './domain/repositories/sponsor-enrollment.repository';
 import { SponsorsModule } from '../sponsors/sponsors.module';
+import { ProjectsModule } from '../projects/projects.module';
+import { MilestonesModule } from '../milestones/milestones.module';
+import { SprintsModule } from '../sprints/sprints.module';
+import { TasksModule } from '../tasks/tasks.module';
+import { UsersModule } from '../users/users.module';
 
 /**
  * Módulo de sponsored goals
@@ -27,18 +39,35 @@ import { SponsorsModule } from '../sponsors/sponsors.module';
       VerificationEventOrmEntity,
     ]),
     SponsorsModule,
+    ProjectsModule,
+    MilestonesModule,
+    SprintsModule,
+    TasksModule,
+    UsersModule,
   ],
   controllers: [SponsoredGoalsController],
   providers: [
-    // Repositorio
+    // Repositorios
     {
       provide: 'ISponsoredGoalRepository',
       useClass: SponsoredGoalRepositoryImpl,
     },
+    {
+      provide: 'ISponsorEnrollmentRepository',
+      useClass: SponsorEnrollmentRepositoryImpl,
+    },
     // Use cases
     CreateSponsoredGoalUseCase,
     ListAvailableSponsoredGoalsUseCase,
+    DuplicateSponsoredProjectUseCase,
+    EnrollInSponsoredGoalUseCase,
+    UpdateEnrollmentStatusUseCase,
+    VerifyMilestoneCompletionUseCase,
+    GetUserSponsoredProjectsUseCase,
   ],
-  exports: ['ISponsoredGoalRepository'],
+  exports: [
+    'ISponsoredGoalRepository',
+    'ISponsorEnrollmentRepository',
+  ],
 })
 export class SponsoredGoalsModule {}

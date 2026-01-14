@@ -28,6 +28,7 @@ import { GetSprintTasksUseCase } from '../application/use-cases/get-sprint-tasks
 import { GetTaskByIdUseCase } from '../application/use-cases/get-task-by-id.use-case';
 import { UpdateTaskUseCase } from '../application/use-cases/update-task.use-case';
 import { DeleteTaskUseCase } from '../application/use-cases/delete-task.use-case';
+import { MarkTaskCompletedUseCase } from '../application/use-cases/mark-task-completed.use-case';
 
 /**
  * Controlador REST para gestión de tasks
@@ -47,6 +48,7 @@ export class TasksController {
     private readonly getTaskByIdUseCase: GetTaskByIdUseCase,
     private readonly updateTaskUseCase: UpdateTaskUseCase,
     private readonly deleteTaskUseCase: DeleteTaskUseCase,
+    private readonly markTaskCompletedUseCase: MarkTaskCompletedUseCase,
   ) {}
 
   /**
@@ -203,6 +205,51 @@ export class TasksController {
       updateTaskDto,
     );
     return this.toResponseDto(task);
+  }
+
+  /**
+   * Marca una tarea como completada
+   */
+  @Post(':id/complete')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Marcar tarea como completada',
+    description:
+      'Marca una tarea como completada. Requiere que todos los checklist items requeridos estén marcados. Actualiza automáticamente el estado de la milestone.',
+  })
+  @ApiParam({
+    name: 'sprintId',
+    description: 'ID del sprint',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID de la tarea',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Tarea marcada como completada exitosamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tarea no encontrada',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permiso para modificar esta tarea',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'No se puede marcar como completada. Todos los items requeridos deben estar marcados.',
+  })
+  async markTaskCompleted(
+    @Param('id') taskId: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<{ message: string }> {
+    await this.markTaskCompletedUseCase.execute(
+      taskId,
+      user.userId || user.uid,
+    );
+    return { message: 'Tarea marcada como completada exitosamente' };
   }
 
   /**
