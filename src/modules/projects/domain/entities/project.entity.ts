@@ -17,6 +17,7 @@ export class Project {
     public readonly sponsoredGoalId: string | null = null,
     public readonly enrollmentId: string | null = null,
     public readonly isActive: boolean = true,
+    public readonly rewardId: string,
     public readonly createdAt: Date,
   ) {}
 }

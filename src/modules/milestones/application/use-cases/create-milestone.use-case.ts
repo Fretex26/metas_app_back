@@ -39,6 +39,7 @@ export class CreateMilestoneUseCase {
       createMilestoneDto.name,
       createMilestoneDto.description || '',
       MilestoneStatus.PENDING,
+      createMilestoneDto.rewardId || null,
       new Date(),
     );
 

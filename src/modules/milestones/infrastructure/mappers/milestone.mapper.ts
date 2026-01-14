@@ -12,6 +12,7 @@ export class MilestoneMapper {
       ormEntity.name,
       ormEntity.description,
       ormEntity.status,
+      ormEntity.rewardId ?? null,
       ormEntity.createdAt,
     );
   }
@@ -23,6 +24,7 @@ export class MilestoneMapper {
       name: domainEntity.name,
       description: domainEntity.description,
       status: domainEntity.status as any,
+      rewardId: domainEntity.rewardId ?? null,
     };
   }
 

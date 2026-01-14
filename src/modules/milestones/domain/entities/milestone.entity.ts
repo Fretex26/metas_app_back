@@ -9,6 +9,7 @@ export class Milestone {
     public readonly name: string,
     public readonly description: string,
     public readonly status: string,
+    public readonly rewardId: string | null = null,
     public readonly createdAt: Date,
   ) {}
 }

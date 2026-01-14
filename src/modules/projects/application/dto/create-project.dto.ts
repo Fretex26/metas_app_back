@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsDateString,
   IsObject,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
@@ -78,4 +79,12 @@ export class CreateProjectDto {
   @IsOptional()
   @IsObject({ message: 'El calendario debe ser un objeto JSON' })
   schedule?: Record<string, any>;
+
+  @ApiProperty({
+    description: 'ID de la recompensa asociada al proyecto (obligatorio)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsNotEmpty({ message: 'El ID de la recompensa es requerido' })
+  @IsUUID('4', { message: 'El ID de la recompensa debe ser un UUID válido' })
+  rewardId: string;
 }

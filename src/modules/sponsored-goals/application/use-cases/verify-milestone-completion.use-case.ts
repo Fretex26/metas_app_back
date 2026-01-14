@@ -80,6 +80,7 @@ export class VerifyMilestoneCompletionUseCase {
       milestone.name,
       milestone.description,
       MilestoneStatus.COMPLETED,
+      milestone.rewardId,
       milestone.createdAt,
     );
 

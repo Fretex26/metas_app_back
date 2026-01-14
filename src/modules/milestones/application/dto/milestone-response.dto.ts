@@ -34,6 +34,12 @@ export class MilestoneResponseDto {
   })
   status: string;
 
+  @ApiPropertyOptional({
+    description: 'ID de la recompensa asociada al milestone (opcional)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  rewardId?: string | null;
+
   @ApiProperty({
     description: 'Fecha de creación',
     example: '2024-01-01T00:00:00.000Z',
