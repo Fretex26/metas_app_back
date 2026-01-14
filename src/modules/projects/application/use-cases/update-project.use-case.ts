@@ -46,6 +46,9 @@ export class UpdateProjectUseCase {
       updateProjectDto.resourcesAvailable ?? currentProject.resourcesAvailable,
       updateProjectDto.resourcesNeeded ?? currentProject.resourcesNeeded,
       updateProjectDto.schedule ?? currentProject.schedule,
+      currentProject.sponsoredGoalId,
+      currentProject.enrollmentId,
+      currentProject.isActive,
       currentProject.createdAt,
     );
 

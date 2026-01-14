@@ -10,6 +10,7 @@ export class SponsoredGoalMapper {
     return new SponsoredGoal(
       ormEntity.id,
       ormEntity.sponsorId,
+      ormEntity.projectId,
       ormEntity.name,
       ormEntity.description,
       ormEntity.criteria,
@@ -28,6 +29,7 @@ export class SponsoredGoalMapper {
     return {
       id: domainEntity.id,
       sponsorId: domainEntity.sponsorId,
+      projectId: domainEntity.projectId,
       name: domainEntity.name,
       description: domainEntity.description,
       criteria: domainEntity.criteria,

@@ -14,6 +14,9 @@ export class Project {
     public readonly resourcesAvailable: Record<string, any> | null,
     public readonly resourcesNeeded: Record<string, any> | null,
     public readonly schedule: Record<string, any> | null,
+    public readonly sponsoredGoalId: string | null = null,
+    public readonly enrollmentId: string | null = null,
+    public readonly isActive: boolean = true,
     public readonly createdAt: Date,
   ) {}
 }

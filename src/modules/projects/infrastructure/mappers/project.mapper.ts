@@ -17,6 +17,9 @@ export class ProjectMapper {
       ormEntity.resourcesAvailable,
       ormEntity.resourcesNeeded,
       ormEntity.schedule,
+      ormEntity.sponsoredGoalId ?? null,
+      ormEntity.enrollmentId ?? null,
+      ormEntity.isActive ?? true,
       ormEntity.createdAt,
     );
   }
@@ -33,6 +36,9 @@ export class ProjectMapper {
       resourcesAvailable: domainEntity.resourcesAvailable,
       resourcesNeeded: domainEntity.resourcesNeeded,
       schedule: domainEntity.schedule,
+      sponsoredGoalId: domainEntity.sponsoredGoalId ?? null,
+      enrollmentId: domainEntity.enrollmentId ?? null,
+      isActive: domainEntity.isActive ?? true,
     };
   }
 

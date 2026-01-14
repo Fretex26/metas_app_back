@@ -37,6 +37,9 @@ export class CreateProjectUseCase {
       createProjectDto.resourcesAvailable || null,
       createProjectDto.resourcesNeeded || null,
       createProjectDto.schedule || null,
+      null, // sponsoredGoalId
+      null, // enrollmentId
+      true, // isActive
       new Date(),
     );
 

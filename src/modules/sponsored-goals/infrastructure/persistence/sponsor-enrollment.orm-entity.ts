@@ -39,7 +39,7 @@ export class SponsorEnrollmentOrmEntity {
   @Column({
     type: 'enum',
     enum: EnrollmentStatus,
-    default: EnrollmentStatus.PENDING,
+    default: EnrollmentStatus.ACTIVE,
   })
   status: EnrollmentStatus;
 
