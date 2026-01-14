@@ -13,6 +13,8 @@ import { DeleteMilestoneUseCase } from './application/use-cases/delete-milestone
 import { ProjectsModule } from '../projects/projects.module';
 import { SprintsModule } from '../sprints/sprints.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { SponsorsModule } from '../sponsors/sponsors.module';
+import { GamificationModule } from '../gamification/gamification.module';
 
 /**
  * Módulo de milestones
@@ -30,6 +32,8 @@ import { TasksModule } from '../tasks/tasks.module';
     ProjectsModule,
     SprintsModule,
     forwardRef(() => TasksModule),
+    SponsorsModule,
+    GamificationModule,
   ],
   controllers: [MilestonesController],
   providers: [

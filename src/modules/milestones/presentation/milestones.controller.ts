@@ -249,6 +249,7 @@ export class MilestonesController {
       name: milestone.name,
       description: milestone.description,
       status: milestone.status,
+      rewardId: milestone.rewardId ?? null,
       createdAt: milestone.createdAt,
     };
   }

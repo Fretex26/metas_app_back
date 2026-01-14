@@ -228,6 +228,7 @@ export class ProjectsController {
       sponsoredGoalId: project.sponsoredGoalId ?? null,
       enrollmentId: project.enrollmentId ?? null,
       isActive: project.isActive ?? true,
+      rewardId: project.rewardId,
       createdAt: project.createdAt,
     };
   }

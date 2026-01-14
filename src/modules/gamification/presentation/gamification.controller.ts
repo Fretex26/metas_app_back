@@ -1,10 +1,15 @@
 import {
   Controller,
   Get,
+  Patch,
+  Param,
+  Body,
   Query,
   UseGuards,
   ParseIntPipe,
   DefaultValuePipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -12,14 +17,18 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiQuery,
+  ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { WalletResponseDto } from '../application/dto/wallet-response.dto';
 import { PointsTransactionResponseDto } from '../application/dto/points-transaction-response.dto';
+import { UserRewardResponseDto } from '../application/dto/user-reward-response.dto';
+import { UpdateUserRewardStatusDto } from '../application/dto/update-user-reward-status.dto';
 import { GetWalletUseCase } from '../application/use-cases/get-wallet.use-case';
 import { GetTransactionsUseCase } from '../application/use-cases/get-transactions.use-case';
+import { UpdateUserRewardStatusUseCase } from '../application/use-cases/update-user-reward-status.use-case';
 
 /**
  * Controlador REST para gamificación (puntos y transacciones)
@@ -36,6 +45,7 @@ export class GamificationController {
   constructor(
     private readonly getWalletUseCase: GetWalletUseCase,
     private readonly getTransactionsUseCase: GetTransactionsUseCase,
+    private readonly updateUserRewardStatusUseCase: UpdateUserRewardStatusUseCase,
   ) {}
 
   /**
@@ -119,6 +129,59 @@ export class GamificationController {
         createdAt: transaction.createdAt,
       })),
       total: result.total,
+    };
+  }
+
+  /**
+   * Actualiza el estado de un user reward (solo para sponsors)
+   */
+  @Patch('user-rewards/:userRewardId/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Actualizar estado de user reward',
+    description:
+      'Permite a un sponsor cambiar el estado de un user reward a DELIVERED',
+  })
+  @ApiParam({
+    name: 'userRewardId',
+    description: 'ID del user reward',
+    type: 'string',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estado actualizado exitosamente',
+    type: UserRewardResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User reward no encontrado',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Solo los patrocinadores pueden cambiar el estado',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Solo se puede actualizar el estado a DELIVERED',
+  })
+  async updateUserRewardStatus(
+    @Param('userRewardId') userRewardId: string,
+    @Body() updateUserRewardStatusDto: UpdateUserRewardStatusDto,
+    @CurrentUser() user: UserPayload,
+  ): Promise<UserRewardResponseDto> {
+    const userReward = await this.updateUserRewardStatusUseCase.execute(
+      userRewardId,
+      updateUserRewardStatusDto.status,
+      user.userId || user.uid,
+    );
+    return {
+      id: userReward.id,
+      userId: userReward.userId,
+      rewardId: userReward.rewardId,
+      status: userReward.status,
+      claimedAt: userReward.claimedAt,
+      deliveredAt: userReward.deliveredAt,
+      createdAt: userReward.createdAt,
     };
   }
 }

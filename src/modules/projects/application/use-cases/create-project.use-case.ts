@@ -40,6 +40,7 @@ export class CreateProjectUseCase {
       null, // sponsoredGoalId
       null, // enrollmentId
       true, // isActive
+      createProjectDto.rewardId,
       new Date(),
     );
 

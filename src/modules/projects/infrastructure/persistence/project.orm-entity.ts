@@ -67,6 +67,9 @@ export class ProjectOrmEntity {
   @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive: boolean;
 
+  @Column({ type: 'uuid', name: 'reward_id' })
+  rewardId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

@@ -20,6 +20,7 @@ export class ProjectMapper {
       ormEntity.sponsoredGoalId ?? null,
       ormEntity.enrollmentId ?? null,
       ormEntity.isActive ?? true,
+      ormEntity.rewardId,
       ormEntity.createdAt,
     );
   }
@@ -39,6 +40,7 @@ export class ProjectMapper {
       sponsoredGoalId: domainEntity.sponsoredGoalId ?? null,
       enrollmentId: domainEntity.enrollmentId ?? null,
       isActive: domainEntity.isActive ?? true,
+      rewardId: domainEntity.rewardId,
     };
   }
 

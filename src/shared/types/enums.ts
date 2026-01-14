@@ -47,17 +47,6 @@ export enum MilestoneStatus {
 }
 
 /**
- * Tipos de recompensas
- */
-export enum RewardType {
-  DISCOUNT = 'discount',
-  PRODUCT = 'product',
-  SUBSCRIPTION = 'subscription',
-  BENEFIT = 'benefit',
-  INTERNAL = 'internal',
-}
-
-/**
  * Estado de una recompensa de usuario
  */
 export enum UserRewardStatus {

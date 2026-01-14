@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsUUID, MaxLength } from 'class-validator';
 
 /**
  * DTO para crear un nuevo milestone
@@ -22,4 +22,12 @@ export class CreateMilestoneDto {
   @IsOptional()
   @IsString({ message: 'La descripción debe ser una cadena de texto' })
   description?: string;
+
+  @ApiPropertyOptional({
+    description: 'ID de la recompensa asociada al milestone (opcional)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID de la recompensa debe ser un UUID válido' })
+  rewardId?: string;
 }

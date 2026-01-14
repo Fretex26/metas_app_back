@@ -76,6 +76,12 @@ export class ProjectResponseDto {
   isActive?: boolean;
 
   @ApiProperty({
+    description: 'ID de la recompensa asociada al proyecto (obligatorio)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  rewardId: string;
+
+  @ApiProperty({
     description: 'Fecha de creación',
     example: '2024-01-01T00:00:00.000Z',
   })

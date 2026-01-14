@@ -4,6 +4,8 @@ import type { IProjectRepository } from '../../../projects/domain/repositories/p
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
 import type { IChecklistItemRepository } from '../../../tasks/domain/repositories/checklist-item.repository';
+import type { ISponsorRepository } from '../../../sponsors/domain/repositories/sponsor.repository';
+import { RewardService } from '../../../gamification/domain/services/reward.service';
 import { Milestone } from '../../domain/entities/milestone.entity';
 import { MilestoneStatus } from '../../../../shared/types/enums';
 
@@ -33,6 +35,9 @@ export class UpdateMilestoneStatusUseCase {
     private readonly taskRepository: ITaskRepository,
     @Inject('IChecklistItemRepository')
     private readonly checklistItemRepository: IChecklistItemRepository,
+    @Inject('ISponsorRepository')
+    private readonly sponsorRepository: ISponsorRepository,
+    private readonly rewardService: RewardService,
   ) {}
 
   async execute(
@@ -135,9 +140,36 @@ export class UpdateMilestoneStatusUseCase {
       milestone.name,
       milestone.description,
       newStatus,
+      milestone.rewardId,
       milestone.createdAt,
     );
 
-    return await this.milestoneRepository.update(updatedMilestone);
+    const savedMilestone = await this.milestoneRepository.update(updatedMilestone);
+
+    // Si el milestone se completó y es de un proyecto de usuario normal (no patrocinado)
+    // y tiene un reward, otorgarlo automáticamente
+    if (
+      newStatus === MilestoneStatus.COMPLETED &&
+      !isSponsored &&
+      savedMilestone.rewardId
+    ) {
+      await this.rewardService.grantReward(project.userId, savedMilestone.rewardId);
+    }
+
+    // Si el milestone se completó y es de un proyecto de usuario normal,
+    // verificar si todas las milestones están completadas para otorgar el reward del proyecto
+    if (newStatus === MilestoneStatus.COMPLETED && !isSponsored && project.rewardId) {
+      const allMilestones = await this.milestoneRepository.findByProjectId(project.id);
+      const allCompleted = allMilestones.every(
+        (m) => m.status === MilestoneStatus.COMPLETED,
+      );
+
+      if (allCompleted) {
+        // Todas las milestones están completadas, otorgar el reward del proyecto
+        await this.rewardService.grantReward(project.userId, project.rewardId);
+      }
+    }
+
+    return savedMilestone;
   }
 }

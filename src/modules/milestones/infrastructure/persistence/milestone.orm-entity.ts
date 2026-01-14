@@ -38,6 +38,9 @@ export class MilestoneOrmEntity {
   })
   status: MilestoneStatus;
 
+  @Column({ type: 'uuid', nullable: true, name: 'reward_id' })
+  rewardId: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
