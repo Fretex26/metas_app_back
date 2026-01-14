@@ -8,8 +8,11 @@ import { CreateMilestoneUseCase } from './application/use-cases/create-milestone
 import { GetProjectMilestonesUseCase } from './application/use-cases/get-project-milestones.use-case';
 import { GetMilestoneByIdUseCase } from './application/use-cases/get-milestone-by-id.use-case';
 import { UpdateMilestoneUseCase } from './application/use-cases/update-milestone.use-case';
+import { UpdateMilestoneStatusUseCase } from './application/use-cases/update-milestone-status.use-case';
 import { DeleteMilestoneUseCase } from './application/use-cases/delete-milestone.use-case';
 import { ProjectsModule } from '../projects/projects.module';
+import { SprintsModule } from '../sprints/sprints.module';
+import { TasksModule } from '../tasks/tasks.module';
 
 /**
  * Módulo de milestones
@@ -25,6 +28,8 @@ import { ProjectsModule } from '../projects/projects.module';
   imports: [
     TypeOrmModule.forFeature([MilestoneOrmEntity]),
     ProjectsModule,
+    SprintsModule,
+    TasksModule,
   ],
   controllers: [MilestonesController],
   providers: [
@@ -38,6 +43,7 @@ import { ProjectsModule } from '../projects/projects.module';
     GetProjectMilestonesUseCase,
     GetMilestoneByIdUseCase,
     UpdateMilestoneUseCase,
+    UpdateMilestoneStatusUseCase,
     DeleteMilestoneUseCase,
   ],
   exports: ['IMilestoneRepository'],
