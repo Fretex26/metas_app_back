@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import {
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
 import { RolesGuard } from '../../../shared/guards/roles.guard';
 import { Roles } from '../../../shared/decorators/roles.decorator';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { UserRole, SponsorStatus } from '../../../shared/types/enums';
@@ -43,7 +45,9 @@ import { EnableSponsorUseCase } from '../application/use-cases/enable-sponsor.us
  */
 @ApiTags('admin')
 @Controller('admin/sponsors')
-@UseGuards(FirebaseAuthGuard, RolesGuard)
+@UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
+@UseGuards(RolesGuard)
 @Roles(UserRole.ADMIN)
 @ApiBearerAuth('JWT-auth')
 export class AdminController {
