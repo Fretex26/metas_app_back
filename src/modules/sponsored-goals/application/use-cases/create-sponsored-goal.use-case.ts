@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException, Inject } from '@nestjs/common';
 import type { ISponsoredGoalRepository } from '../../domain/repositories/sponsored-goal.repository';
 import type { ISponsorRepository } from '../../../sponsors/domain/repositories/sponsor.repository';
+import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
+import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
+import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
+import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
 import { SponsoredGoal } from '../../domain/entities/sponsored-goal.entity';
 import { CreateSponsoredGoalDto } from '../dto/create-sponsored-goal.dto';
 import { SponsorStatus } from '../../../../shared/types/enums';
@@ -16,6 +20,14 @@ export class CreateSponsoredGoalUseCase {
     private readonly sponsoredGoalRepository: ISponsoredGoalRepository,
     @Inject('ISponsorRepository')
     private readonly sponsorRepository: ISponsorRepository,
+    @Inject('IProjectRepository')
+    private readonly projectRepository: IProjectRepository,
+    @Inject('IMilestoneRepository')
+    private readonly milestoneRepository: IMilestoneRepository,
+    @Inject('ISprintRepository')
+    private readonly sprintRepository: ISprintRepository,
+    @Inject('ITaskRepository')
+    private readonly taskRepository: ITaskRepository,
   ) {}
 
   async execute(
@@ -54,10 +66,60 @@ export class CreateSponsoredGoalUseCase {
       );
     }
 
+    // Validar que el proyecto existe y pertenece al sponsor
+    const project = await this.projectRepository.findById(createSponsoredGoalDto.projectId);
+    if (!project) {
+      throw new NotFoundException('El proyecto especificado no existe');
+    }
+
+    if (project.userId !== userId) {
+      throw new ForbiddenException(
+        'El proyecto no pertenece al patrocinador',
+      );
+    }
+
+    // Validar que el proyecto tiene al menos una milestone
+    const milestones = await this.milestoneRepository.findByProjectId(project.id);
+    if (milestones.length === 0) {
+      throw new BadRequestException(
+        'El proyecto debe tener al menos una milestone',
+      );
+    }
+
+    // Validar que cada milestone tiene al menos una task
+    for (const milestone of milestones) {
+      const sprints = await this.sprintRepository.findByMilestoneId(milestone.id);
+      
+      // Si no hay sprints, buscar tasks directamente en el milestone
+      // Nota: En la estructura actual, las tasks están dentro de sprints
+      // Así que verificamos que hay sprints y que cada sprint tiene al menos una task
+      if (sprints.length === 0) {
+        throw new BadRequestException(
+          `La milestone "${milestone.name}" debe tener al menos un sprint con una task`,
+        );
+      }
+
+      let hasAtLeastOneTask = false;
+      for (const sprint of sprints) {
+        const tasks = await this.taskRepository.findBySprintId(sprint.id);
+        if (tasks.length > 0) {
+          hasAtLeastOneTask = true;
+          break;
+        }
+      }
+
+      if (!hasAtLeastOneTask) {
+        throw new BadRequestException(
+          `La milestone "${milestone.name}" debe tener al menos una task`,
+        );
+      }
+    }
+
     // Crear la entidad de dominio
     const sponsoredGoal = new SponsoredGoal(
       uuidv4(),
       sponsor.id,
+      createSponsoredGoalDto.projectId,
       createSponsoredGoalDto.name,
       createSponsoredGoalDto.description || '',
       createSponsoredGoalDto.criteria || null,

@@ -9,6 +9,10 @@ import type { ISponsoredGoalRepository } from './domain/repositories/sponsored-g
 import { CreateSponsoredGoalUseCase } from './application/use-cases/create-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from './application/use-cases/list-available-sponsored-goals.use-case';
 import { SponsorsModule } from '../sponsors/sponsors.module';
+import { ProjectsModule } from '../projects/projects.module';
+import { MilestonesModule } from '../milestones/milestones.module';
+import { SprintsModule } from '../sprints/sprints.module';
+import { TasksModule } from '../tasks/tasks.module';
 
 /**
  * Módulo de sponsored goals
@@ -27,6 +31,10 @@ import { SponsorsModule } from '../sponsors/sponsors.module';
       VerificationEventOrmEntity,
     ]),
     SponsorsModule,
+    ProjectsModule,
+    MilestonesModule,
+    SprintsModule,
+    TasksModule,
   ],
   controllers: [SponsoredGoalsController],
   providers: [

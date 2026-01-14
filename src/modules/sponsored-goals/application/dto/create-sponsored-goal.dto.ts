@@ -35,6 +35,14 @@ export class CreateSponsoredGoalDto {
   @IsString({ message: 'La descripción debe ser una cadena de texto' })
   description?: string;
 
+  @ApiProperty({
+    description: 'ID del proyecto asociado',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsNotEmpty({ message: 'El ID del proyecto es requerido' })
+  @IsUUID('4', { message: 'El ID del proyecto debe ser un UUID válido' })
+  projectId: string;
+
   @ApiPropertyOptional({
     description: 'Criterios de cumplimiento (JSON)',
     example: { min_tasks: 10, period: 'month' },

@@ -57,6 +57,24 @@ export class ProjectResponseDto {
   })
   schedule?: Record<string, any>;
 
+  @ApiPropertyOptional({
+    description: 'ID del objetivo patrocinado (si es un proyecto patrocinado)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  sponsoredGoalId?: string | null;
+
+  @ApiPropertyOptional({
+    description: 'ID de la inscripción (si es un proyecto patrocinado)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  enrollmentId?: string | null;
+
+  @ApiPropertyOptional({
+    description: 'Indica si el proyecto está activo (visible para el usuario)',
+    example: true,
+  })
+  isActive?: boolean;
+
   @ApiProperty({
     description: 'Fecha de creación',
     example: '2024-01-01T00:00:00.000Z',

@@ -248,6 +248,7 @@ export class MilestonesController {
       projectId: milestone.projectId,
       name: milestone.name,
       description: milestone.description,
+      status: milestone.status,
       createdAt: milestone.createdAt,
     };
   }

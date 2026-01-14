@@ -225,6 +225,9 @@ export class ProjectsController {
       resourcesAvailable: project.resourcesAvailable,
       resourcesNeeded: project.resourcesNeeded,
       schedule: project.schedule,
+      sponsoredGoalId: project.sponsoredGoalId ?? null,
+      enrollmentId: project.enrollmentId ?? null,
+      isActive: project.isActive ?? true,
       createdAt: project.createdAt,
     };
   }

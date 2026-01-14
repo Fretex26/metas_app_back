@@ -100,6 +100,7 @@ export class SponsoredGoalsController {
     return {
       id: sponsoredGoal.id,
       sponsorId: sponsoredGoal.sponsorId,
+      projectId: sponsoredGoal.projectId,
       name: sponsoredGoal.name,
       description: sponsoredGoal.description,
       criteria: sponsoredGoal.criteria,
