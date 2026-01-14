@@ -53,11 +53,6 @@ export class ProjectResponseDto {
   resourcesNeeded?: Record<string, any>;
 
   @ApiPropertyOptional({
-    description: 'Calendario del proyecto (JSON)',
-  })
-  schedule?: Record<string, any>;
-
-  @ApiPropertyOptional({
     description: 'ID del objetivo patrocinado (si es un proyecto patrocinado)',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })

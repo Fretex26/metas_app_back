@@ -47,9 +47,6 @@ export class ProjectOrmEntity {
   @Column({ type: 'jsonb', nullable: true, name: 'resources_needed' })
   resourcesNeeded: Record<string, any> | null;
 
-  @Column({ type: 'jsonb', nullable: true })
-  schedule: Record<string, any> | null;
-
   @Column({ type: 'uuid', nullable: true, name: 'sponsored_goal_id' })
   sponsoredGoalId: string | null;
 

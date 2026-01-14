@@ -13,7 +13,6 @@ export class Project {
     public readonly finalDate: Date | null,
     public readonly resourcesAvailable: Record<string, any> | null,
     public readonly resourcesNeeded: Record<string, any> | null,
-    public readonly schedule: Record<string, any> | null,
     public readonly sponsoredGoalId: string | null = null,
     public readonly enrollmentId: string | null = null,
     public readonly isActive: boolean = true,

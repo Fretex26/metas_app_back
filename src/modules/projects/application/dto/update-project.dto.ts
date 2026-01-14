@@ -50,9 +50,4 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsObject()
   resourcesNeeded?: Record<string, any>;
-
-  @ApiPropertyOptional({ description: 'Calendario del proyecto (JSON)' })
-  @IsOptional()
-  @IsObject()
-  schedule?: Record<string, any>;
 }

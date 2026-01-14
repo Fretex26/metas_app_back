@@ -72,14 +72,6 @@ export class CreateProjectDto {
   @IsObject({ message: 'Los recursos necesarios deben ser un objeto JSON' })
   resourcesNeeded?: Record<string, any>;
 
-  @ApiPropertyOptional({
-    description: 'Calendario del proyecto (JSON)',
-    example: { startDate: '2024-01-01', phases: [] },
-  })
-  @IsOptional()
-  @IsObject({ message: 'El calendario debe ser un objeto JSON' })
-  schedule?: Record<string, any>;
-
   @ApiProperty({
     description: 'ID de la recompensa asociada al proyecto (obligatorio)',
     example: '123e4567-e89b-12d3-a456-426614174000',
