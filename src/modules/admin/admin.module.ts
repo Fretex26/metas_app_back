@@ -12,6 +12,8 @@ import { RejectSponsorUseCase } from './application/use-cases/reject-sponsor.use
 import { DisableSponsorUseCase } from './application/use-cases/disable-sponsor.use-case';
 import { EnableSponsorUseCase } from './application/use-cases/enable-sponsor.use-case';
 import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
+import { RolesGuard } from '../../shared/guards/roles.guard';
 
 /**
  * Módulo de administración
@@ -33,6 +35,10 @@ import { UsersModule } from '../users/users.module';
       provide: 'IAdminRepository',
       useClass: AdminRepositoryImpl,
     },
+    // Guards
+    RolesGuard,
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     GetPendingSponsorsUseCase,
     ListAllSponsorsUseCase,
