@@ -37,6 +37,9 @@ export class ChecklistItemOrmEntity {
   @Column({ type: 'boolean', default: false, name: 'is_required' })
   isRequired: boolean;
 
+  @Column({ type: 'boolean', default: false, name: 'is_checked' })
+  isChecked: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }

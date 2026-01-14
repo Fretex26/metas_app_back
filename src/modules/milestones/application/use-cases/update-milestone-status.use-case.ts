@@ -3,6 +3,7 @@ import type { IMilestoneRepository } from '../../domain/repositories/milestone.r
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
+import type { IChecklistItemRepository } from '../../../tasks/domain/repositories/checklist-item.repository';
 import { Milestone } from '../../domain/entities/milestone.entity';
 import { MilestoneStatus } from '../../../../shared/types/enums';
 
@@ -30,12 +31,14 @@ export class UpdateMilestoneStatusUseCase {
     private readonly sprintRepository: ISprintRepository,
     @Inject('ITaskRepository')
     private readonly taskRepository: ITaskRepository,
+    @Inject('IChecklistItemRepository')
+    private readonly checklistItemRepository: IChecklistItemRepository,
   ) {}
 
   async execute(
     milestoneId: string,
-    completedTasksCount: number = 0,
-    totalTasksCount: number = 0,
+    completedTasksCount?: number,
+    totalTasksCount?: number,
   ): Promise<Milestone> {
     // Obtener el milestone
     const milestone = await this.milestoneRepository.findById(milestoneId);
@@ -51,21 +54,61 @@ export class UpdateMilestoneStatusUseCase {
 
     const isSponsored = !!project.sponsoredGoalId;
 
-    // Si no se proporcionaron los conteos, calcularlos
-    if (totalTasksCount === 0) {
+    // Calcular automáticamente los conteos si no se proporcionaron
+    let calculatedCompletedTasks = 0;
+    let calculatedTotalTasks = 0;
+
+    if (completedTasksCount === undefined || totalTasksCount === undefined) {
       const sprints = await this.sprintRepository.findByMilestoneId(milestoneId);
+      
       for (const sprint of sprints) {
         const tasks = await this.taskRepository.findBySprintId(sprint.id);
-        totalTasksCount += tasks.length;
+        calculatedTotalTasks += tasks.length;
+
+        // Para cada task, verificar si está completada
+        // Una task está completada cuando todos sus checklist items requeridos están marcados
+        for (const task of tasks) {
+          const checklistItems =
+            await this.checklistItemRepository.findByTaskId(task.id);
+          const requiredItems = checklistItems.filter((item) => item.isRequired);
+
+          if (requiredItems.length === 0) {
+            // Si no hay items requeridos, considerar completada si tiene items y todos están marcados
+            // O si no tiene items, considerar que no está completada
+            if (checklistItems.length > 0) {
+              const allChecked = checklistItems.every((item) => item.isChecked);
+              if (allChecked) {
+                calculatedCompletedTasks++;
+              }
+            }
+          } else {
+            // Verificar si todos los items requeridos están marcados
+            const allRequiredChecked = requiredItems.every(
+              (item) => item.isChecked === true,
+            );
+
+            if (allRequiredChecked) {
+              calculatedCompletedTasks++;
+            }
+          }
+        }
       }
     }
+
+    // Usar los valores proporcionados o los calculados
+    const finalCompletedTasks =
+      completedTasksCount !== undefined
+        ? completedTasksCount
+        : calculatedCompletedTasks;
+    const finalTotalTasks =
+      totalTasksCount !== undefined ? totalTasksCount : calculatedTotalTasks;
 
     // Determinar el nuevo estado
     let newStatus: MilestoneStatus;
 
-    if (completedTasksCount === 0) {
+    if (finalCompletedTasks === 0) {
       newStatus = MilestoneStatus.PENDING;
-    } else if (completedTasksCount === totalTasksCount && totalTasksCount > 0) {
+    } else if (finalCompletedTasks === finalTotalTasks && finalTotalTasks > 0) {
       // Todas las tasks completadas
       if (isSponsored) {
         // Para proyectos patrocinados, no actualizamos automáticamente a COMPLETED

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MilestonesController } from './presentation/milestones.controller';
 import { MilestoneOrmEntity } from './infrastructure/persistence/milestone.orm-entity';
@@ -29,7 +29,7 @@ import { TasksModule } from '../tasks/tasks.module';
     TypeOrmModule.forFeature([MilestoneOrmEntity]),
     ProjectsModule,
     SprintsModule,
-    TasksModule,
+    forwardRef(() => TasksModule),
   ],
   controllers: [MilestonesController],
   providers: [
@@ -46,6 +46,9 @@ import { TasksModule } from '../tasks/tasks.module';
     UpdateMilestoneStatusUseCase,
     DeleteMilestoneUseCase,
   ],
-  exports: ['IMilestoneRepository'],
+  exports: [
+    'IMilestoneRepository',
+    UpdateMilestoneStatusUseCase, // Exportar para usar en TasksModule
+  ],
 })
 export class MilestonesModule {}
