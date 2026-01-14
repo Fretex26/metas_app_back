@@ -45,10 +45,10 @@ export class UpdateProjectUseCase {
         : currentProject.finalDate,
       updateProjectDto.resourcesAvailable ?? currentProject.resourcesAvailable,
       updateProjectDto.resourcesNeeded ?? currentProject.resourcesNeeded,
-      updateProjectDto.schedule ?? currentProject.schedule,
       currentProject.sponsoredGoalId,
       currentProject.enrollmentId,
       currentProject.isActive,
+      currentProject.rewardId,
       currentProject.createdAt,
     );
 
