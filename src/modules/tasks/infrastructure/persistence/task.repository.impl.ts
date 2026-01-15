@@ -35,6 +35,16 @@ export class TaskRepositoryImpl implements ITaskRepository {
     return TaskMapper.toDomainList(ormEntities);
   }
 
+  async findByProjectId(projectId: string): Promise<Task[]> {
+    const ormEntities = await this.taskRepository
+      .createQueryBuilder('task')
+      .innerJoin('task.milestone', 'milestone')
+      .where('milestone.projectId = :projectId', { projectId })
+      .orderBy('task.createdAt', 'DESC')
+      .getMany();
+    return TaskMapper.toDomainList(ormEntities);
+  }
+
   async update(task: Task): Promise<Task> {
     const ormEntity = await this.taskRepository.findOne({
       where: { id: task.id },

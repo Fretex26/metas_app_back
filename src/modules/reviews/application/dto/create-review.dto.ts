@@ -1,29 +1,16 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
   IsNumber,
   IsString,
   IsOptional,
   Min,
-  Max,
 } from 'class-validator';
 
 /**
  * DTO para crear un nuevo review
+ * El progressPercentage se calcula automáticamente según las tareas completadas del proyecto
  */
 export class CreateReviewDto {
-  @ApiProperty({
-    description: 'Porcentaje de progreso del sprint (0-100)',
-    example: 75,
-    minimum: 0,
-    maximum: 100,
-  })
-  @IsNotEmpty({ message: 'El porcentaje de progreso es requerido' })
-  @IsNumber({}, { message: 'El porcentaje de progreso debe ser un número' })
-  @Min(0, { message: 'El porcentaje de progreso no puede ser menor a 0' })
-  @Max(100, { message: 'El porcentaje de progreso no puede ser mayor a 100' })
-  progressPercentage: number;
-
   @ApiPropertyOptional({
     description: 'Puntos extra otorgados en esta revisión',
     example: 5,
