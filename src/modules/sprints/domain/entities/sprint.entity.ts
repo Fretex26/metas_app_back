@@ -8,7 +8,7 @@ export class Sprint {
     public readonly milestoneId: string,
     public readonly name: string,
     public readonly description: string,
-    public readonly acceptanceCriteria: string,
+    public readonly acceptanceCriteria: Record<string, any> | null,
     public readonly startDate: Date,
     public readonly endDate: Date,
     public readonly resourcesAvailable: Record<string, any> | null,

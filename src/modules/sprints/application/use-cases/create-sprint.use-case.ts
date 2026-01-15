@@ -62,7 +62,7 @@ export class CreateSprintUseCase {
       milestoneId,
       createSprintDto.name,
       createSprintDto.description || '',
-      createSprintDto.acceptanceCriteria || '',
+      createSprintDto.acceptanceCriteria || null,
       startDate,
       endDate,
       createSprintDto.resourcesAvailable || null,

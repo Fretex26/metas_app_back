@@ -32,11 +32,11 @@ export class CreateSprintDto {
 
   @ApiPropertyOptional({
     description: 'Criterios de aceptación',
-    example: 'Todos los componentes deben estar diseñados y aprobados',
+    example: { nombre: 'Criterio 1', descripcion: 'Todos los componentes deben estar diseñados y aprobados' },
   })
   @IsOptional()
-  @IsString({ message: 'Los criterios de aceptación deben ser una cadena de texto' })
-  acceptanceCriteria?: string;
+  @IsObject({ message: 'Los criterios de aceptación deben ser un objeto JSON' })
+  acceptanceCriteria?: Record<string, any>;
 
   @ApiProperty({
     description: 'Fecha de inicio del sprint',

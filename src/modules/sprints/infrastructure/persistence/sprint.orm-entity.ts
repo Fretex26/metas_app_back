@@ -31,8 +31,8 @@ export class SprintOrmEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'text', nullable: true, name: 'acceptance_criteria' })
-  acceptanceCriteria: string;
+  @Column({ type: 'jsonb', nullable: true, name: 'acceptance_criteria' })
+  acceptanceCriteria: Record<string, any> | null;
 
   @Column({ type: 'date', name: 'start_date' })
   startDate: Date;

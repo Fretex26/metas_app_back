@@ -27,8 +27,8 @@ export class UpdateSprintDto {
 
   @ApiPropertyOptional({ description: 'Criterios de aceptación' })
   @IsOptional()
-  @IsString()
-  acceptanceCriteria?: string;
+  @IsObject()
+  acceptanceCriteria?: Record<string, any>;
 
   @ApiPropertyOptional({ description: 'Fecha de inicio del sprint' })
   @IsOptional()
