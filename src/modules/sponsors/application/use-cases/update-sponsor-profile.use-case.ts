@@ -38,12 +38,7 @@ export class UpdateSponsorProfileUseCase {
       );
     }
 
-    // Si se actualiza y está APPROVED, cambiar a PENDING para revisión
-    const newStatus =
-      currentSponsor.status === SponsorStatus.APPROVED
-        ? SponsorStatus.PENDING
-        : currentSponsor.status;
-
+    // Mantener el estado actual sin cambios
     // Crear sponsor actualizado
     const updatedSponsor = new Sponsor(
       currentSponsor.id,
@@ -53,9 +48,9 @@ export class UpdateSponsorProfileUseCase {
       updateSponsorDto.category ?? currentSponsor.category,
       updateSponsorDto.logoUrl ?? currentSponsor.logoUrl,
       updateSponsorDto.contactEmail ?? currentSponsor.contactEmail,
-      newStatus,
-      currentSponsor.status === SponsorStatus.APPROVED ? null : currentSponsor.reviewedBy,
-      currentSponsor.status === SponsorStatus.APPROVED ? null : currentSponsor.reviewedAt,
+      currentSponsor.status,
+      currentSponsor.reviewedBy,
+      currentSponsor.reviewedAt,
       currentSponsor.rejectionReason,
       currentSponsor.createdAt,
     );

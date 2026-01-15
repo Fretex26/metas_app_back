@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   Index,
   OneToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserRole } from '../../../../shared/types/enums';
+import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 /**
  * Entidad ORM para User
@@ -41,6 +44,15 @@ export class UserOrmEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Relaciones
+  @ManyToMany(() => CategoryOrmEntity, (category) => category.users)
+  @JoinTable({
+    name: 'user_categories',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  })
+  categories: CategoryOrmEntity[];
 
   // Relaciones (se definirán en otros módulos)
   // @OneToOne(() => SponsorOrmEntity, (sponsor) => sponsor.user)

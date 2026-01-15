@@ -1,4 +1,5 @@
 import { VerificationMethod } from '../../../../shared/types/enums';
+import { Category } from '../../../categories/domain/entities/category.entity';
 
 /**
  * Entidad de dominio SponsoredGoal
@@ -11,7 +12,7 @@ export class SponsoredGoal {
     public readonly projectId: string,
     public readonly name: string,
     public readonly description: string,
-    public readonly criteria: Record<string, any> | null,
+    public readonly categories: Category[],
     public readonly startDate: Date,
     public readonly endDate: Date,
     public readonly verificationMethod: VerificationMethod,

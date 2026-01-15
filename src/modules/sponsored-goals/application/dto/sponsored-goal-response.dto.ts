@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { VerificationMethod } from '../../../../shared/types/enums';
+import { CategoryResponseDto } from '../../../categories/application/dto/category-response.dto';
 
 /**
  * DTO de respuesta para un sponsored goal
@@ -35,9 +36,10 @@ export class SponsoredGoalResponseDto {
   description?: string;
 
   @ApiPropertyOptional({
-    description: 'Criterios de cumplimiento (JSON)',
+    description: 'Categorías asociadas',
+    type: [CategoryResponseDto],
   })
-  criteria?: Record<string, any> | null;
+  categories?: CategoryResponseDto[];
 
   @ApiProperty({
     description: 'Fecha de inicio del objetivo',

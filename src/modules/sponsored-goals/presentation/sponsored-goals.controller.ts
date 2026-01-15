@@ -25,8 +25,10 @@ import { CreateSponsoredGoalDto } from '../application/dto/create-sponsored-goal
 import { SponsoredGoalResponseDto } from '../application/dto/sponsored-goal-response.dto';
 import { UpdateEnrollmentStatusDto } from '../application/dto/update-enrollment-status.dto';
 import { EnrollmentResponseDto } from '../application/dto/enrollment-response.dto';
+import { CategoryResponseDto } from '../../categories/application/dto/category-response.dto';
 import { CreateSponsoredGoalUseCase } from '../application/use-cases/create-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from '../application/use-cases/list-available-sponsored-goals.use-case';
+import { FilterSponsoredGoalsByCategoriesUseCase } from '../application/use-cases/filter-sponsored-goals-by-categories.use-case';
 import { EnrollInSponsoredGoalUseCase } from '../application/use-cases/enroll-in-sponsored-goal.use-case';
 import { UpdateEnrollmentStatusUseCase } from '../application/use-cases/update-enrollment-status.use-case';
 import { VerifyMilestoneCompletionUseCase } from '../application/use-cases/verify-milestone-completion.use-case';
@@ -49,6 +51,7 @@ export class SponsoredGoalsController {
   constructor(
     private readonly createSponsoredGoalUseCase: CreateSponsoredGoalUseCase,
     private readonly listAvailableSponsoredGoalsUseCase: ListAvailableSponsoredGoalsUseCase,
+    private readonly filterSponsoredGoalsByCategoriesUseCase: FilterSponsoredGoalsByCategoriesUseCase,
     private readonly enrollInSponsoredGoalUseCase: EnrollInSponsoredGoalUseCase,
     private readonly updateEnrollmentStatusUseCase: UpdateEnrollmentStatusUseCase,
     private readonly verifyMilestoneCompletionUseCase: VerifyMilestoneCompletionUseCase,
@@ -96,15 +99,32 @@ export class SponsoredGoalsController {
   @ApiOperation({
     summary: 'Listar objetivos patrocinados disponibles',
     description:
-      'Obtiene la lista de objetivos patrocinados activos y disponibles para inscribirse',
+      'Obtiene la lista de objetivos patrocinados activos y disponibles para inscribirse. Puede filtrar por categorías usando el query parameter categoryIds.',
+  })
+  @ApiQuery({
+    name: 'categoryIds',
+    required: false,
+    description: 'IDs de categorías para filtrar (separados por coma)',
+    type: String,
+    example: '123e4567-e89b-12d3-a456-426614174000,223e4567-e89b-12d3-a456-426614174001',
   })
   @ApiResponse({
     status: 200,
     description: 'Lista de objetivos patrocinados disponibles',
     type: [SponsoredGoalResponseDto],
   })
-  async listAvailableSponsoredGoals(): Promise<SponsoredGoalResponseDto[]> {
-    const goals = await this.listAvailableSponsoredGoalsUseCase.execute();
+  async listAvailableSponsoredGoals(
+    @Query('categoryIds') categoryIds?: string,
+  ): Promise<SponsoredGoalResponseDto[]> {
+    let goals;
+    if (categoryIds) {
+      const categoryIdsArray = categoryIds.split(',').map((id) => id.trim());
+      goals = await this.filterSponsoredGoalsByCategoriesUseCase.execute(
+        categoryIdsArray,
+      );
+    } else {
+      goals = await this.listAvailableSponsoredGoalsUseCase.execute();
+    }
     return goals.map((goal) => this.toResponseDto(goal));
   }
 
@@ -288,10 +308,10 @@ export class SponsoredGoalsController {
       finalDate: project.finalDate ?? undefined,
       resourcesAvailable: project.resourcesAvailable ?? undefined,
       resourcesNeeded: project.resourcesNeeded ?? undefined,
-      schedule: project.schedule ?? undefined,
       sponsoredGoalId: project.sponsoredGoalId ?? undefined,
       enrollmentId: project.enrollmentId ?? undefined,
       isActive: project.isActive,
+      rewardId: project.rewardId,
       createdAt: project.createdAt,
     }));
   }
@@ -306,7 +326,14 @@ export class SponsoredGoalsController {
       projectId: sponsoredGoal.projectId,
       name: sponsoredGoal.name,
       description: sponsoredGoal.description,
-      criteria: sponsoredGoal.criteria,
+      categories: sponsoredGoal.categories
+        ? sponsoredGoal.categories.map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            description: cat.description,
+            createdAt: cat.createdAt,
+          }))
+        : [],
       startDate: sponsoredGoal.startDate,
       endDate: sponsoredGoal.endDate,
       verificationMethod: sponsoredGoal.verificationMethod,

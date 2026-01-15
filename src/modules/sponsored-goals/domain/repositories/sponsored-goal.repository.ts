@@ -9,6 +9,7 @@ export interface ISponsoredGoalRepository {
   findBySponsorId(sponsorId: string): Promise<SponsoredGoal[]>;
   findByProjectId(projectId: string): Promise<SponsoredGoal | null>;
   findAvailableGoals(): Promise<SponsoredGoal[]>;
+  findByCategoryIds(categoryIds: string[]): Promise<SponsoredGoal[]>;
   update(sponsoredGoal: SponsoredGoal): Promise<SponsoredGoal>;
   delete(id: string): Promise<void>;
 }

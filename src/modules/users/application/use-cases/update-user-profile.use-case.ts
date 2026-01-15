@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
+import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
 import { User } from '../../domain/entities/user.entity';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
@@ -8,7 +9,11 @@ import { UpdateUserDto } from '../dto/update-user.dto';
  */
 @Injectable()
 export class UpdateUserProfileUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    @Inject('ICategoryRepository')
+    private readonly categoryRepository: ICategoryRepository,
+  ) {}
 
   /**
    * Ejecuta el caso de uso para actualizar el perfil de un usuario
@@ -28,6 +33,21 @@ export class UpdateUserProfileUseCase {
       throw new NotFoundException('Usuario no encontrado');
     }
 
+    // Validar y obtener categorías si se proporcionan
+    let categories = user.categories || [];
+    if (updateUserDto.categoryIds !== undefined) {
+      if (updateUserDto.categoryIds.length > 0) {
+        categories = await this.categoryRepository.findByIds(updateUserDto.categoryIds);
+        if (categories.length !== updateUserDto.categoryIds.length) {
+          throw new BadRequestException(
+            'Una o más categorías especificadas no existen',
+          );
+        }
+      } else {
+        categories = [];
+      }
+    }
+
     // Crear una nueva instancia con los datos actualizados
     const updatedUser = new User(
       user.id,
@@ -35,6 +55,7 @@ export class UpdateUserProfileUseCase {
       user.email,
       user.firebaseUid,
       user.role,
+      categories,
       user.createdAt,
       new Date(), // Actualizar updatedAt
     );

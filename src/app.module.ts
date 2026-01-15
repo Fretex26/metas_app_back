@@ -16,6 +16,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { RetrospectivesModule } from './modules/retrospectives/retrospectives.module';
 import { SponsorsModule } from './modules/sponsors/sponsors.module';
 import { SponsoredGoalsModule } from './modules/sponsored-goals/sponsored-goals.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
@@ -60,6 +61,7 @@ import { AuditModule } from './modules/audit/audit.module';
     RetrospectivesModule,
     SponsorsModule,
     SponsoredGoalsModule,
+    CategoriesModule,
     GamificationModule,
     StatisticsModule,
     MetricsModule,
