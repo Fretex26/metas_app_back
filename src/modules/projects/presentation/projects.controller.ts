@@ -28,6 +28,8 @@ import { GetUserProjectsUseCase } from '../application/use-cases/get-user-projec
 import { GetProjectByIdUseCase } from '../application/use-cases/get-project-by-id.use-case';
 import { UpdateProjectUseCase } from '../application/use-cases/update-project.use-case';
 import { DeleteProjectUseCase } from '../application/use-cases/delete-project.use-case';
+import { GetProjectProgressUseCase } from '../../reviews/application/use-cases/get-project-progress.use-case';
+import { ProjectProgressResponseDto } from '../../reviews/application/dto/project-progress-response.dto';
 
 /**
  * Controlador REST para gestión de proyectos personales
@@ -47,6 +49,7 @@ export class ProjectsController {
     private readonly getProjectByIdUseCase: GetProjectByIdUseCase,
     private readonly updateProjectUseCase: UpdateProjectUseCase,
     private readonly deleteProjectUseCase: DeleteProjectUseCase,
+    private readonly getProjectProgressUseCase: GetProjectProgressUseCase,
   ) {}
 
   /**
@@ -99,6 +102,43 @@ export class ProjectsController {
       user.userId || user.uid,
     );
     return this.toResponseDto(project);
+  }
+
+  /**
+   * Obtiene el porcentaje de progreso de un proyecto
+   */
+  @Get(':id/progress')
+  @ApiOperation({
+    summary: 'Obtener progreso del proyecto',
+    description:
+      'Obtiene el porcentaje de progreso del proyecto calculado según las tareas completadas vs total de tareas',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del proyecto',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Progreso del proyecto',
+    type: ProjectProgressResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Proyecto no encontrado',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permiso para acceder a este proyecto',
+  })
+  async getProjectProgress(
+    @Param('id') projectId: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<ProjectProgressResponseDto> {
+    return await this.getProjectProgressUseCase.execute(
+      projectId,
+      user.userId || user.uid,
+    );
   }
 
   /**

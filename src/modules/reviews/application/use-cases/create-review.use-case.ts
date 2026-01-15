@@ -3,8 +3,10 @@ import type { IReviewRepository } from '../../domain/repositories/review.reposit
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
+import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
 import { Review } from '../../domain/entities/review.entity';
 import { CreateReviewDto } from '../dto/create-review.dto';
+import { TaskStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -21,6 +23,8 @@ export class CreateReviewUseCase {
     private readonly milestoneRepository: IMilestoneRepository,
     @Inject('IProjectRepository')
     private readonly projectRepository: IProjectRepository,
+    @Inject('ITaskRepository')
+    private readonly taskRepository: ITaskRepository,
   ) {}
 
   async execute(
@@ -54,12 +58,25 @@ export class CreateReviewUseCase {
       );
     }
 
+    // Calcular el porcentaje de progreso del proyecto
+    const projectTasks = await this.taskRepository.findByProjectId(project.id);
+    let progressPercentage = 0;
+    
+    if (projectTasks.length > 0) {
+      const completedTasks = projectTasks.filter(
+        (task) => task.status === TaskStatus.COMPLETED,
+      ).length;
+      progressPercentage = Math.round(
+        (completedTasks / projectTasks.length) * 100,
+      );
+    }
+
     // Crear la entidad de dominio
     const review = new Review(
       uuidv4(),
       sprintId,
       userId,
-      createReviewDto.progressPercentage,
+      progressPercentage,
       createReviewDto.extraPoints || 0,
       createReviewDto.summary || '',
       new Date(),

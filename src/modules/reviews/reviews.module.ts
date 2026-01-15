@@ -6,9 +6,11 @@ import { ReviewRepositoryImpl } from './infrastructure/persistence/review.reposi
 import type { IReviewRepository } from './domain/repositories/review.repository';
 import { CreateReviewUseCase } from './application/use-cases/create-review.use-case';
 import { GetSprintReviewUseCase } from './application/use-cases/get-sprint-review.use-case';
+import { GetProjectProgressUseCase } from './application/use-cases/get-project-progress.use-case';
 import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { TasksModule } from '../tasks/tasks.module';
 
 /**
  * Módulo de reviews
@@ -23,6 +25,7 @@ import { ProjectsModule } from '../projects/projects.module';
     SprintsModule,
     MilestonesModule,
     ProjectsModule,
+    TasksModule,
   ],
   controllers: [ReviewsController],
   providers: [
@@ -34,7 +37,8 @@ import { ProjectsModule } from '../projects/projects.module';
     // Use cases
     CreateReviewUseCase,
     GetSprintReviewUseCase,
+    GetProjectProgressUseCase,
   ],
-  exports: ['IReviewRepository'],
+  exports: ['IReviewRepository', GetProjectProgressUseCase],
 })
 export class ReviewsModule {}

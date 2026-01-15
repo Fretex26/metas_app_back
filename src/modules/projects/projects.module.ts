@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsController } from './presentation/projects.controller';
 import { ProjectOrmEntity } from './infrastructure/persistence/project.orm-entity';
@@ -10,6 +10,7 @@ import { GetUserProjectsUseCase } from './application/use-cases/get-user-project
 import { GetProjectByIdUseCase } from './application/use-cases/get-project-by-id.use-case';
 import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
+import { ReviewsModule } from '../reviews/reviews.module';
 
 /**
  * Módulo de proyectos
@@ -22,7 +23,10 @@ import { DeleteProjectUseCase } from './application/use-cases/delete-project.use
  * - Eliminar proyecto
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([ProjectOrmEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ProjectOrmEntity]),
+    forwardRef(() => ReviewsModule),
+  ],
   controllers: [ProjectsController],
   providers: [
     // Repositorio
