@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
 import { UserRole } from '../../../../shared/types/enums';
 
 /**
@@ -39,4 +39,14 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'El rol debe ser uno de: user, sponsor, admin' })
   role?: UserRole;
+
+  @ApiPropertyOptional({
+    description: 'IDs de las categorías de interés del usuario',
+    example: ['123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001'],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray({ message: 'Las categorías deben ser un array' })
+  @IsUUID('4', { each: true, message: 'Cada ID de categoría debe ser un UUID válido' })
+  categoryIds?: string[];
 }

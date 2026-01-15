@@ -134,6 +134,14 @@ export class UsersController {
       name: user.name,
       email: user.email,
       role: user.role,
+      categories: user.categories
+        ? user.categories.map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            description: cat.description,
+            createdAt: cat.createdAt,
+          }))
+        : [],
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

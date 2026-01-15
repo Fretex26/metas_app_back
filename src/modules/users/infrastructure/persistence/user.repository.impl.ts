@@ -5,6 +5,7 @@ import type { IUserRepository } from '../../domain/repositories/user.repository'
 import { User } from '../../domain/entities/user.entity';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserMapper } from '../mappers/user.mapper';
+import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 /**
  * Implementación del repositorio de usuarios usando TypeORM
@@ -27,6 +28,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findById(id: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { id },
+      relations: ['categories'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -34,6 +36,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { firebaseUid },
+      relations: ['categories'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -41,6 +44,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { email: email.toLowerCase() },
+      relations: ['categories'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -48,6 +52,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async update(user: User): Promise<User> {
     const ormEntity = await this.userRepository.findOne({
       where: { id: user.id },
+      relations: ['categories'],
     });
 
     if (!ormEntity) {
@@ -55,8 +60,21 @@ export class UserRepositoryImpl implements IUserRepository {
     }
 
     Object.assign(ormEntity, UserMapper.toOrmEntity(user));
+    // Actualizar categorías si existen
+    if (user.categories) {
+      ormEntity.categories = user.categories.map((cat) => {
+        const catOrm = new CategoryOrmEntity();
+        catOrm.id = cat.id;
+        return catOrm;
+      });
+    }
     const updatedEntity = await this.userRepository.save(ormEntity);
-    return UserMapper.toDomain(updatedEntity);
+    // Recargar con relaciones
+    const reloaded = await this.userRepository.findOne({
+      where: { id: updatedEntity.id },
+      relations: ['categories'],
+    });
+    return reloaded ? UserMapper.toDomain(reloaded) : UserMapper.toDomain(updatedEntity);
   }
 
   async delete(id: string): Promise<void> {

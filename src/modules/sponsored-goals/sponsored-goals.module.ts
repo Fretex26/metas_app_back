@@ -8,6 +8,7 @@ import { SponsoredGoalRepositoryImpl } from './infrastructure/persistence/sponso
 import type { ISponsoredGoalRepository } from './domain/repositories/sponsored-goal.repository';
 import { CreateSponsoredGoalUseCase } from './application/use-cases/create-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from './application/use-cases/list-available-sponsored-goals.use-case';
+import { FilterSponsoredGoalsByCategoriesUseCase } from './application/use-cases/filter-sponsored-goals-by-categories.use-case';
 import { EnrollInSponsoredGoalUseCase } from './application/use-cases/enroll-in-sponsored-goal.use-case';
 import { DuplicateSponsoredProjectUseCase } from './application/use-cases/duplicate-sponsored-project.use-case';
 import { UpdateEnrollmentStatusUseCase } from './application/use-cases/update-enrollment-status.use-case';
@@ -21,6 +22,7 @@ import { MilestonesModule } from '../milestones/milestones.module';
 import { SprintsModule } from '../sprints/sprints.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { UsersModule } from '../users/users.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 /**
  * Módulo de sponsored goals
@@ -44,6 +46,7 @@ import { UsersModule } from '../users/users.module';
     SprintsModule,
     TasksModule,
     UsersModule,
+    CategoriesModule,
   ],
   controllers: [SponsoredGoalsController],
   providers: [
@@ -59,6 +62,7 @@ import { UsersModule } from '../users/users.module';
     // Use cases
     CreateSponsoredGoalUseCase,
     ListAvailableSponsoredGoalsUseCase,
+    FilterSponsoredGoalsByCategoriesUseCase,
     DuplicateSponsoredProjectUseCase,
     EnrollInSponsoredGoalUseCase,
     UpdateEnrollmentStatusUseCase,

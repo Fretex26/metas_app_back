@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { UserRole } from '../../../../shared/types/enums';
+import { CategoryResponseDto } from '../../../categories/application/dto/category-response.dto';
 
 /**
  * DTO de respuesta para un usuario
@@ -41,4 +42,10 @@ export class UserResponseDto {
     example: '2024-01-01T00:00:00.000Z',
   })
   updatedAt: Date;
+
+  @ApiPropertyOptional({
+    description: 'Categorías de interés del usuario',
+    type: [CategoryResponseDto],
+  })
+  categories?: CategoryResponseDto[];
 }

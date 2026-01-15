@@ -6,10 +6,12 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
 import { SponsorOrmEntity } from '../../../sponsors/infrastructure/persistence/sponsor.orm-entity';
 import { ProjectOrmEntity } from '../../../projects/infrastructure/persistence/project.orm-entity';
 import { VerificationMethod } from '../../../../shared/types/enums';
+import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 /**
  * Entidad ORM para SponsoredGoal
@@ -39,9 +41,6 @@ export class SponsoredGoalOrmEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'jsonb', nullable: true })
-  criteria: Record<string, any> | null;
-
   @Column({ type: 'date', name: 'start_date' })
   startDate: Date;
 
@@ -65,6 +64,9 @@ export class SponsoredGoalOrmEntity {
   createdAt: Date;
 
   // Relaciones
+  @ManyToMany(() => CategoryOrmEntity, (category) => category.sponsoredGoals)
+  categories: CategoryOrmEntity[];
+
   // @OneToMany(() => SponsorEnrollmentOrmEntity, (enrollment) => enrollment.sponsoredGoal)
   // enrollments: SponsorEnrollmentOrmEntity[];
   // @OneToMany(() => VerificationEventOrmEntity, (event) => event.sponsoredGoal)

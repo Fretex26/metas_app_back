@@ -5,6 +5,8 @@ import type { IProjectRepository } from '../../../projects/domain/repositories/p
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
+import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
+import { Category } from '../../../categories/domain/entities/category.entity';
 import { SponsoredGoal } from '../../domain/entities/sponsored-goal.entity';
 import { CreateSponsoredGoalDto } from '../dto/create-sponsored-goal.dto';
 import { SponsorStatus } from '../../../../shared/types/enums';
@@ -28,6 +30,8 @@ export class CreateSponsoredGoalUseCase {
     private readonly sprintRepository: ISprintRepository,
     @Inject('ITaskRepository')
     private readonly taskRepository: ITaskRepository,
+    @Inject('ICategoryRepository')
+    private readonly categoryRepository: ICategoryRepository,
   ) {}
 
   async execute(
@@ -115,6 +119,17 @@ export class CreateSponsoredGoalUseCase {
       }
     }
 
+    // Validar y obtener categorías si se proporcionan
+    let categories: Category[] = [];
+    if (createSponsoredGoalDto.categoryIds && createSponsoredGoalDto.categoryIds.length > 0) {
+      categories = await this.categoryRepository.findByIds(createSponsoredGoalDto.categoryIds);
+      if (categories.length !== createSponsoredGoalDto.categoryIds.length) {
+        throw new BadRequestException(
+          'Una o más categorías especificadas no existen',
+        );
+      }
+    }
+
     // Crear la entidad de dominio
     const sponsoredGoal = new SponsoredGoal(
       uuidv4(),
@@ -122,7 +137,7 @@ export class CreateSponsoredGoalUseCase {
       createSponsoredGoalDto.projectId,
       createSponsoredGoalDto.name,
       createSponsoredGoalDto.description || '',
-      createSponsoredGoalDto.criteria || null,
+      categories,
       startDate,
       endDate,
       createSponsoredGoalDto.verificationMethod,

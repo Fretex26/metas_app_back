@@ -5,11 +5,11 @@ import {
   IsDateString,
   IsEnum,
   IsOptional,
-  IsObject,
   IsUUID,
   IsNumber,
   Min,
   MaxLength,
+  IsArray,
 } from 'class-validator';
 import { VerificationMethod } from '../../../../shared/types/enums';
 
@@ -44,12 +44,14 @@ export class CreateSponsoredGoalDto {
   projectId: string;
 
   @ApiPropertyOptional({
-    description: 'Criterios de cumplimiento (JSON)',
-    example: { min_tasks: 10, period: 'month' },
+    description: 'IDs de las categorías asociadas',
+    example: ['123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001'],
+    type: [String],
   })
   @IsOptional()
-  @IsObject({ message: 'Los criterios deben ser un objeto JSON' })
-  criteria?: Record<string, any>;
+  @IsArray({ message: 'Las categorías deben ser un array' })
+  @IsUUID('4', { each: true, message: 'Cada ID de categoría debe ser un UUID válido' })
+  categoryIds?: string[];
 
   @ApiProperty({
     description: 'Fecha de inicio del objetivo',

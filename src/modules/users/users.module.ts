@@ -7,6 +7,7 @@ import { IUserRepository } from './domain/repositories/user.repository';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { GetUserProfileUseCase } from './application/use-cases/get-user-profile.use-case';
 import { UpdateUserProfileUseCase } from './application/use-cases/update-user-profile.use-case';
+import { CategoriesModule } from '../categories/categories.module';
 
 /**
  * Módulo de usuarios
@@ -17,7 +18,10 @@ import { UpdateUserProfileUseCase } from './application/use-cases/update-user-pr
  * - Actualizar perfil
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([UserOrmEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserOrmEntity]),
+    CategoriesModule,
+  ],
   controllers: [UsersController],
   providers: [
     // Repositorio

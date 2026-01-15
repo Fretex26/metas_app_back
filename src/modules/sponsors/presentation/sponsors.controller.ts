@@ -106,7 +106,7 @@ export class SponsorsController {
   @ApiOperation({
     summary: 'Actualizar perfil de patrocinador',
     description:
-      'Actualiza el perfil de patrocinador. Si el perfil está APPROVED, volverá a PENDING para revisión.',
+      'Actualiza el perfil de patrocinador. El estado se mantiene sin cambios.',
   })
   @ApiResponse({
     status: 200,

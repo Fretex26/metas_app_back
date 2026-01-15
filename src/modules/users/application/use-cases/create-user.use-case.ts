@@ -1,5 +1,7 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException, Inject } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
+import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
+import { Category } from '../../../categories/domain/entities/category.entity';
 import { User } from '../../domain/entities/user.entity';
 import { UserRole } from '../../../../shared/types/enums';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -10,7 +12,11 @@ import { v4 as uuidv4 } from 'uuid';
  */
 @Injectable()
 export class CreateUserUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    @Inject('ICategoryRepository')
+    private readonly categoryRepository: ICategoryRepository,
+  ) {}
 
   /**
    * Ejecuta el caso de uso para crear un usuario
@@ -35,6 +41,17 @@ export class CreateUserUseCase {
       throw new ConflictException('El usuario ya está registrado');
     }
 
+    // Validar y obtener categorías si se proporcionan
+    let categories: Category[] = [];
+    if (createUserDto.categoryIds && createUserDto.categoryIds.length > 0) {
+      categories = await this.categoryRepository.findByIds(createUserDto.categoryIds);
+      if (categories.length !== createUserDto.categoryIds.length) {
+        throw new BadRequestException(
+          'Una o más categorías especificadas no existen',
+        );
+      }
+    }
+
     // Crear la entidad de dominio
     const user = new User(
       uuidv4(),
@@ -42,6 +59,7 @@ export class CreateUserUseCase {
       createUserDto.email.toLowerCase(),
       createUserDto.firebaseUid,
       createUserDto.role || UserRole.USER,
+      categories,
       new Date(),
       new Date(),
     );
