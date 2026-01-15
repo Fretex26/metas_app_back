@@ -30,7 +30,7 @@ export class SprintResponseDto {
   @ApiPropertyOptional({
     description: 'Criterios de aceptación',
   })
-  acceptanceCriteria?: string;
+  acceptanceCriteria?: Record<string, any>;
 
   @ApiProperty({
     description: 'Fecha de inicio del sprint',

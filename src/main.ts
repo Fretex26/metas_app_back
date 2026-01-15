@@ -49,7 +49,7 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
-        description: 'Enter Firebase ID Token',
+        description: 'Ingresa el token de ID de Firebase',
         in: 'header',
       },
       'JWT-auth', // Nombre de la configuración de autenticación
