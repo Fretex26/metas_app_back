@@ -8,12 +8,29 @@ import {
   IsNumber,
   Min,
   MaxLength,
+  IsUUID,
 } from 'class-validator';
 
 /**
  * DTO para crear un nuevo task
  */
 export class CreateTaskDto {
+  @ApiProperty({
+    description: 'ID del milestone al que pertenece la tarea',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsNotEmpty({ message: 'El milestoneId es requerido' })
+  @IsUUID('4', { message: 'El milestoneId debe ser un UUID válido' })
+  milestoneId: string;
+
+  @ApiPropertyOptional({
+    description: 'ID del sprint al que se asigna la tarea (opcional)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'El sprintId debe ser un UUID válido' })
+  sprintId?: string;
+
   @ApiProperty({
     description: 'Nombre de la tarea',
     example: 'Implementar autenticación',

@@ -92,12 +92,13 @@ export class TasksController {
   @ApiOperation({
     summary: 'Crear task',
     description:
-      'Crea un nuevo task para un sprint. El periodo de la tarea no debe exceder el periodo del sprint.',
+      'Crea un nuevo task para un milestone. El sprintId es opcional. Si se proporciona, el periodo de la tarea no debe exceder el periodo del sprint.',
   })
   @ApiParam({
     name: 'sprintId',
-    description: 'ID del sprint',
+    description: 'ID del sprint (opcional, puede venir en el body)',
     example: '123e4567-e89b-12d3-a456-426614174000',
+    required: false,
   })
   @ApiResponse({
     status: 201,
@@ -106,20 +107,18 @@ export class TasksController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Sprint no encontrado',
+    description: 'Milestone o Sprint no encontrado',
   })
   @ApiResponse({
     status: 400,
-    description: 'El periodo de la tarea excede el del sprint o las fechas son inválidas',
+    description: 'El periodo de la tarea excede el del sprint, el sprint no pertenece al milestone, o las fechas son inválidas',
   })
   async createTask(
-    @Param('sprintId') sprintId: string,
     @Body() createTaskDto: CreateTaskDto,
     @CurrentUser() user: UserPayload,
   ): Promise<TaskResponseDto> {
     const task = await this.createTaskUseCase.execute(
       createTaskDto,
-      sprintId,
       user.userId || user.uid,
     );
     return this.toResponseDto(task);
@@ -294,9 +293,11 @@ export class TasksController {
   private toResponseDto(task: any): TaskResponseDto {
     return {
       id: task.id,
+      milestoneId: task.milestoneId,
       sprintId: task.sprintId,
       name: task.name,
       description: task.description,
+      status: task.status,
       startDate: task.startDate,
       endDate: task.endDate,
       resourcesAvailable: task.resourcesAvailable,

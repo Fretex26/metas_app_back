@@ -4,7 +4,9 @@ import type { ISprintRepository } from '../../../sprints/domain/repositories/spr
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import { Task } from '../../domain/entities/task.entity';
+import { Sprint } from '../../../sprints/domain/entities/sprint.entity';
 import { CreateTaskDto } from '../dto/create-task.dto';
+import { TaskStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -25,17 +27,11 @@ export class CreateTaskUseCase {
 
   async execute(
     createTaskDto: CreateTaskDto,
-    sprintId: string,
     userId: string,
   ): Promise<Task> {
-    // Verificar que el sprint existe y pertenece al usuario
-    const sprint = await this.sprintRepository.findById(sprintId);
-    if (!sprint) {
-      throw new NotFoundException('Sprint no encontrado');
-    }
-
+    // Verificar que el milestone existe y pertenece al usuario
     const milestone = await this.milestoneRepository.findById(
-      sprint.milestoneId,
+      createTaskDto.milestoneId,
     );
     if (!milestone) {
       throw new NotFoundException('Milestone no encontrado');
@@ -43,7 +39,7 @@ export class CreateTaskUseCase {
 
     const project = await this.projectRepository.findById(milestone.projectId);
     if (!project || project.userId !== userId) {
-      throw new NotFoundException('Sprint no encontrado');
+      throw new NotFoundException('Milestone no encontrado');
     }
 
     // Validar que las fechas son válidas
@@ -56,19 +52,37 @@ export class CreateTaskUseCase {
       );
     }
 
-    // Validar que el periodo no exceda el del sprint
-    if (startDate < sprint.startDate || endDate > sprint.endDate) {
-      throw new BadRequestException(
-        'El periodo de la tarea no debe exceder el periodo del sprint',
-      );
+    // Si se proporciona un sprintId, validar que existe y pertenece al milestone
+    let sprint: Sprint | null = null;
+    if (createTaskDto.sprintId) {
+      sprint = await this.sprintRepository.findById(createTaskDto.sprintId);
+      if (!sprint) {
+        throw new NotFoundException('Sprint no encontrado');
+      }
+
+      // Validar que el sprint pertenece al milestone
+      if (sprint.milestoneId !== createTaskDto.milestoneId) {
+        throw new BadRequestException(
+          'El sprint no pertenece al milestone especificado',
+        );
+      }
+
+      // Validar que el periodo no exceda el del sprint
+      if (startDate < sprint.startDate || endDate > sprint.endDate) {
+        throw new BadRequestException(
+          'El periodo de la tarea no debe exceder el periodo del sprint',
+        );
+      }
     }
 
     // Crear la entidad de dominio
     const task = new Task(
       uuidv4(),
-      sprintId,
+      createTaskDto.milestoneId,
+      createTaskDto.sprintId || null,
       createTaskDto.name,
       createTaskDto.description || '',
+      TaskStatus.PENDING,
       startDate,
       endDate,
       createTaskDto.resourcesAvailable || null,

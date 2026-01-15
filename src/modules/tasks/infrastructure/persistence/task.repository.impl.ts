@@ -22,7 +22,7 @@ export class TaskRepositoryImpl implements ITaskRepository {
   async findById(id: string): Promise<Task | null> {
     const ormEntity = await this.taskRepository.findOne({
       where: { id },
-      relations: ['sprint'],
+      relations: ['milestone', 'sprint'],
     });
     return ormEntity ? TaskMapper.toDomain(ormEntity) : null;
   }

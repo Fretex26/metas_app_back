@@ -13,6 +13,8 @@ import { GetTaskByIdUseCase } from './application/use-cases/get-task-by-id.use-c
 import { UpdateTaskUseCase } from './application/use-cases/update-task.use-case';
 import { DeleteTaskUseCase } from './application/use-cases/delete-task.use-case';
 import { MarkTaskCompletedUseCase } from './application/use-cases/mark-task-completed.use-case';
+import { UpdateTaskStatusUseCase } from './application/use-cases/update-task-status.use-case';
+import { UpdateChecklistItemUseCase } from './application/use-cases/update-checklist-item.use-case';
 import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
@@ -52,6 +54,8 @@ import { ProjectsModule } from '../projects/projects.module';
     UpdateTaskUseCase,
     DeleteTaskUseCase,
     MarkTaskCompletedUseCase,
+    UpdateTaskStatusUseCase,
+    UpdateChecklistItemUseCase,
   ],
   exports: ['ITaskRepository', 'IChecklistItemRepository'],
 })

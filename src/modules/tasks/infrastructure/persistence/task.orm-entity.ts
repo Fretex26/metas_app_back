@@ -8,6 +8,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { SprintOrmEntity } from '../../../sprints/infrastructure/persistence/sprint.orm-entity';
+import { MilestoneOrmEntity } from '../../../milestones/infrastructure/persistence/milestone.orm-entity';
+import { TaskStatus } from '../../../../shared/types/enums';
 
 /**
  * Entidad ORM para Task
@@ -17,18 +19,32 @@ export class TaskOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid', name: 'sprint_id' })
-  sprintId: string;
+  @Column({ type: 'uuid', name: 'milestone_id' })
+  milestoneId: string;
 
-  @ManyToOne(() => SprintOrmEntity)
+  @ManyToOne(() => MilestoneOrmEntity)
+  @JoinColumn({ name: 'milestone_id' })
+  milestone: MilestoneOrmEntity;
+
+  @Column({ type: 'uuid', nullable: true, name: 'sprint_id' })
+  sprintId: string | null;
+
+  @ManyToOne(() => SprintOrmEntity, { nullable: true })
   @JoinColumn({ name: 'sprint_id' })
-  sprint: SprintOrmEntity;
+  sprint: SprintOrmEntity | null;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
   @Column({ type: 'text', nullable: true })
   description: string;
+
+  @Column({
+    type: 'enum',
+    enum: TaskStatus,
+    default: TaskStatus.PENDING,
+  })
+  status: TaskStatus;
 
   @Column({ type: 'date', name: 'start_date' })
   startDate: Date;

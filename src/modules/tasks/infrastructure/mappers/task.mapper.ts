@@ -8,9 +8,11 @@ export class TaskMapper {
   static toDomain(ormEntity: TaskOrmEntity): Task {
     return new Task(
       ormEntity.id,
+      ormEntity.milestoneId,
       ormEntity.sprintId,
       ormEntity.name,
       ormEntity.description,
+      ormEntity.status,
       ormEntity.startDate,
       ormEntity.endDate,
       ormEntity.resourcesAvailable,
@@ -23,9 +25,11 @@ export class TaskMapper {
   static toOrmEntity(domainEntity: Task): Partial<TaskOrmEntity> {
     return {
       id: domainEntity.id,
+      milestoneId: domainEntity.milestoneId,
       sprintId: domainEntity.sprintId,
       name: domainEntity.name,
       description: domainEntity.description,
+      status: domainEntity.status as any,
       startDate: domainEntity.startDate,
       endDate: domainEntity.endDate,
       resourcesAvailable: domainEntity.resourcesAvailable,
