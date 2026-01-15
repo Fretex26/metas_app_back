@@ -5,6 +5,7 @@ import type { IMilestoneRepository } from '../../../milestones/domain/repositori
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import { Task } from '../../domain/entities/task.entity';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import { Sprint } from '../../../sprints/domain/entities/sprint.entity';
 
 /**
  * Caso de uso para actualizar un task
@@ -34,14 +35,9 @@ export class UpdateTaskUseCase {
       throw new NotFoundException('Tarea no encontrada');
     }
 
-    // Verificar ownership
-    const sprint = await this.sprintRepository.findById(currentTask.sprintId);
-    if (!sprint) {
-      throw new NotFoundException('Sprint no encontrado');
-    }
-
+    // Verificar ownership a través del milestone
     const milestone = await this.milestoneRepository.findById(
-      sprint.milestoneId,
+      currentTask.milestoneId,
     );
     if (!milestone) {
       throw new NotFoundException('Milestone no encontrado');
@@ -68,19 +64,30 @@ export class UpdateTaskUseCase {
       );
     }
 
-    // Validar que el periodo no exceda el del sprint
-    if (startDate < sprint.startDate || endDate > sprint.endDate) {
-      throw new BadRequestException(
-        'El periodo de la tarea no debe exceder el periodo del sprint',
-      );
+    // Si la tarea tiene sprintId, validar que el periodo no exceda el del sprint
+    let sprint: Sprint | null = null;
+    if (currentTask.sprintId) {
+      sprint = await this.sprintRepository.findById(currentTask.sprintId);
+      if (!sprint) {
+        throw new NotFoundException('Sprint no encontrado');
+      }
+
+      // Validar que el periodo no exceda el del sprint
+      if (startDate < sprint.startDate || endDate > sprint.endDate) {
+        throw new BadRequestException(
+          'El periodo de la tarea no debe exceder el periodo del sprint',
+        );
+      }
     }
 
-    // Crear task actualizado
+    // Crear task actualizado (mantener el status actual, no se puede actualizar manualmente)
     const updatedTask = new Task(
       currentTask.id,
+      currentTask.milestoneId,
       currentTask.sprintId,
       updateTaskDto.name ?? currentTask.name,
       updateTaskDto.description ?? currentTask.description,
+      currentTask.status, // El status se actualiza automáticamente basado en checklist items
       startDate,
       endDate,
       updateTaskDto.resourcesAvailable ?? currentTask.resourcesAvailable,

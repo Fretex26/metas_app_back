@@ -3,24 +3,25 @@ import type { IMilestoneRepository } from '../../domain/repositories/milestone.r
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
-import type { IChecklistItemRepository } from '../../../tasks/domain/repositories/checklist-item.repository';
 import type { ISponsorRepository } from '../../../sponsors/domain/repositories/sponsor.repository';
 import { RewardService } from '../../../gamification/domain/services/reward.service';
 import { Milestone } from '../../domain/entities/milestone.entity';
-import { MilestoneStatus } from '../../../../shared/types/enums';
+import { MilestoneStatus, TaskStatus } from '../../../../shared/types/enums';
 
 /**
  * Caso de uso para actualizar automáticamente el estado de una milestone
  * 
  * Lógica:
- * - PENDING: ninguna task completada
- * - IN_PROGRESS: al menos una task completada (pero no todas)
+ * - PENDING: ninguna task completada (todas en PENDING)
+ * - IN_PROGRESS: al menos una task en IN_PROGRESS o COMPLETED (pero no todas COMPLETED)
  * - COMPLETED: 
- *   - Para proyectos personales: automáticamente cuando todas las tasks estén completadas
+ *   - Para proyectos personales: automáticamente cuando todas las tasks estén COMPLETED
  *   - Para proyectos patrocinados: solo cuando el sponsor lo verifique (no se actualiza automáticamente aquí)
  * 
- * Nota: Este caso de uso se debe llamar cuando se actualice una task para recalcular el estado.
- * La verificación de tasks completadas se hace mediante algún mecanismo externo (checklist items, etc.)
+ * Si una milestone está COMPLETED y una task pasa a IN_PROGRESS, la milestone también cambia a IN_PROGRESS
+ * (excepto para proyectos patrocinados donde solo el sponsor puede cambiar el estado)
+ * 
+ * Nota: Este caso de uso se debe llamar cuando se actualice el estado de una task.
  */
 @Injectable()
 export class UpdateMilestoneStatusUseCase {
@@ -33,8 +34,6 @@ export class UpdateMilestoneStatusUseCase {
     private readonly sprintRepository: ISprintRepository,
     @Inject('ITaskRepository')
     private readonly taskRepository: ITaskRepository,
-    @Inject('IChecklistItemRepository')
-    private readonly checklistItemRepository: IChecklistItemRepository,
     @Inject('ISponsorRepository')
     private readonly sponsorRepository: ISponsorRepository,
     private readonly rewardService: RewardService,
@@ -59,73 +58,68 @@ export class UpdateMilestoneStatusUseCase {
 
     const isSponsored = !!project.sponsoredGoalId;
 
-    // Calcular automáticamente los conteos si no se proporcionaron
-    let calculatedCompletedTasks = 0;
-    let calculatedTotalTasks = 0;
-
-    if (completedTasksCount === undefined || totalTasksCount === undefined) {
-      const sprints = await this.sprintRepository.findByMilestoneId(milestoneId);
-      
-      for (const sprint of sprints) {
-        const tasks = await this.taskRepository.findBySprintId(sprint.id);
-        calculatedTotalTasks += tasks.length;
-
-        // Para cada task, verificar si está completada
-        // Una task está completada cuando todos sus checklist items requeridos están marcados
-        for (const task of tasks) {
-          const checklistItems =
-            await this.checklistItemRepository.findByTaskId(task.id);
-          const requiredItems = checklistItems.filter((item) => item.isRequired);
-
-          if (requiredItems.length === 0) {
-            // Si no hay items requeridos, considerar completada si tiene items y todos están marcados
-            // O si no tiene items, considerar que no está completada
-            if (checklistItems.length > 0) {
-              const allChecked = checklistItems.every((item) => item.isChecked);
-              if (allChecked) {
-                calculatedCompletedTasks++;
-              }
-            }
-          } else {
-            // Verificar si todos los items requeridos están marcados
-            const allRequiredChecked = requiredItems.every(
-              (item) => item.isChecked === true,
-            );
-
-            if (allRequiredChecked) {
-              calculatedCompletedTasks++;
-            }
-          }
-        }
-      }
+    // Obtener todas las tasks del milestone (a través de los sprints)
+    const sprints = await this.sprintRepository.findByMilestoneId(milestoneId);
+    const allTasks: any[] = [];
+    
+    for (const sprint of sprints) {
+      const tasks = await this.taskRepository.findBySprintId(sprint.id);
+      allTasks.push(...tasks);
     }
 
-    // Usar los valores proporcionados o los calculados
-    const finalCompletedTasks =
-      completedTasksCount !== undefined
-        ? completedTasksCount
-        : calculatedCompletedTasks;
-    const finalTotalTasks =
-      totalTasksCount !== undefined ? totalTasksCount : calculatedTotalTasks;
+    // Si no hay tasks, la milestone permanece en su estado actual o PENDING
+    if (allTasks.length === 0) {
+      return milestone;
+    }
+
+    // Contar tasks por estado
+    const completedTasks = allTasks.filter(
+      (task) => task.status === TaskStatus.COMPLETED,
+    ).length;
+    const inProgressTasks = allTasks.filter(
+      (task) => task.status === TaskStatus.IN_PROGRESS,
+    ).length;
+    const pendingTasks = allTasks.filter(
+      (task) => task.status === TaskStatus.PENDING,
+    ).length;
 
     // Determinar el nuevo estado
     let newStatus: MilestoneStatus;
 
-    if (finalCompletedTasks === 0) {
-      newStatus = MilestoneStatus.PENDING;
-    } else if (finalCompletedTasks === finalTotalTasks && finalTotalTasks > 0) {
-      // Todas las tasks completadas
+    if (completedTasks === allTasks.length && allTasks.length > 0) {
+      // Todas las tasks están COMPLETED
       if (isSponsored) {
         // Para proyectos patrocinados, no actualizamos automáticamente a COMPLETED
         // El sponsor debe verificar manualmente
+        // Pero si la milestone ya está COMPLETED, no la cambiamos
+        if (milestone.status === MilestoneStatus.COMPLETED) {
+          return milestone;
+        }
         newStatus = MilestoneStatus.IN_PROGRESS;
       } else {
         // Para proyectos personales, automáticamente COMPLETED
         newStatus = MilestoneStatus.COMPLETED;
       }
+    } else if (inProgressTasks > 0 || completedTasks > 0) {
+      // Al menos una task está en IN_PROGRESS o COMPLETED
+      // Si la milestone está COMPLETED y una task pasa a IN_PROGRESS, cambiar a IN_PROGRESS
+      // (excepto para proyectos patrocinados donde solo el sponsor puede cambiar)
+      if (
+        milestone.status === MilestoneStatus.COMPLETED &&
+        !isSponsored &&
+        inProgressTasks > 0
+      ) {
+        newStatus = MilestoneStatus.IN_PROGRESS;
+      } else if (milestone.status === MilestoneStatus.PENDING) {
+        // Si estaba en PENDING y ahora hay progreso, cambiar a IN_PROGRESS
+        newStatus = MilestoneStatus.IN_PROGRESS;
+      } else {
+        // Mantener IN_PROGRESS si ya estaba en ese estado
+        newStatus = MilestoneStatus.IN_PROGRESS;
+      }
     } else {
-      // Al menos una pero no todas completadas
-      newStatus = MilestoneStatus.IN_PROGRESS;
+      // Todas las tasks están en PENDING
+      newStatus = MilestoneStatus.PENDING;
     }
 
     // Solo actualizar si el estado cambió
@@ -165,7 +159,9 @@ export class UpdateMilestoneStatusUseCase {
       );
 
       if (allCompleted) {
-        // Todas las milestones están completadas, otorgar el reward del proyecto
+        // Todas las milestones están completadas
+        // El proyecto se considera completado (aunque no tenga campo de estado explícito)
+        // Otorgar el reward del proyecto
         await this.rewardService.grantReward(project.userId, project.rewardId);
       }
     }

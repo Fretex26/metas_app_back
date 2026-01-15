@@ -8,7 +8,7 @@ import { Project } from '../../../projects/domain/entities/project.entity';
 import { Milestone } from '../../../milestones/domain/entities/milestone.entity';
 import { Sprint } from '../../../sprints/domain/entities/sprint.entity';
 import { Task } from '../../../tasks/domain/entities/task.entity';
-import { MilestoneStatus } from '../../../../shared/types/enums';
+import { MilestoneStatus, TaskStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -62,11 +62,11 @@ export class DuplicateSponsoredProjectUseCase {
       originalProject.finalDate,
       originalProject.resourcesAvailable,
       originalProject.resourcesNeeded,
-      originalProject.schedule,
       sponsoredGoalId, // sponsoredGoalId
       enrollmentId, // enrollmentId
       true, // isActive
-      new Date(),
+      originalProject.rewardId, // rewardId
+      new Date(), // createdAt
     );
 
     const savedProject = await this.projectRepository.create(duplicatedProject);
@@ -88,6 +88,7 @@ export class DuplicateSponsoredProjectUseCase {
         originalMilestone.name,
         originalMilestone.description,
         MilestoneStatus.PENDING, // Estado inicial siempre PENDING
+        originalMilestone.rewardId, // Mantener la referencia al reward del sponsor
         new Date(),
       );
 
@@ -127,9 +128,11 @@ export class DuplicateSponsoredProjectUseCase {
         for (const originalTask of originalTasks) {
           const duplicatedTask = new Task(
             uuidv4(),
-            savedSprint.id,
+            savedMilestone.id, // milestoneId
+            savedSprint.id, // sprintId (puede ser null si la tarea no está en un sprint)
             originalTask.name,
             originalTask.description,
+            TaskStatus.PENDING, // Las tareas duplicadas siempre empiezan en PENDING
             originalTask.startDate,
             originalTask.endDate,
             originalTask.resourcesAvailable,

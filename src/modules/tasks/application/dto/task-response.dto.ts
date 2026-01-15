@@ -11,10 +11,16 @@ export class TaskResponseDto {
   id: string;
 
   @ApiProperty({
-    description: 'ID del sprint',
+    description: 'ID del milestone al que pertenece la tarea',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  sprintId: string;
+  milestoneId: string;
+
+  @ApiPropertyOptional({
+    description: 'ID del sprint al que está asignada la tarea (opcional)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  sprintId?: string | null;
 
   @ApiProperty({
     description: 'Nombre de la tarea',
@@ -26,6 +32,13 @@ export class TaskResponseDto {
     description: 'Descripción de la tarea',
   })
   description?: string;
+
+  @ApiProperty({
+    description: 'Estado de la tarea',
+    example: 'pending',
+    enum: ['pending', 'in_progress', 'completed'],
+  })
+  status: string;
 
   @ApiProperty({
     description: 'Fecha de inicio de la tarea',
