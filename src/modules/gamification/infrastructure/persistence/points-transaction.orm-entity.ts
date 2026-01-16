@@ -14,7 +14,7 @@ import { PointsSourceType } from '../../../../shared/types/enums';
  * Entidad ORM para PointsTransaction
  */
 @Entity('points_transactions')
-@Index(['user_id', 'created_at'])
+@Index(['userId', 'createdAt'])
 export class PointsTransactionOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

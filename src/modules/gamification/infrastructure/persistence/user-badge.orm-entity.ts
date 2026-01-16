@@ -15,7 +15,7 @@ import { BadgeOrmEntity } from './badge.orm-entity';
  * Relación ManyToMany entre User y Badge
  */
 @Entity('user_badges')
-@Index(['user_id', 'badge_id'], { unique: true })
+@Index(['userId', 'badgeId'], { unique: true })
 export class UserBadgeOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

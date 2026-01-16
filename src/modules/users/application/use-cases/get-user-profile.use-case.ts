@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
 
@@ -7,7 +7,10 @@ import { User } from '../../domain/entities/user.entity';
  */
 @Injectable()
 export class GetUserProfileUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository,
+  ) {}
 
   /**
    * Ejecuta el caso de uso para obtener el perfil de un usuario por Firebase UID

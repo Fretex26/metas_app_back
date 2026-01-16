@@ -15,7 +15,7 @@ import { UserRewardStatus } from '../../../../shared/types/enums';
  * Entidad ORM para UserReward
  */
 @Entity('user_rewards')
-@Index(['user_id', 'created_at'])
+@Index(['userId', 'createdAt'])
 export class UserRewardOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

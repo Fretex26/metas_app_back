@@ -97,10 +97,10 @@ export class UpdateEnrollmentStatusUseCase {
         project.finalDate,
         project.resourcesAvailable,
         project.resourcesNeeded,
-        project.schedule,
         project.sponsoredGoalId,
         project.enrollmentId,
         newStatus === EnrollmentStatus.ACTIVE, // isActive basado en el status
+        project.rewardId,
         project.createdAt,
       );
 

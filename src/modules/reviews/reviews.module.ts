@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReviewsController } from './presentation/reviews.controller';
 import { ReviewOrmEntity } from './infrastructure/persistence/review.orm-entity';
@@ -22,10 +22,10 @@ import { TasksModule } from '../tasks/tasks.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([ReviewOrmEntity]),
-    SprintsModule,
+    forwardRef(() => SprintsModule),
     MilestonesModule,
-    ProjectsModule,
-    TasksModule,
+    forwardRef(() => ProjectsModule),
+    forwardRef(() => TasksModule),
   ],
   controllers: [ReviewsController],
   providers: [

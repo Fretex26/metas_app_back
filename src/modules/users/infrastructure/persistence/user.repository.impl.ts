@@ -5,6 +5,7 @@ import type { IUserRepository } from '../../domain/repositories/user.repository'
 import { User } from '../../domain/entities/user.entity';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserMapper } from '../mappers/user.mapper';
+import { UserCategoryOrmEntity } from '../../../categories/infrastructure/persistence/user-category.orm-entity';
 import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 /**
@@ -21,14 +22,31 @@ export class UserRepositoryImpl implements IUserRepository {
     const ormEntity = this.userRepository.create(
       UserMapper.toOrmEntity(user),
     );
+    
+    // Crear relaciones con categorías si existen
+    if (user.categories && user.categories.length > 0) {
+      ormEntity.userCategories = user.categories.map((cat) => {
+        const userCategory = new UserCategoryOrmEntity();
+        const catOrm = new CategoryOrmEntity();
+        catOrm.id = cat.id;
+        userCategory.category = catOrm;
+        return userCategory;
+      });
+    }
+    
     const savedEntity = await this.userRepository.save(ormEntity);
-    return UserMapper.toDomain(savedEntity);
+    // Recargar con relaciones
+    const reloaded = await this.userRepository.findOne({
+      where: { id: savedEntity.id },
+      relations: ['userCategories', 'userCategories.category'],
+    });
+    return reloaded ? UserMapper.toDomain(reloaded) : UserMapper.toDomain(savedEntity);
   }
 
   async findById(id: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { id },
-      relations: ['categories'],
+      relations: ['userCategories', 'userCategories.category'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -36,7 +54,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findByFirebaseUid(firebaseUid: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { firebaseUid },
-      relations: ['categories'],
+      relations: ['userCategories', 'userCategories.category'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -44,7 +62,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const ormEntity = await this.userRepository.findOne({
       where: { email: email.toLowerCase() },
-      relations: ['categories'],
+      relations: ['userCategories', 'userCategories.category'],
     });
     return ormEntity ? UserMapper.toDomain(ormEntity) : null;
   }
@@ -52,7 +70,7 @@ export class UserRepositoryImpl implements IUserRepository {
   async update(user: User): Promise<User> {
     const ormEntity = await this.userRepository.findOne({
       where: { id: user.id },
-      relations: ['categories'],
+      relations: ['userCategories'],
     });
 
     if (!ormEntity) {
@@ -60,19 +78,32 @@ export class UserRepositoryImpl implements IUserRepository {
     }
 
     Object.assign(ormEntity, UserMapper.toOrmEntity(user));
+    
     // Actualizar categorías si existen
     if (user.categories) {
-      ormEntity.categories = user.categories.map((cat) => {
+      // Eliminar relaciones existentes
+      if (ormEntity.userCategories && ormEntity.userCategories.length > 0) {
+        await this.userRepository.manager.delete(UserCategoryOrmEntity, {
+          userId: user.id,
+        });
+      }
+      
+      // Crear nuevas relaciones
+      ormEntity.userCategories = user.categories.map((cat) => {
+        const userCategory = new UserCategoryOrmEntity();
+        userCategory.userId = user.id;
         const catOrm = new CategoryOrmEntity();
         catOrm.id = cat.id;
-        return catOrm;
+        userCategory.category = catOrm;
+        return userCategory;
       });
     }
+    
     const updatedEntity = await this.userRepository.save(ormEntity);
     // Recargar con relaciones
     const reloaded = await this.userRepository.findOne({
       where: { id: updatedEntity.id },
-      relations: ['categories'],
+      relations: ['userCategories', 'userCategories.category'],
     });
     return reloaded ? UserMapper.toDomain(reloaded) : UserMapper.toDomain(updatedEntity);
   }

@@ -3,10 +3,10 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  OneToMany,
   ManyToMany,
-  JoinTable,
 } from 'typeorm';
-import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
+import { UserCategoryOrmEntity } from './user-category.orm-entity';
 import { SponsoredGoalOrmEntity } from '../../../sponsored-goals/infrastructure/persistence/sponsored-goal.orm-entity';
 
 /**
@@ -26,14 +26,9 @@ export class CategoryOrmEntity {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  // Relaciones ManyToMany
-  @ManyToMany(() => UserOrmEntity, (user) => user.categories)
-  @JoinTable({
-    name: 'user_categories',
-    joinColumn: { name: 'category_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
-  })
-  users: UserOrmEntity[];
+  // Relaciones
+  @OneToMany(() => UserCategoryOrmEntity, (userCategory) => userCategory.category)
+  userCategories: UserCategoryOrmEntity[];
 
   @ManyToMany(() => SponsoredGoalOrmEntity, (goal) => goal.categories)
   sponsoredGoals: SponsoredGoalOrmEntity[];

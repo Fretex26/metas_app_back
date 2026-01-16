@@ -6,7 +6,6 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  Index,
 } from 'typeorm';
 import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
 import { SponsorStatus } from '../../../../shared/types/enums';
@@ -16,7 +15,6 @@ import { SponsorStatus } from '../../../../shared/types/enums';
  * Mapea la tabla sponsors de la base de datos
  */
 @Entity('sponsors')
-@Index(['user_id'], { unique: true })
 export class SponsorOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

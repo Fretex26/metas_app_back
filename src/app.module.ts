@@ -19,7 +19,6 @@ import { SponsoredGoalsModule } from './modules/sponsored-goals/sponsored-goals.
 import { CategoriesModule } from './modules/categories/categories.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
-import { MetricsModule } from './modules/metrics/metrics.module';
 import { AuditModule } from './modules/audit/audit.module';
 
 /**
@@ -64,7 +63,6 @@ import { AuditModule } from './modules/audit/audit.module';
     CategoriesModule,
     GamificationModule,
     StatisticsModule,
-    MetricsModule,
     AuditModule,
   ],
   controllers: [AppController],

@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class CreateUserUseCase {
   constructor(
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
     @Inject('ICategoryRepository')
     private readonly categoryRepository: ICategoryRepository,

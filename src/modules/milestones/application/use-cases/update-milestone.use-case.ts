@@ -47,6 +47,7 @@ export class UpdateMilestoneUseCase {
       updateMilestoneDto.name ?? currentMilestone.name,
       updateMilestoneDto.description ?? currentMilestone.description,
       currentMilestone.status,
+      currentMilestone.rewardId,
       currentMilestone.createdAt,
     );
 

@@ -15,7 +15,7 @@ import { CategoryOrmEntity } from './category.orm-entity';
  * Relación ManyToMany entre User y Category
  */
 @Entity('user_categories')
-@Index(['user_id', 'category_id'], { unique: true })
+@Index(['userId', 'categoryId'], { unique: true })
 export class UserCategoryOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

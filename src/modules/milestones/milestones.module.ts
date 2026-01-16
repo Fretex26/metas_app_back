@@ -29,8 +29,8 @@ import { GamificationModule } from '../gamification/gamification.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([MilestoneOrmEntity]),
-    ProjectsModule,
-    SprintsModule,
+    forwardRef(() => ProjectsModule),
+    forwardRef(() => SprintsModule),
     forwardRef(() => TasksModule),
     SponsorsModule,
     GamificationModule,

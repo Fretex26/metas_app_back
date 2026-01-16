@@ -7,7 +7,6 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
-  Index,
 } from 'typeorm';
 import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
 
@@ -15,7 +14,6 @@ import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.or
  * Entidad ORM para PointsWallet
  */
 @Entity('points_wallet')
-@Index(['user_id'], { unique: true })
 export class PointsWalletOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

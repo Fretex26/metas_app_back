@@ -32,9 +32,9 @@ import { ProjectsModule } from '../projects/projects.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskOrmEntity, ChecklistItemOrmEntity]),
-    SprintsModule,
+    forwardRef(() => SprintsModule),
     forwardRef(() => MilestonesModule),
-    ProjectsModule,
+    forwardRef(() => ProjectsModule),
   ],
   controllers: [TasksController],
   providers: [
