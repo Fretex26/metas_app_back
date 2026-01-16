@@ -15,7 +15,7 @@ import { CategoryOrmEntity } from './category.orm-entity';
  * Relación ManyToMany entre SponsoredGoal y Category
  */
 @Entity('sponsored_goal_categories')
-@Index(['sponsored_goal_id', 'category_id'], { unique: true })
+@Index(['sponsoredGoalId', 'categoryId'], { unique: true })
 export class SponsoredGoalCategoryOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

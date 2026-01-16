@@ -10,6 +10,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 @Injectable()
 export class UpdateUserProfileUseCase {
   constructor(
+    @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
     @Inject('ICategoryRepository')
     private readonly categoryRepository: ICategoryRepository,
