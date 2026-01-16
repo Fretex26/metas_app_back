@@ -17,7 +17,7 @@ import { EnrollmentStatus } from '../../../../shared/types/enums';
  * Representa la inscripción de un usuario a un objetivo patrocinado
  */
 @Entity('sponsor_enrollments')
-@Index(['sponsored_goal_id', 'user_id'], { unique: true })
+@Index(['sponsoredGoalId', 'userId'], { unique: true })
 export class SponsorEnrollmentOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

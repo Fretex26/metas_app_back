@@ -13,8 +13,8 @@ import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.or
  * Entidad ORM para AuditLog
  */
 @Entity('audit_logs')
-@Index(['user_id', 'created_at'])
-@Index(['entity', 'entity_id'])
+@Index(['userId', 'createdAt'])
+@Index(['entity', 'entityId'])
 export class AuditLogOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

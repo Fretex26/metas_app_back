@@ -28,15 +28,20 @@ export class GetTaskByIdUseCase {
       throw new NotFoundException('Tarea no encontrada');
     }
 
-    // Verificar ownership a través de la cadena: task -> sprint -> milestone -> project
-    const sprint = await this.sprintRepository.findById(task.sprintId);
-    if (!sprint) {
-      throw new NotFoundException('Sprint no encontrado');
+    // Verificar ownership
+    // Si la tarea tiene sprint, verificamos a través del sprint -> milestone -> project
+    // Si no tiene sprint, verificamos directamente a través del milestone -> project
+    let milestone;
+    if (task.sprintId) {
+      const sprint = await this.sprintRepository.findById(task.sprintId);
+      if (!sprint) {
+        throw new NotFoundException('Sprint no encontrado');
+      }
+      milestone = await this.milestoneRepository.findById(sprint.milestoneId);
+    } else {
+      milestone = await this.milestoneRepository.findById(task.milestoneId);
     }
 
-    const milestone = await this.milestoneRepository.findById(
-      sprint.milestoneId,
-    );
     if (!milestone) {
       throw new NotFoundException('Milestone no encontrado');
     }

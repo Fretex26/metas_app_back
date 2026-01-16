@@ -6,7 +6,6 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
-  Index,
 } from 'typeorm';
 import { SprintOrmEntity } from '../../../sprints/infrastructure/persistence/sprint.orm-entity';
 import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
@@ -16,7 +15,6 @@ import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.or
  * Relación 1:1 con Sprint
  */
 @Entity('retrospectives')
-@Index(['sprint_id'], { unique: true })
 export class RetrospectiveOrmEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import type { IPointsWalletRepository } from '../../../gamification/domain/repositories/points-wallet.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
+import { TaskStatus } from '../../../../shared/types/enums';
 
 /**
  * Caso de uso para obtener estadísticas generales del usuario
@@ -31,9 +32,15 @@ export class GetUserStatisticsUseCase {
     const projects = await this.projectRepository.findByUserId(userId);
     const activeProjectsCount = projects.length;
 
-    // Obtener tareas completadas (simplificado - se puede mejorar con estado de tareas)
-    // Por ahora retornamos 0, ya que no tenemos un campo de estado en tasks
-    const completedTasksCount = 0;
+    // Obtener tareas completadas de todos los proyectos del usuario
+    let completedTasksCount = 0;
+    for (const project of projects) {
+      const projectTasks = await this.taskRepository.findByProjectId(project.id);
+      const completedTasks = projectTasks.filter(
+        (task) => task.status === TaskStatus.COMPLETED,
+      );
+      completedTasksCount += completedTasks.length;
+    }
 
     // Badges count (por ahora 0, se puede implementar cuando se agregue el módulo de badges)
     const badgesCount = 0;
