@@ -1,7 +1,9 @@
 import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import type { IProjectRepository } from '../../domain/repositories/project.repository';
+import type { IRewardRepository } from '../../../gamification/domain/repositories/reward.repository';
 import { ProjectDomainService } from '../../domain/services/project.domain-service';
 import { Project } from '../../domain/entities/project.entity';
+import { Reward } from '../../../gamification/domain/entities/reward.entity';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,6 +15,8 @@ export class CreateProjectUseCase {
   constructor(
     @Inject('IProjectRepository')
     private readonly projectRepository: IProjectRepository,
+    @Inject('IRewardRepository')
+    private readonly rewardRepository: IRewardRepository,
     private readonly projectDomainService: ProjectDomainService,
   ) {}
 
@@ -23,7 +27,20 @@ export class CreateProjectUseCase {
     // Validar límite de proyectos
     await this.projectDomainService.validateProjectLimit(userId);
 
-    // Crear la entidad de dominio
+    // Crear la reward primero
+    const reward = new Reward(
+      uuidv4(),
+      null, // sponsorId - las rewards de proyectos no tienen sponsor
+      createProjectDto.reward.name,
+      createProjectDto.reward.description || null,
+      createProjectDto.reward.claimInstructions || null,
+      createProjectDto.reward.claimLink || null,
+      new Date(),
+    );
+
+    const createdReward = await this.rewardRepository.create(reward);
+
+    // Crear la entidad de dominio del proyecto
     const project = new Project(
       uuidv4(),
       userId,
@@ -39,7 +56,7 @@ export class CreateProjectUseCase {
       null, // sponsoredGoalId
       null, // enrollmentId
       true, // isActive
-      createProjectDto.rewardId,
+      createdReward.id,
       new Date(),
     );
 

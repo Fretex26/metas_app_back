@@ -11,6 +11,7 @@ import { GetProjectByIdUseCase } from './application/use-cases/get-project-by-id
 import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
 import { ReviewsModule } from '../reviews/reviews.module';
+import { GamificationModule } from '../gamification/gamification.module';
 
 /**
  * Módulo de proyectos
@@ -26,6 +27,7 @@ import { ReviewsModule } from '../reviews/reviews.module';
   imports: [
     TypeOrmModule.forFeature([ProjectOrmEntity]),
     forwardRef(() => ReviewsModule),
+    GamificationModule,
   ],
   controllers: [ProjectsController],
   providers: [
