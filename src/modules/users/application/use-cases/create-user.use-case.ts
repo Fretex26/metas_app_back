@@ -26,6 +26,11 @@ export class CreateUserUseCase {
    * @throws ConflictException si el email o Firebase UID ya existe
    */
   async execute(createUserDto: CreateUserDto): Promise<User> {
+    // Validar que firebaseUid esté presente (debe venir del token)
+    if (!createUserDto.firebaseUid) {
+      throw new BadRequestException('El Firebase UID es requerido y debe obtenerse del token de autenticación');
+    }
+
     // Verificar si el email ya existe
     const emailExists = await this.userRepository.existsByEmail(
       createUserDto.email,
