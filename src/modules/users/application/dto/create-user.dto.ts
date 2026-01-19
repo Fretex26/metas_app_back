@@ -22,13 +22,14 @@ export class CreateUserDto {
   @IsEmail({}, { message: 'El email debe tener un formato válido' })
   email: string;
 
-  @ApiProperty({
-    description: 'UID de Firebase Authentication',
+  @ApiPropertyOptional({
+    description: 'UID de Firebase Authentication (se obtiene automáticamente del token, no enviar en el body)',
     example: 'firebase-uid-12345',
+    readOnly: true,
   })
-  @IsNotEmpty({ message: 'El Firebase UID es requerido' })
+  @IsOptional()
   @IsString({ message: 'El Firebase UID debe ser una cadena de texto' })
-  firebaseUid: string;
+  firebaseUid?: string;
 
   @ApiProperty({
     description: 'Rol del usuario en el sistema',
