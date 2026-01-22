@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,50 +19,51 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateTaskDto } from '../application/dto/create-task.dto';
 import { UpdateTaskDto } from '../application/dto/update-task.dto';
 import { TaskResponseDto } from '../application/dto/task-response.dto';
 import { CreateTaskUseCase } from '../application/use-cases/create-task.use-case';
-import { GetSprintTasksUseCase } from '../application/use-cases/get-sprint-tasks.use-case';
+import { GetMilestoneTasksUseCase } from '../application/use-cases/get-milestone-tasks.use-case';
 import { GetTaskByIdUseCase } from '../application/use-cases/get-task-by-id.use-case';
 import { UpdateTaskUseCase } from '../application/use-cases/update-task.use-case';
 import { DeleteTaskUseCase } from '../application/use-cases/delete-task.use-case';
-import { MarkTaskCompletedUseCase } from '../application/use-cases/mark-task-completed.use-case';
 
 /**
  * Controlador REST para gestión de tasks
  * 
- * Permite crear, listar, obtener, actualizar y eliminar tasks de un sprint
+ * Permite crear, listar, obtener, actualizar y eliminar tasks
+ * Las tasks siempre pertenecen a un milestone y opcionalmente a un sprint
  * 
  * @apiTag tasks
  */
 @ApiTags('tasks')
-@Controller('sprints/:sprintId/tasks')
+@Controller('milestone/:milestoneId/task')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class TasksController {
   constructor(
     private readonly createTaskUseCase: CreateTaskUseCase,
-    private readonly getSprintTasksUseCase: GetSprintTasksUseCase,
+    private readonly getMilestoneTasksUseCase: GetMilestoneTasksUseCase,
     private readonly getTaskByIdUseCase: GetTaskByIdUseCase,
     private readonly updateTaskUseCase: UpdateTaskUseCase,
     private readonly deleteTaskUseCase: DeleteTaskUseCase,
-    private readonly markTaskCompletedUseCase: MarkTaskCompletedUseCase,
   ) {}
 
   /**
-   * Obtiene todas las tasks de un sprint
+   * Obtiene todas las tasks de un milestone
    */
   @Get()
   @ApiOperation({
-    summary: 'Listar tasks del sprint',
-    description: 'Obtiene la lista de todas las tareas de un sprint específico',
+    summary: 'Listar tasks del milestone',
+    description: 'Obtiene la lista de todas las tareas de un milestone específico',
   })
   @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint',
+    name: 'milestoneId',
+    description: 'ID del milestone',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @ApiResponse({
@@ -71,14 +73,14 @@ export class TasksController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Sprint no encontrado',
+    description: 'Milestone no encontrado',
   })
-  async getSprintTasks(
-    @Param('sprintId') sprintId: string,
+  async getMilestoneTasks(
+    @Param('milestoneId') milestoneId: string,
     @CurrentUser() user: UserPayload,
   ): Promise<TaskResponseDto[]> {
-    const tasks = await this.getSprintTasksUseCase.execute(
-      sprintId,
+    const tasks = await this.getMilestoneTasksUseCase.execute(
+      milestoneId,
       user.userId || user.uid,
     );
     return tasks.map((task) => this.toResponseDto(task));
@@ -95,10 +97,8 @@ export class TasksController {
       'Crea un nuevo task para un milestone. El sprintId es opcional. Si se proporciona, el periodo de la tarea no debe exceder el periodo del sprint.',
   })
   @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint (opcional, puede venir en el body)',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    required: false,
+    name: 'milestoneId',
+    description: 'ID del milestone',
   })
   @ApiResponse({
     status: 201,
@@ -114,11 +114,14 @@ export class TasksController {
     description: 'El periodo de la tarea excede el del sprint, el sprint no pertenece al milestone, o las fechas son inválidas',
   })
   async createTask(
+    @Param('milestoneId') milestoneId: string,
     @Body() createTaskDto: CreateTaskDto,
     @CurrentUser() user: UserPayload,
   ): Promise<TaskResponseDto> {
+    // Asegurar que el milestoneId en el DTO coincida con el parámetro de la ruta
+    const taskDtoWithMilestone = { ...createTaskDto, milestoneId };
     const task = await this.createTaskUseCase.execute(
-      createTaskDto,
+      taskDtoWithMilestone,
       user.userId || user.uid,
     );
     return this.toResponseDto(task);
@@ -133,8 +136,8 @@ export class TasksController {
     description: 'Obtiene los detalles de un task específico',
   })
   @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint',
+    name: 'milestoneId',
+    description: 'ID del milestone',
   })
   @ApiParam({
     name: 'id',
@@ -155,6 +158,7 @@ export class TasksController {
   })
   async getTask(
     @Param('id') taskId: string,
+    @Param('milestoneId') milestoneId: string,
     @CurrentUser() user: UserPayload,
   ): Promise<TaskResponseDto> {
     const task = await this.getTaskByIdUseCase.execute(
@@ -173,8 +177,8 @@ export class TasksController {
     description: 'Actualiza los datos de un task existente',
   })
   @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint',
+    name: 'milestoneId',
+    description: 'ID del milestone',
   })
   @ApiParam({
     name: 'id',
@@ -195,6 +199,7 @@ export class TasksController {
   })
   async updateTask(
     @Param('id') taskId: string,
+    @Param('milestoneId') milestoneId: string,
     @Body() updateTaskDto: UpdateTaskDto,
     @CurrentUser() user: UserPayload,
   ): Promise<TaskResponseDto> {
@@ -207,51 +212,6 @@ export class TasksController {
   }
 
   /**
-   * Marca una tarea como completada
-   */
-  @Post(':id/complete')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Marcar tarea como completada',
-    description:
-      'Marca una tarea como completada. Requiere que todos los checklist items requeridos estén marcados. Actualiza automáticamente el estado de la milestone.',
-  })
-  @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint',
-  })
-  @ApiParam({
-    name: 'id',
-    description: 'ID de la tarea',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Tarea marcada como completada exitosamente',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Tarea no encontrada',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'No tienes permiso para modificar esta tarea',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'No se puede marcar como completada. Todos los items requeridos deben estar marcados.',
-  })
-  async markTaskCompleted(
-    @Param('id') taskId: string,
-    @CurrentUser() user: UserPayload,
-  ): Promise<{ message: string }> {
-    await this.markTaskCompletedUseCase.execute(
-      taskId,
-      user.userId || user.uid,
-    );
-    return { message: 'Tarea marcada como completada exitosamente' };
-  }
-
-  /**
    * Elimina un task
    */
   @Delete(':id')
@@ -261,8 +221,8 @@ export class TasksController {
     description: 'Elimina un task existente',
   })
   @ApiParam({
-    name: 'sprintId',
-    description: 'ID del sprint',
+    name: 'milestoneId',
+    description: 'ID del milestone',
   })
   @ApiParam({
     name: 'id',
@@ -282,6 +242,7 @@ export class TasksController {
   })
   async deleteTask(
     @Param('id') taskId: string,
+    @Param('milestoneId') milestoneId: string,
     @CurrentUser() user: UserPayload,
   ): Promise<void> {
     await this.deleteTaskUseCase.execute(taskId, user.userId || user.uid);

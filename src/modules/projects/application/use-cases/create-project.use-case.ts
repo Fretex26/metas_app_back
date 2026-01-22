@@ -5,6 +5,7 @@ import { ProjectDomainService } from '../../domain/services/project.domain-servi
 import { Project } from '../../domain/entities/project.entity';
 import { Reward } from '../../../gamification/domain/entities/reward.entity';
 import { CreateProjectDto } from '../dto/create-project.dto';
+import { ProjectStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -56,6 +57,7 @@ export class CreateProjectUseCase {
       null, // sponsoredGoalId
       null, // enrollmentId
       true, // isActive
+      ProjectStatus.PENDING, // status por defecto
       createdReward.id,
       new Date(),
     );

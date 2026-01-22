@@ -10,6 +10,7 @@ import {
 import { UserOrmEntity } from '../../../users/infrastructure/persistence/user.orm-entity';
 import { SponsoredGoalOrmEntity } from '../../../sponsored-goals/infrastructure/persistence/sponsored-goal.orm-entity';
 import { SponsorEnrollmentOrmEntity } from '../../../sponsored-goals/infrastructure/persistence/sponsor-enrollment.orm-entity';
+import { ProjectStatus } from '../../../../shared/types/enums';
 
 /**
  * Entidad ORM para Project
@@ -63,6 +64,13 @@ export class ProjectOrmEntity {
 
   @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: ProjectStatus,
+    default: ProjectStatus.PENDING,
+  })
+  status: ProjectStatus;
 
   @Column({ type: 'uuid', name: 'reward_id' })
   rewardId: string;

@@ -56,6 +56,15 @@ export enum TaskStatus {
 }
 
 /**
+ * Estado de un proyecto
+ */
+export enum ProjectStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+}
+
+/**
  * Estado de una recompensa de usuario
  */
 export enum UserRewardStatus {

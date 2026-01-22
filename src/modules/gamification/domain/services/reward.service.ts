@@ -55,4 +55,50 @@ export class RewardService {
       return await this.userRewardRepository.create(newUserReward);
     }
   }
+
+  /**
+   * Reclama un reward (estado CLAIMED)
+   * Si ya existe un UserReward para este usuario y reward, lo actualiza a CLAIMED
+   * Si no existe, crea uno nuevo con estado CLAIMED
+   */
+  async claimReward(
+    userId: string,
+    rewardId: string,
+  ): Promise<UserReward> {
+    // Buscar si ya existe un UserReward para este usuario y reward
+    const existingUserRewards = await this.userRewardRepository.findByUserId(userId);
+    const existingUserReward = existingUserRewards.find(
+      (ur) => ur.rewardId === rewardId,
+    );
+
+    if (existingUserReward) {
+      // Si ya existe y no está en CLAIMED o DELIVERED, actualizar a CLAIMED
+      if (existingUserReward.status === UserRewardStatus.PENDING) {
+        const updatedUserReward = new UserReward(
+          existingUserReward.id,
+          existingUserReward.userId,
+          existingUserReward.rewardId,
+          UserRewardStatus.CLAIMED,
+          new Date(), // claimedAt
+          existingUserReward.deliveredAt,
+          existingUserReward.createdAt,
+        );
+        return await this.userRewardRepository.update(updatedUserReward);
+      }
+      // Si ya está en CLAIMED o DELIVERED, retornar tal como está
+      return existingUserReward;
+    } else {
+      // Si no existe, crear uno nuevo con estado CLAIMED
+      const newUserReward = new UserReward(
+        uuidv4(),
+        userId,
+        rewardId,
+        UserRewardStatus.CLAIMED,
+        new Date(), // claimedAt
+        null, // deliveredAt
+        new Date(), // createdAt
+      );
+      return await this.userRewardRepository.create(newUserReward);
+    }
+  }
 }

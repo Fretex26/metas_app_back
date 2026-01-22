@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateRetrospectiveDto } from '../application/dto/create-retrospective.dto';
@@ -34,6 +36,7 @@ import { GetPublicRetrospectivesUseCase } from '../application/use-cases/get-pub
 @ApiTags('retrospectives')
 @Controller('sprints/:sprintId/retrospective')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class RetrospectivesController {
   constructor(

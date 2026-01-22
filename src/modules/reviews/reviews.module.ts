@@ -11,6 +11,8 @@ import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de reviews
@@ -26,6 +28,7 @@ import { TasksModule } from '../tasks/tasks.module';
     MilestonesModule,
     forwardRef(() => ProjectsModule),
     forwardRef(() => TasksModule),
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [ReviewsController],
   providers: [
@@ -34,6 +37,8 @@ import { TasksModule } from '../tasks/tasks.module';
       provide: 'IReviewRepository',
       useClass: ReviewRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateReviewUseCase,
     GetSprintReviewUseCase,

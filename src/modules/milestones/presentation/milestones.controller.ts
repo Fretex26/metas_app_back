@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateMilestoneDto } from '../application/dto/create-milestone.dto';
@@ -39,6 +41,7 @@ import { DeleteMilestoneUseCase } from '../application/use-cases/delete-mileston
 @ApiTags('milestones')
 @Controller('projects/:projectId/milestones')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class MilestonesController {
   constructor(

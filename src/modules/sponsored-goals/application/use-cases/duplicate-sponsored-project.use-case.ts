@@ -65,6 +65,7 @@ export class DuplicateSponsoredProjectUseCase {
       sponsoredGoalId, // sponsoredGoalId
       enrollmentId, // enrollmentId
       true, // isActive
+      originalProject.status, // status
       originalProject.rewardId, // rewardId
       new Date(), // createdAt
     );

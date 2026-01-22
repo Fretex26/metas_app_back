@@ -10,6 +10,7 @@ import { GetDailyEntryByDateUseCase } from './application/use-cases/get-daily-en
 import { UsersModule } from '../users/users.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { SprintsModule } from '../sprints/sprints.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de daily entries
@@ -33,6 +34,8 @@ import { SprintsModule } from '../sprints/sprints.module';
       provide: 'IDailyEntryRepository',
       useClass: DailyEntryRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateDailyEntryUseCase,
     GetUserDailyEntriesUseCase,

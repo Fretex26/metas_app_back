@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ProjectStatus } from '../../../../shared/types/enums';
 
 /**
  * DTO de respuesta para un proyecto
@@ -69,6 +70,13 @@ export class ProjectResponseDto {
     example: true,
   })
   isActive?: boolean;
+
+  @ApiProperty({
+    description: 'Estado del proyecto',
+    enum: ProjectStatus,
+    example: ProjectStatus.PENDING,
+  })
+  status: ProjectStatus;
 
   @ApiProperty({
     description: 'ID de la recompensa asociada al proyecto (obligatorio)',
