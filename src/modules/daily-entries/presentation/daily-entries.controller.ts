@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
   ParseDatePipe,
@@ -19,6 +20,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateDailyEntryDto } from '../application/dto/create-daily-entry.dto';
@@ -37,6 +39,7 @@ import { GetDailyEntryByDateUseCase } from '../application/use-cases/get-daily-e
 @ApiTags('daily-entries')
 @Controller('daily-entries')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class DailyEntriesController {
   constructor(

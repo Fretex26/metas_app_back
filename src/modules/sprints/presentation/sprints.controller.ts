@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,16 +19,19 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateSprintDto } from '../application/dto/create-sprint.dto';
 import { UpdateSprintDto } from '../application/dto/update-sprint.dto';
 import { SprintResponseDto } from '../application/dto/sprint-response.dto';
+import { TaskResponseDto } from '../../tasks/application/dto/task-response.dto';
 import { CreateSprintUseCase } from '../application/use-cases/create-sprint.use-case';
 import { GetMilestoneSprintsUseCase } from '../application/use-cases/get-milestone-sprints.use-case';
 import { GetSprintByIdUseCase } from '../application/use-cases/get-sprint-by-id.use-case';
 import { UpdateSprintUseCase } from '../application/use-cases/update-sprint.use-case';
 import { DeleteSprintUseCase } from '../application/use-cases/delete-sprint.use-case';
+import { GetSprintTasksUseCase } from '../../tasks/application/use-cases/get-sprint-tasks.use-case';
 
 /**
  * Controlador REST para gestión de sprints
@@ -39,6 +43,7 @@ import { DeleteSprintUseCase } from '../application/use-cases/delete-sprint.use-
 @ApiTags('sprints')
 @Controller('milestones/:milestoneId/sprints')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class SprintsController {
   constructor(
@@ -47,6 +52,7 @@ export class SprintsController {
     private readonly getSprintByIdUseCase: GetSprintByIdUseCase,
     private readonly updateSprintUseCase: UpdateSprintUseCase,
     private readonly deleteSprintUseCase: DeleteSprintUseCase,
+    private readonly getSprintTasksUseCase: GetSprintTasksUseCase,
   ) {}
 
   /**
@@ -121,6 +127,57 @@ export class SprintsController {
       user.userId || user.uid,
     );
     return this.toResponseDto(sprint);
+  }
+
+  /**
+   * Obtiene todas las tasks de un sprint
+   */
+  @Get(':id/tasks')
+  @ApiOperation({
+    summary: 'Listar tasks del sprint',
+    description: 'Obtiene la lista de todas las tareas de un sprint específico',
+  })
+  @ApiParam({
+    name: 'milestoneId',
+    description: 'ID del milestone',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del sprint',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de tareas',
+    type: [TaskResponseDto],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Sprint no encontrado',
+  })
+  async getSprintTasks(
+    @Param('id') sprintId: string,
+    @Param('milestoneId') milestoneId: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<TaskResponseDto[]> {
+    const tasks = await this.getSprintTasksUseCase.execute(
+      sprintId,
+      user.userId || user.uid,
+    );
+    return tasks.map((task) => ({
+      id: task.id,
+      milestoneId: task.milestoneId,
+      sprintId: task.sprintId,
+      name: task.name,
+      description: task.description,
+      status: task.status,
+      startDate: task.startDate,
+      endDate: task.endDate,
+      resourcesAvailable: task.resourcesAvailable ?? undefined,
+      resourcesNeeded: task.resourcesNeeded ?? undefined,
+      incentivePoints: task.incentivePoints,
+      createdAt: task.createdAt,
+    }));
   }
 
   /**

@@ -8,6 +8,7 @@ import { CreateSponsorUseCase } from './application/use-cases/create-sponsor.use
 import { GetSponsorProfileUseCase } from './application/use-cases/get-sponsor-profile.use-case';
 import { UpdateSponsorProfileUseCase } from './application/use-cases/update-sponsor-profile.use-case';
 import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de sponsors
@@ -29,6 +30,8 @@ import { UsersModule } from '../users/users.module';
       provide: 'ISponsorRepository',
       useClass: SponsorRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateSponsorUseCase,
     GetSponsorProfileUseCase,

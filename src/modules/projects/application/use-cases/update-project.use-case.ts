@@ -48,6 +48,7 @@ export class UpdateProjectUseCase {
       currentProject.sponsoredGoalId,
       currentProject.enrollmentId,
       currentProject.isActive,
+      currentProject.status,
       currentProject.rewardId,
       currentProject.createdAt,
     );

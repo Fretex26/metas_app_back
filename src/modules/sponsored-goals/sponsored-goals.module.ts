@@ -23,6 +23,7 @@ import { SprintsModule } from '../sprints/sprints.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { UsersModule } from '../users/users.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de sponsored goals
@@ -59,6 +60,8 @@ import { CategoriesModule } from '../categories/categories.module';
       provide: 'ISponsorEnrollmentRepository',
       useClass: SponsorEnrollmentRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateSponsoredGoalUseCase,
     ListAvailableSponsoredGoalsUseCase,

@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksController } from './presentation/tasks.controller';
+import { ChecklistItemsController } from './presentation/checklist-items.controller';
 import { TaskOrmEntity } from './infrastructure/persistence/task.orm-entity';
 import { ChecklistItemOrmEntity } from './infrastructure/persistence/checklist-item.orm-entity';
 import { TaskRepositoryImpl } from './infrastructure/persistence/task.repository.impl';
@@ -8,16 +9,21 @@ import { ChecklistItemRepositoryImpl } from './infrastructure/persistence/checkl
 import type { ITaskRepository } from './domain/repositories/task.repository';
 import type { IChecklistItemRepository } from './domain/repositories/checklist-item.repository';
 import { CreateTaskUseCase } from './application/use-cases/create-task.use-case';
-import { GetSprintTasksUseCase } from './application/use-cases/get-sprint-tasks.use-case';
+import { GetMilestoneTasksUseCase } from './application/use-cases/get-milestone-tasks.use-case';
 import { GetTaskByIdUseCase } from './application/use-cases/get-task-by-id.use-case';
 import { UpdateTaskUseCase } from './application/use-cases/update-task.use-case';
 import { DeleteTaskUseCase } from './application/use-cases/delete-task.use-case';
-import { MarkTaskCompletedUseCase } from './application/use-cases/mark-task-completed.use-case';
 import { UpdateTaskStatusUseCase } from './application/use-cases/update-task-status.use-case';
+import { CreateChecklistItemUseCase } from './application/use-cases/create-checklist-item.use-case';
+import { GetChecklistItemByIdUseCase } from './application/use-cases/get-checklist-item-by-id.use-case';
+import { GetChecklistItemsByTaskIdUseCase } from './application/use-cases/get-checklist-items-by-task-id.use-case';
 import { UpdateChecklistItemUseCase } from './application/use-cases/update-checklist-item.use-case';
+import { DeleteChecklistItemUseCase } from './application/use-cases/delete-checklist-item.use-case';
 import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de tasks
@@ -35,8 +41,9 @@ import { ProjectsModule } from '../projects/projects.module';
     forwardRef(() => SprintsModule),
     forwardRef(() => MilestonesModule),
     forwardRef(() => ProjectsModule),
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
-  controllers: [TasksController],
+  controllers: [TasksController, ChecklistItemsController],
   providers: [
     // Repositorios
     {
@@ -47,15 +54,21 @@ import { ProjectsModule } from '../projects/projects.module';
       provide: 'IChecklistItemRepository',
       useClass: ChecklistItemRepositoryImpl,
     },
-    // Use cases
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
+    // Use cases - Tasks
     CreateTaskUseCase,
-    GetSprintTasksUseCase,
+    GetMilestoneTasksUseCase,
     GetTaskByIdUseCase,
     UpdateTaskUseCase,
     DeleteTaskUseCase,
-    MarkTaskCompletedUseCase,
     UpdateTaskStatusUseCase,
+    // Use cases - ChecklistItems
+    CreateChecklistItemUseCase,
+    GetChecklistItemByIdUseCase,
+    GetChecklistItemsByTaskIdUseCase,
     UpdateChecklistItemUseCase,
+    DeleteChecklistItemUseCase,
   ],
   exports: ['ITaskRepository', 'IChecklistItemRepository'],
 })

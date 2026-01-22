@@ -5,6 +5,7 @@ import {
   Put,
   Body,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateSponsorDto } from '../application/dto/create-sponsor.dto';
@@ -34,6 +36,7 @@ import { UpdateSponsorProfileUseCase } from '../application/use-cases/update-spo
 @ApiTags('sponsors')
 @Controller('sponsors')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class SponsorsController {
   constructor(

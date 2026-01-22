@@ -6,6 +6,7 @@ import {
   Body,
   Query,
   UseGuards,
+  UseInterceptors,
   ParseIntPipe,
   DefaultValuePipe,
   HttpCode,
@@ -20,6 +21,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { WalletResponseDto } from '../application/dto/wallet-response.dto';
@@ -40,6 +42,7 @@ import { UpdateUserRewardStatusUseCase } from '../application/use-cases/update-u
 @ApiTags('gamification')
 @Controller('gamification')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class GamificationController {
   constructor(

@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateProjectDto } from '../application/dto/create-project.dto';
@@ -41,6 +43,7 @@ import { ProjectProgressResponseDto } from '../../reviews/application/dto/projec
 @ApiTags('projects')
 @Controller('projects')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class ProjectsController {
   constructor(
@@ -267,6 +270,7 @@ export class ProjectsController {
       sponsoredGoalId: project.sponsoredGoalId ?? null,
       enrollmentId: project.enrollmentId ?? null,
       isActive: project.isActive ?? true,
+      status: project.status,
       rewardId: project.rewardId,
       createdAt: project.createdAt,
     };

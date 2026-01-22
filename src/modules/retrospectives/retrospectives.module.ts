@@ -11,6 +11,8 @@ import { GetPublicRetrospectivesUseCase } from './application/use-cases/get-publ
 import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de retrospectives
@@ -26,6 +28,7 @@ import { ProjectsModule } from '../projects/projects.module';
     SprintsModule,
     MilestonesModule,
     ProjectsModule,
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [RetrospectivesController, PublicRetrospectivesController],
   providers: [
@@ -34,6 +37,8 @@ import { ProjectsModule } from '../projects/projects.module';
       provide: 'IRetrospectiveRepository',
       useClass: RetrospectiveRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateRetrospectiveUseCase,
     GetSprintRetrospectiveUseCase,

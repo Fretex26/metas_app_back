@@ -35,6 +35,8 @@ export class FirebaseAuthGuard implements CanActivate {
 
     const [bearer, token] = authHeader.split(' ');
 
+    console.log('token', token);
+
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException('Formato de header de autorización inválido');
     }

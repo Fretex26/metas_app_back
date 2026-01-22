@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../../../../shared/types/enums';
+
 /**
  * Entidad de dominio Project
  * Representa un proyecto personal en el sistema
@@ -16,6 +18,7 @@ export class Project {
     public readonly sponsoredGoalId: string | null = null,
     public readonly enrollmentId: string | null = null,
     public readonly isActive: boolean = true,
+    public readonly status: ProjectStatus = ProjectStatus.PENDING,
     public readonly rewardId: string,
     public readonly createdAt: Date,
   ) {}

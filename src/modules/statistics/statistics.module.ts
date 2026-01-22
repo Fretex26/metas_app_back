@@ -4,6 +4,8 @@ import { GetUserStatisticsUseCase } from './application/use-cases/get-user-stati
 import { GamificationModule } from '../gamification/gamification.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de estadísticas
@@ -12,8 +14,17 @@ import { TasksModule } from '../tasks/tasks.module';
  * - Estadísticas generales del usuario (puntos, badges, proyectos, tareas)
  */
 @Module({
-  imports: [GamificationModule, ProjectsModule, TasksModule],
+  imports: [
+    GamificationModule,
+    ProjectsModule,
+    TasksModule,
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
+  ],
   controllers: [StatisticsController],
-  providers: [GetUserStatisticsUseCase],
+  providers: [
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
+    GetUserStatisticsUseCase,
+  ],
 })
 export class StatisticsModule {}
