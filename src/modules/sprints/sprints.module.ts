@@ -9,8 +9,12 @@ import { GetMilestoneSprintsUseCase } from './application/use-cases/get-mileston
 import { GetSprintByIdUseCase } from './application/use-cases/get-sprint-by-id.use-case';
 import { UpdateSprintUseCase } from './application/use-cases/update-sprint.use-case';
 import { DeleteSprintUseCase } from './application/use-cases/delete-sprint.use-case';
+import { GetSprintTasksUseCase } from '../tasks/application/use-cases/get-sprint-tasks.use-case';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { TasksModule } from '../tasks/tasks.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de sprints
@@ -27,6 +31,8 @@ import { ProjectsModule } from '../projects/projects.module';
     TypeOrmModule.forFeature([SprintOrmEntity]),
     forwardRef(() => MilestonesModule),
     forwardRef(() => ProjectsModule),
+    forwardRef(() => TasksModule),
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [SprintsController],
   providers: [
@@ -35,12 +41,15 @@ import { ProjectsModule } from '../projects/projects.module';
       provide: 'ISprintRepository',
       useClass: SprintRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateSprintUseCase,
     GetMilestoneSprintsUseCase,
     GetSprintByIdUseCase,
     UpdateSprintUseCase,
     DeleteSprintUseCase,
+    GetSprintTasksUseCase,
   ],
   exports: ['ISprintRepository'],
 })

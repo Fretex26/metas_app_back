@@ -9,9 +9,13 @@ import { CreateProjectUseCase } from './application/use-cases/create-project.use
 import { GetUserProjectsUseCase } from './application/use-cases/get-user-projects.use-case';
 import { GetProjectByIdUseCase } from './application/use-cases/get-project-by-id.use-case';
 import { UpdateProjectUseCase } from './application/use-cases/update-project.use-case';
+import { UpdateProjectStatusUseCase } from './application/use-cases/update-project-status.use-case';
 import { DeleteProjectUseCase } from './application/use-cases/delete-project.use-case';
 import { ReviewsModule } from '../reviews/reviews.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { MilestonesModule } from '../milestones/milestones.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de proyectos
@@ -27,7 +31,9 @@ import { GamificationModule } from '../gamification/gamification.module';
   imports: [
     TypeOrmModule.forFeature([ProjectOrmEntity]),
     forwardRef(() => ReviewsModule),
+    forwardRef(() => MilestonesModule),
     GamificationModule,
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [ProjectsController],
   providers: [
@@ -38,13 +44,19 @@ import { GamificationModule } from '../gamification/gamification.module';
     },
     // Servicios de dominio
     ProjectDomainService,
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateProjectUseCase,
     GetUserProjectsUseCase,
     GetProjectByIdUseCase,
     UpdateProjectUseCase,
+    UpdateProjectStatusUseCase,
     DeleteProjectUseCase,
   ],
-  exports: ['IProjectRepository'],
+  exports: [
+    'IProjectRepository',
+    UpdateProjectStatusUseCase, // Exportar para usar en MilestonesModule
+  ],
 })
 export class ProjectsModule {}

@@ -18,6 +18,8 @@ import { GetTransactionsUseCase } from './application/use-cases/get-transactions
 import { UpdateUserRewardStatusUseCase } from './application/use-cases/update-user-reward-status.use-case';
 import { RewardService } from './domain/services/reward.service';
 import { SponsorsModule } from '../sponsors/sponsors.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de gamificación
@@ -36,6 +38,7 @@ import { SponsorsModule } from '../sponsors/sponsors.module';
       RewardOrmEntity,
     ]),
     SponsorsModule,
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [GamificationController],
   providers: [
@@ -56,6 +59,8 @@ import { SponsorsModule } from '../sponsors/sponsors.module';
       provide: 'IRewardRepository',
       useClass: RewardRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     GetWalletUseCase,
     GetTransactionsUseCase,

@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   UseGuards,
+  UseInterceptors,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateSponsoredGoalDto } from '../application/dto/create-sponsored-goal.dto';
@@ -46,6 +48,7 @@ import { MilestoneResponseDto } from '../../milestones/application/dto/milestone
 @ApiTags('sponsored-goals')
 @Controller('sponsored-goals')
 @UseGuards(FirebaseAuthGuard)
+@UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class SponsoredGoalsController {
   constructor(
@@ -311,6 +314,7 @@ export class SponsoredGoalsController {
       sponsoredGoalId: project.sponsoredGoalId ?? undefined,
       enrollmentId: project.enrollmentId ?? undefined,
       isActive: project.isActive,
+      status: project.status,
       rewardId: project.rewardId,
       createdAt: project.createdAt,
     }));

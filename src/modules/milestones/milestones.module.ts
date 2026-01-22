@@ -15,6 +15,8 @@ import { SprintsModule } from '../sprints/sprints.module';
 import { TasksModule } from '../tasks/tasks.module';
 import { SponsorsModule } from '../sponsors/sponsors.module';
 import { GamificationModule } from '../gamification/gamification.module';
+import { UsersModule } from '../users/users.module';
+import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
  * Módulo de milestones
@@ -34,6 +36,7 @@ import { GamificationModule } from '../gamification/gamification.module';
     forwardRef(() => TasksModule),
     SponsorsModule,
     GamificationModule,
+    UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [MilestonesController],
   providers: [
@@ -42,6 +45,8 @@ import { GamificationModule } from '../gamification/gamification.module';
       provide: 'IMilestoneRepository',
       useClass: MilestoneRepositoryImpl,
     },
+    // Interceptor para cargar el usuario completo con su rol
+    LoadUserInterceptor,
     // Use cases
     CreateMilestoneUseCase,
     GetProjectMilestonesUseCase,
