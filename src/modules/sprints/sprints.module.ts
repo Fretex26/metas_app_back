@@ -13,6 +13,9 @@ import { GetSprintTasksUseCase } from '../tasks/application/use-cases/get-sprint
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { ReviewsModule } from '../reviews/reviews.module';
+import { RetrospectivesModule } from '../retrospectives/retrospectives.module';
+import { DailyEntriesModule } from '../daily-entries/daily-entries.module';
 import { UsersModule } from '../users/users.module';
 import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
@@ -32,6 +35,9 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     forwardRef(() => MilestonesModule),
     forwardRef(() => ProjectsModule),
     forwardRef(() => TasksModule),
+    forwardRef(() => ReviewsModule), // Para eliminar reviews en cascada
+    forwardRef(() => RetrospectivesModule), // Para eliminar retrospectives en cascada
+    forwardRef(() => DailyEntriesModule), // Para eliminar daily entries en cascada
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [SprintsController],

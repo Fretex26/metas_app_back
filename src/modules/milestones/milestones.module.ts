@@ -13,6 +13,9 @@ import { DeleteMilestoneUseCase } from './application/use-cases/delete-milestone
 import { ProjectsModule } from '../projects/projects.module';
 import { SprintsModule } from '../sprints/sprints.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { ReviewsModule } from '../reviews/reviews.module';
+import { RetrospectivesModule } from '../retrospectives/retrospectives.module';
+import { DailyEntriesModule } from '../daily-entries/daily-entries.module';
 import { SponsorsModule } from '../sponsors/sponsors.module';
 import { GamificationModule } from '../gamification/gamification.module';
 import { UsersModule } from '../users/users.module';
@@ -34,6 +37,9 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     forwardRef(() => ProjectsModule),
     forwardRef(() => SprintsModule),
     forwardRef(() => TasksModule),
+    forwardRef(() => ReviewsModule), // Para eliminar reviews en cascada
+    forwardRef(() => RetrospectivesModule), // Para eliminar retrospectives en cascada
+    forwardRef(() => DailyEntriesModule), // Para eliminar daily entries en cascada
     SponsorsModule,
     GamificationModule,
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
