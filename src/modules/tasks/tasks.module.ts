@@ -22,6 +22,7 @@ import { DeleteChecklistItemUseCase } from './application/use-cases/delete-check
 import { SprintsModule } from '../sprints/sprints.module';
 import { MilestonesModule } from '../milestones/milestones.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { DailyEntriesModule } from '../daily-entries/daily-entries.module';
 import { UsersModule } from '../users/users.module';
 import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
@@ -41,6 +42,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     forwardRef(() => SprintsModule),
     forwardRef(() => MilestonesModule),
     forwardRef(() => ProjectsModule),
+    forwardRef(() => DailyEntriesModule), // Para eliminar daily entries en cascada
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [TasksController, ChecklistItemsController],

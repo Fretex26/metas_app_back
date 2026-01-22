@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DailyEntriesController } from './presentation/daily-entries.controller';
 import { DailyEntryOrmEntity } from './infrastructure/persistence/daily-entry.orm-entity';
@@ -24,8 +24,8 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
   imports: [
     TypeOrmModule.forFeature([DailyEntryOrmEntity]),
     UsersModule,
-    TasksModule,
-    SprintsModule,
+    forwardRef(() => TasksModule),
+    forwardRef(() => SprintsModule),
   ],
   controllers: [DailyEntriesController],
   providers: [

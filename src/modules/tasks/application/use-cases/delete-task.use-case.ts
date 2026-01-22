@@ -3,9 +3,15 @@ import type { ITaskRepository } from '../../domain/repositories/task.repository'
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
+import type { IChecklistItemRepository } from '../../domain/repositories/checklist-item.repository';
+import type { IDailyEntryRepository } from '../../../daily-entries/domain/repositories/daily-entry.repository';
 
 /**
  * Caso de uso para eliminar un task
+ * 
+ * Elimina en cascada:
+ * - Todos los checklist items de la task
+ * - Todos los daily entries relacionados con la task
  */
 @Injectable()
 export class DeleteTaskUseCase {
@@ -18,6 +24,10 @@ export class DeleteTaskUseCase {
     private readonly milestoneRepository: IMilestoneRepository,
     @Inject('IProjectRepository')
     private readonly projectRepository: IProjectRepository,
+    @Inject('IChecklistItemRepository')
+    private readonly checklistItemRepository: IChecklistItemRepository,
+    @Inject('IDailyEntryRepository')
+    private readonly dailyEntryRepository: IDailyEntryRepository,
   ) {}
 
   async execute(taskId: string, userId: string): Promise<void> {
@@ -53,6 +63,21 @@ export class DeleteTaskUseCase {
       );
     }
 
+    // Obtener todos los checklist items de la task
+    const checklistItems = await this.checklistItemRepository.findByTaskId(taskId);
+
+    // Eliminar todos los checklist items
+    for (const checklistItem of checklistItems) {
+      await this.checklistItemRepository.delete(checklistItem.id);
+    }
+
+    // Eliminar daily entries relacionados con la task
+    const dailyEntries = await this.dailyEntryRepository.findByTaskId(taskId);
+    for (const dailyEntry of dailyEntries) {
+      await this.dailyEntryRepository.delete(dailyEntry.id);
+    }
+
+    // Finalmente eliminar la task
     await this.taskRepository.delete(taskId);
   }
 }
