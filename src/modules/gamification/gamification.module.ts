@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GamificationController } from './presentation/gamification.controller';
+import { RewardsController } from './presentation/rewards.controller';
 import { PointsWalletOrmEntity } from './infrastructure/persistence/points-wallet.orm-entity';
 import { PointsTransactionOrmEntity } from './infrastructure/persistence/points-transaction.orm-entity';
 import { UserRewardOrmEntity } from './infrastructure/persistence/user-reward.orm-entity';
@@ -16,9 +17,13 @@ import type { IRewardRepository } from './domain/repositories/reward.repository'
 import { GetWalletUseCase } from './application/use-cases/get-wallet.use-case';
 import { GetTransactionsUseCase } from './application/use-cases/get-transactions.use-case';
 import { UpdateUserRewardStatusUseCase } from './application/use-cases/update-user-reward-status.use-case';
+import { GetUserRewardsUseCase } from './application/use-cases/get-user-rewards.use-case';
+import { GetRewardByIdUseCase } from './application/use-cases/get-reward-by-id.use-case';
 import { RewardService } from './domain/services/reward.service';
 import { SponsorsModule } from '../sponsors/sponsors.module';
 import { UsersModule } from '../users/users.module';
+import { ProjectsModule } from '../projects/projects.module';
+import { MilestonesModule } from '../milestones/milestones.module';
 import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
 /**
@@ -28,6 +33,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
  * - Billetera de puntos
  * - Historial de transacciones de puntos
  * - Gestión de recompensas de usuario
+ * - Consulta de rewards asociadas a proyectos y milestones
  */
 @Module({
   imports: [
@@ -39,8 +45,10 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     ]),
     SponsorsModule,
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
+    forwardRef(() => ProjectsModule), // Para acceder a IProjectRepository
+    forwardRef(() => MilestonesModule), // Para acceder a IMilestoneRepository
   ],
-  controllers: [GamificationController],
+  controllers: [GamificationController, RewardsController],
   providers: [
     // Repositorios
     {
@@ -65,6 +73,8 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     GetWalletUseCase,
     GetTransactionsUseCase,
     UpdateUserRewardStatusUseCase,
+    GetUserRewardsUseCase,
+    GetRewardByIdUseCase,
     // Services
     RewardService,
   ],

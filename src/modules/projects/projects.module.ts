@@ -14,6 +14,10 @@ import { DeleteProjectUseCase } from './application/use-cases/delete-project.use
 import { ReviewsModule } from '../reviews/reviews.module';
 import { GamificationModule } from '../gamification/gamification.module';
 import { MilestonesModule } from '../milestones/milestones.module';
+import { TasksModule } from '../tasks/tasks.module';
+import { SprintsModule } from '../sprints/sprints.module';
+import { RetrospectivesModule } from '../retrospectives/retrospectives.module';
+import { DailyEntriesModule } from '../daily-entries/daily-entries.module';
 import { UsersModule } from '../users/users.module';
 import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interceptor';
 
@@ -32,6 +36,10 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     TypeOrmModule.forFeature([ProjectOrmEntity]),
     forwardRef(() => ReviewsModule),
     forwardRef(() => MilestonesModule),
+    forwardRef(() => TasksModule), // Para eliminar tasks y checklist items en cascada
+    forwardRef(() => SprintsModule), // Para eliminar sprints en cascada
+    forwardRef(() => RetrospectivesModule), // Para eliminar retrospectives en cascada
+    forwardRef(() => DailyEntriesModule), // Para eliminar daily entries en cascada
     GamificationModule,
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],

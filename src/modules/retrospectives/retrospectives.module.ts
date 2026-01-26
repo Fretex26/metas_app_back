@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RetrospectivesController } from './presentation/retrospectives.controller';
 import { PublicRetrospectivesController } from './presentation/public-retrospectives.controller';
@@ -25,9 +25,9 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 @Module({
   imports: [
     TypeOrmModule.forFeature([RetrospectiveOrmEntity]),
-    SprintsModule,
-    MilestonesModule,
-    ProjectsModule,
+    forwardRef(() => SprintsModule),
+    forwardRef(() => MilestonesModule),
+    forwardRef(() => ProjectsModule),
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
   ],
   controllers: [RetrospectivesController, PublicRetrospectivesController],
