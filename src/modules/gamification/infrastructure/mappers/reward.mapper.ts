@@ -29,4 +29,8 @@ export class RewardMapper {
       claimLink: domainEntity.claimLink ?? undefined,
     };
   }
+
+  static toDomainList(ormEntities: RewardOrmEntity[]): Reward[] {
+    return ormEntities.map((ormEntity) => this.toDomain(ormEntity));
+  }
 }

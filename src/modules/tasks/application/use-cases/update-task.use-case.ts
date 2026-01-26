@@ -64,12 +64,25 @@ export class UpdateTaskUseCase {
       );
     }
 
-    // Si la tarea tiene sprintId, validar que el periodo no exceda el del sprint
+    // Determinar el sprintId a usar (del DTO si se proporciona, sino el actual)
+    // Si sprintId es undefined, mantener el actual; si es null, eliminar; si es string, usar ese
+    const sprintIdToUse = updateTaskDto.sprintId !== undefined 
+      ? updateTaskDto.sprintId 
+      : currentTask.sprintId;
+
+    // Si se proporciona un sprintId (nuevo o existente), validar
     let sprint: Sprint | null = null;
-    if (currentTask.sprintId) {
-      sprint = await this.sprintRepository.findById(currentTask.sprintId);
+    if (sprintIdToUse) {
+      sprint = await this.sprintRepository.findById(sprintIdToUse);
       if (!sprint) {
         throw new NotFoundException('Sprint no encontrado');
+      }
+
+      // Validar que el sprint pertenece al milestone
+      if (sprint.milestoneId !== currentTask.milestoneId) {
+        throw new BadRequestException(
+          'El sprint no pertenece al milestone de la tarea',
+        );
       }
 
       // Validar que el periodo no exceda el del sprint
@@ -84,7 +97,7 @@ export class UpdateTaskUseCase {
     const updatedTask = new Task(
       currentTask.id,
       currentTask.milestoneId,
-      currentTask.sprintId,
+      sprintIdToUse,
       updateTaskDto.name ?? currentTask.name,
       updateTaskDto.description ?? currentTask.description,
       currentTask.status, // El status se actualiza automáticamente basado en checklist items
