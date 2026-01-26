@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { RewardOrmEntity } from './reward.orm-entity';
 import type { IRewardRepository } from '../../domain/repositories/reward.repository';
 import { Reward } from '../../domain/entities/reward.entity';
@@ -29,5 +29,15 @@ export class RewardRepositoryImpl implements IRewardRepository {
       where: { id },
     });
     return ormEntity ? RewardMapper.toDomain(ormEntity) : null;
+  }
+
+  async findByIds(ids: string[]): Promise<Reward[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+    const ormEntities = await this.rewardRepository.find({
+      where: { id: In(ids) },
+    });
+    return RewardMapper.toDomainList(ormEntities);
   }
 }
