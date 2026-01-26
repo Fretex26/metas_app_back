@@ -1,8 +1,9 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsNumber,
   IsString,
   IsOptional,
+  IsNotEmpty,
   Min,
 } from 'class-validator';
 
@@ -22,11 +23,12 @@ export class CreateReviewDto {
   @Min(0, { message: 'Los puntos extra no pueden ser negativos' })
   extraPoints?: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Resumen de la revisión',
-    example: 'El sprint fue exitoso, completamos la mayoría de las tareas planificadas',
+    example:
+      'El sprint fue exitoso, completamos la mayoría de las tareas planificadas',
   })
-  @IsOptional()
+  @IsNotEmpty({ message: 'El resumen es requerido' })
   @IsString({ message: 'El resumen debe ser una cadena de texto' })
-  summary?: string;
+  summary: string;
 }

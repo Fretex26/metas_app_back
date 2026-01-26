@@ -37,6 +37,22 @@ export class SprintRepositoryImpl implements ISprintRepository {
     return SprintMapper.toDomainList(ormEntities);
   }
 
+  async findByUserIdWithEndDateBeforeOrEqual(
+    userId: string,
+    endDate: Date,
+  ): Promise<Sprint[]> {
+    const ormEntities = await this.sprintRepository
+      .createQueryBuilder('sprint')
+      .innerJoin('sprint.milestone', 'milestone')
+      .innerJoin('milestone.project', 'project')
+      .where('project.userId = :userId', { userId })
+      .andWhere('sprint.endDate <= :endDate', { endDate })
+      .orderBy('sprint.endDate', 'DESC')
+      .getMany();
+
+    return SprintMapper.toDomainList(ormEntities);
+  }
+
   async update(sprint: Sprint): Promise<Sprint> {
     const ormEntity = await this.sprintRepository.findOne({
       where: { id: sprint.id },

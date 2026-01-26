@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  Inject,
+} from '@nestjs/common';
 import type { IReviewRepository } from '../../domain/repositories/review.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -53,18 +58,16 @@ export class CreateReviewUseCase {
     // Verificar que no existe ya una review para este sprint
     const existingReview = await this.reviewRepository.findBySprintId(sprintId);
     if (existingReview) {
-      throw new ConflictException(
-        'Ya existe una revisión para este sprint',
-      );
+      throw new ConflictException('Ya existe una revisión para este sprint');
     }
 
     // Calcular el porcentaje de progreso del proyecto
     const projectTasks = await this.taskRepository.findByProjectId(project.id);
     let progressPercentage = 0;
-    
+
     if (projectTasks.length > 0) {
       const completedTasks = projectTasks.filter(
-        (task) => task.status === TaskStatus.COMPLETED,
+        (task) => task.status === (TaskStatus.COMPLETED as string),
       ).length;
       progressPercentage = Math.round(
         (completedTasks / projectTasks.length) * 100,
@@ -78,7 +81,7 @@ export class CreateReviewUseCase {
       userId,
       progressPercentage,
       createReviewDto.extraPoints || 0,
-      createReviewDto.summary || '',
+      createReviewDto.summary,
       new Date(),
     );
 

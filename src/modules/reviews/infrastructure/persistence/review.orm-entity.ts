@@ -39,7 +39,7 @@ export class ReviewOrmEntity {
   @Column({ type: 'integer', default: 0, name: 'extra_points' })
   extraPoints: number;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text' })
   summary: string;
 
   @CreateDateColumn({ name: 'created_at' })
