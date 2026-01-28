@@ -6,6 +6,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
 import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
@@ -19,7 +20,7 @@ import { GetPendingSprintsUseCase } from '../application/use-cases/get-pending-s
  */
 @ApiTags('reviews')
 @Controller('reviews/pending-sprints')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class PendingSprintsController {

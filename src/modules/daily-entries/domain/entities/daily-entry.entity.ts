@@ -7,7 +7,7 @@ export class DailyEntry {
     public readonly id: string,
     public readonly userId: string,
     public readonly taskId: string | null,
-    public readonly sprintId: string | null,
+    public readonly sprintId: string,
     public readonly notesYesterday: string,
     public readonly notesToday: string,
     public readonly difficulty: 'low' | 'medium' | 'high',

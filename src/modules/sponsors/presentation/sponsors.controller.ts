@@ -16,6 +16,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
+import { SponsorStatusExempt } from '../../../shared/decorators/sponsor-status.decorators';
 import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
@@ -35,7 +37,7 @@ import { UpdateSponsorProfileUseCase } from '../application/use-cases/update-spo
  */
 @ApiTags('sponsors')
 @Controller('sponsors')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class SponsorsController {
@@ -79,6 +81,7 @@ export class SponsorsController {
    * Obtiene el perfil de patrocinador del usuario autenticado
    */
   @Get('profile')
+  @SponsorStatusExempt()
   @ApiOperation({
     summary: 'Obtener perfil de patrocinador',
     description:

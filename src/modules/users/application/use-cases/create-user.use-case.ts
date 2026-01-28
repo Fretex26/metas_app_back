@@ -1,4 +1,10 @@
-import { Injectable, ConflictException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
 import { Category } from '../../../categories/domain/entities/category.entity';
@@ -29,6 +35,11 @@ export class CreateUserUseCase {
     // Validar que firebaseUid esté presente (debe venir del token)
     if (!createUserDto.firebaseUid) {
       throw new BadRequestException('El Firebase UID es requerido y debe obtenerse del token de autenticación');
+    }
+
+    // No permitir autoregistro como admin por el flujo público
+    if (createUserDto.role === UserRole.ADMIN) {
+      throw new ForbiddenException('No se puede registrar como administrador por este medio');
     }
 
     // Verificar si el email ya existe

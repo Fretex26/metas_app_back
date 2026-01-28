@@ -45,9 +45,8 @@ import { EnableSponsorUseCase } from '../application/use-cases/enable-sponsor.us
  */
 @ApiTags('admin')
 @Controller('admin/sponsors')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, RolesGuard)
 @UseInterceptors(LoadUserInterceptor)
-@UseGuards(RolesGuard)
 @Roles(UserRole.ADMIN)
 @ApiBearerAuth('JWT-auth')
 export class AdminController {

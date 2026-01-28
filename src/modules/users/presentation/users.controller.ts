@@ -15,6 +15,11 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
+import {
+  SkipSponsorStatusGuard,
+  SponsorStatusExempt,
+} from '../../../shared/decorators/sponsor-status.decorators';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateUserDto } from '../application/dto/create-user.dto';
@@ -26,12 +31,12 @@ import { UpdateUserProfileUseCase } from '../application/use-cases/update-user-p
 
 /**
  * Controlador REST para gestión de usuarios
- * 
+ *
  * @apiTag users
  */
 @ApiTags('users')
 @Controller('users')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @ApiBearerAuth('JWT-auth')
 export class UsersController {
   constructor(
@@ -45,6 +50,7 @@ export class UsersController {
    * Se llama después del registro en Firebase Authentication
    */
   @Post()
+  @SkipSponsorStatusGuard()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Crear nuevo usuario',
@@ -79,6 +85,7 @@ export class UsersController {
    * Obtiene el perfil del usuario autenticado
    */
   @Get('profile')
+  @SponsorStatusExempt()
   @ApiOperation({
     summary: 'Obtener perfil del usuario',
     description: 'Obtiene el perfil del usuario autenticado actualmente.',

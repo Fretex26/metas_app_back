@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SponsorsController } from './presentation/sponsors.controller';
 import { SponsorOrmEntity } from './infrastructure/persistence/sponsor.orm-entity';
@@ -17,7 +17,10 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
  * - Solicitar ser patrocinador (crear solicitud en estado PENDING)
  * - Obtener perfil de patrocinador
  * - Actualizar perfil de patrocinador (si está APPROVED, vuelve a PENDING)
+ * 
+ * Es global para que SponsorStatusGuard pueda resolver ISponsorRepository en cualquier módulo.
  */
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([SponsorOrmEntity]),
