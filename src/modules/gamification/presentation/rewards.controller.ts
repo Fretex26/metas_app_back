@@ -13,6 +13,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
 import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
@@ -29,7 +30,7 @@ import { GetRewardByIdUseCase } from '../application/use-cases/get-reward-by-id.
  */
 @ApiTags('rewards')
 @Controller('rewards')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class RewardsController {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from './presentation/users.controller';
 import { UserOrmEntity } from './infrastructure/persistence/user.orm-entity';
@@ -16,7 +16,10 @@ import { CategoriesModule } from '../categories/categories.module';
  * - Crear usuarios
  * - Obtener perfil
  * - Actualizar perfil
+ * 
+ * Es global para que SponsorStatusGuard pueda resolver IUserRepository en cualquier módulo.
  */
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserOrmEntity]),

@@ -14,6 +14,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
 import { CreateCategoryDto } from '../application/dto/create-category.dto';
 import { CategoryResponseDto } from '../application/dto/category-response.dto';
 import { CreateCategoryUseCase } from '../application/use-cases/create-category.use-case';
@@ -24,7 +25,7 @@ import { GetAllCategoriesUseCase } from '../application/use-cases/get-all-catego
  */
 @ApiTags('categories')
 @Controller('categories')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @ApiBearerAuth('JWT-auth')
 export class CategoriesController {
   constructor(
