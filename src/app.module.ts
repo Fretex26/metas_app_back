@@ -20,6 +20,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { SponsorStatusGuardModule } from './shared/sponsor-status-guard.module';
 
 /**
  * Módulo principal de la aplicación
@@ -64,6 +66,8 @@ import { AuditModule } from './modules/audit/audit.module';
     GamificationModule,
     StatisticsModule,
     AuditModule,
+    AuthModule,
+    SponsorStatusGuardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

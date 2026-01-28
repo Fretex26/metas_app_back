@@ -33,12 +33,12 @@ export class DailyEntryOrmEntity {
   @JoinColumn({ name: 'task_id' })
   task: TaskOrmEntity | null;
 
-  @Column({ type: 'uuid', nullable: true, name: 'sprint_id' })
-  sprintId: string | null;
+  @Column({ type: 'uuid', name: 'sprint_id' })
+  sprintId: string;
 
-  @ManyToOne(() => SprintOrmEntity, { nullable: true })
+  @ManyToOne(() => SprintOrmEntity)
   @JoinColumn({ name: 'sprint_id' })
-  sprint: SprintOrmEntity | null;
+  sprint: SprintOrmEntity;
 
   @Column({ type: 'text', name: 'notes_yesterday' })
   notesYesterday: string;

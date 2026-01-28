@@ -20,13 +20,13 @@ export class CreateDailyEntryDto {
   @IsUUID('4', { message: 'El ID de la tarea debe ser un UUID válido' })
   taskId?: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'ID del sprint relacionado',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @IsOptional()
+  @IsNotEmpty({ message: 'El ID del sprint es requerido' })
   @IsUUID('4', { message: 'El ID del sprint debe ser un UUID válido' })
-  sprintId?: string;
+  sprintId: string;
 
   @ApiProperty({
     description: 'Notas sobre lo que se hizo ayer',

@@ -34,10 +34,10 @@ export class ReviewResponseDto {
   })
   extraPoints: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Resumen de la revisión',
   })
-  summary?: string;
+  summary: string;
 
   @ApiProperty({
     description: 'Fecha de creación',

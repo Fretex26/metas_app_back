@@ -6,6 +6,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
 import { RetrospectiveResponseDto } from '../application/dto/retrospective-response.dto';
 import { GetPublicRetrospectivesUseCase } from '../application/use-cases/get-public-retrospectives.use-case';
 
@@ -18,7 +19,7 @@ import { GetPublicRetrospectivesUseCase } from '../application/use-cases/get-pub
  */
 @ApiTags('retrospectives')
 @Controller('retrospectives/public')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @ApiBearerAuth('JWT-auth')
 export class PublicRetrospectivesController {
   constructor(

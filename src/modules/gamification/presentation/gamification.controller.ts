@@ -21,6 +21,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from '../../../shared/guards/firebase-auth.guard';
+import { SponsorStatusGuard } from '../../../shared/guards/sponsor-status.guard';
 import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.interceptor';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
@@ -41,7 +42,7 @@ import { UpdateUserRewardStatusUseCase } from '../application/use-cases/update-u
  */
 @ApiTags('gamification')
 @Controller('gamification')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, SponsorStatusGuard)
 @UseInterceptors(LoadUserInterceptor)
 @ApiBearerAuth('JWT-auth')
 export class GamificationController {

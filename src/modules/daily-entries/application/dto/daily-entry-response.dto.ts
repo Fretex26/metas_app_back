@@ -22,10 +22,10 @@ export class DailyEntryResponseDto {
   })
   taskId?: string | null;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'ID del sprint relacionado',
   })
-  sprintId?: string | null;
+  sprintId: string;
 
   @ApiProperty({
     description: 'Notas sobre lo que se hizo ayer',
