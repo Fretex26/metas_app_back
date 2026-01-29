@@ -35,7 +35,9 @@ export class GetUserStatisticsUseCase {
     // Obtener tareas completadas de todos los proyectos del usuario
     let completedTasksCount = 0;
     for (const project of projects) {
-      const projectTasks = await this.taskRepository.findByProjectId(project.id);
+      const projectTasks = await this.taskRepository.findByProjectId(
+        project.id,
+      );
       const completedTasks = projectTasks.filter(
         (task) => task.status === TaskStatus.COMPLETED,
       );

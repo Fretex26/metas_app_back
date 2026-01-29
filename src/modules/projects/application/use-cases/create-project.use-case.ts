@@ -49,9 +49,7 @@ export class CreateProjectUseCase {
       createProjectDto.description || '',
       createProjectDto.purpose || '',
       createProjectDto.budget || null,
-      createProjectDto.finalDate
-        ? new Date(createProjectDto.finalDate)
-        : null,
+      createProjectDto.finalDate ? new Date(createProjectDto.finalDate) : null,
       createProjectDto.resourcesAvailable || null,
       createProjectDto.resourcesNeeded || null,
       null, // sponsoredGoalId

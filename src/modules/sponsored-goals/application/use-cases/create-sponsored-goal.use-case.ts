@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+  Inject,
+} from '@nestjs/common';
 import type { ISponsoredGoalRepository } from '../../domain/repositories/sponsored-goal.repository';
 import type { ISponsorRepository } from '../../../sponsors/domain/repositories/sponsor.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
-import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
 import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
 import { Category } from '../../../categories/domain/entities/category.entity';
@@ -26,8 +31,6 @@ export class CreateSponsoredGoalUseCase {
     private readonly projectRepository: IProjectRepository,
     @Inject('IMilestoneRepository')
     private readonly milestoneRepository: IMilestoneRepository,
-    @Inject('ISprintRepository')
-    private readonly sprintRepository: ISprintRepository,
     @Inject('ITaskRepository')
     private readonly taskRepository: ITaskRepository,
     @Inject('ICategoryRepository')
@@ -71,48 +74,33 @@ export class CreateSponsoredGoalUseCase {
     }
 
     // Validar que el proyecto existe y pertenece al sponsor
-    const project = await this.projectRepository.findById(createSponsoredGoalDto.projectId);
+    const project = await this.projectRepository.findById(
+      createSponsoredGoalDto.projectId,
+    );
     if (!project) {
       throw new NotFoundException('El proyecto especificado no existe');
     }
 
     if (project.userId !== userId) {
-      throw new ForbiddenException(
-        'El proyecto no pertenece al patrocinador',
-      );
+      throw new ForbiddenException('El proyecto no pertenece al patrocinador');
     }
 
     // Validar que el proyecto tiene al menos una milestone
-    const milestones = await this.milestoneRepository.findByProjectId(project.id);
+    const milestones = await this.milestoneRepository.findByProjectId(
+      project.id,
+    );
     if (milestones.length === 0) {
       throw new BadRequestException(
         'El proyecto debe tener al menos una milestone',
       );
     }
 
-    // Validar que cada milestone tiene al menos una task
+    // Validar que cada milestone tiene al menos una task.
+    // Los proyectos de sponsors no tienen sprints; tienen milestones, tasks y checklists.
+    // Los sprints los crean los usuarios al duplicar el proyecto.
     for (const milestone of milestones) {
-      const sprints = await this.sprintRepository.findByMilestoneId(milestone.id);
-      
-      // Si no hay sprints, buscar tasks directamente en el milestone
-      // Nota: En la estructura actual, las tasks están dentro de sprints
-      // Así que verificamos que hay sprints y que cada sprint tiene al menos una task
-      if (sprints.length === 0) {
-        throw new BadRequestException(
-          `La milestone "${milestone.name}" debe tener al menos un sprint con una task`,
-        );
-      }
-
-      let hasAtLeastOneTask = false;
-      for (const sprint of sprints) {
-        const tasks = await this.taskRepository.findBySprintId(sprint.id);
-        if (tasks.length > 0) {
-          hasAtLeastOneTask = true;
-          break;
-        }
-      }
-
-      if (!hasAtLeastOneTask) {
+      const tasks = await this.taskRepository.findByMilestoneId(milestone.id);
+      if (tasks.length === 0) {
         throw new BadRequestException(
           `La milestone "${milestone.name}" debe tener al menos una task`,
         );
@@ -121,8 +109,13 @@ export class CreateSponsoredGoalUseCase {
 
     // Validar y obtener categorías si se proporcionan
     let categories: Category[] = [];
-    if (createSponsoredGoalDto.categoryIds && createSponsoredGoalDto.categoryIds.length > 0) {
-      categories = await this.categoryRepository.findByIds(createSponsoredGoalDto.categoryIds);
+    if (
+      createSponsoredGoalDto.categoryIds &&
+      createSponsoredGoalDto.categoryIds.length > 0
+    ) {
+      categories = await this.categoryRepository.findByIds(
+        createSponsoredGoalDto.categoryIds,
+      );
       if (categories.length !== createSponsoredGoalDto.categoryIds.length) {
         throw new BadRequestException(
           'Una o más categorías especificadas no existen',

@@ -15,9 +15,9 @@ import { GetUserStatisticsUseCase } from '../application/use-cases/get-user-stat
 
 /**
  * Controlador REST para estadísticas
- * 
+ *
  * Proporciona endpoints para consultar estadísticas del usuario
- * 
+ *
  * @apiTag statistics
  */
 @ApiTags('statistics')
@@ -47,8 +47,6 @@ export class StatisticsController {
   async getUserStatistics(
     @CurrentUser() user: UserPayload,
   ): Promise<UserStatisticsResponseDto> {
-    return await this.getUserStatisticsUseCase.execute(
-      user.userId || user.uid,
-    );
+    return await this.getUserStatisticsUseCase.execute(user.userId || user.uid);
   }
 }

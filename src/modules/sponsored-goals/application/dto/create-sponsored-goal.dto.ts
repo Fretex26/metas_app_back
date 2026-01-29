@@ -45,12 +45,18 @@ export class CreateSponsoredGoalDto {
 
   @ApiPropertyOptional({
     description: 'IDs de las categorías asociadas',
-    example: ['123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001'],
+    example: [
+      '123e4567-e89b-12d3-a456-426614174000',
+      '223e4567-e89b-12d3-a456-426614174001',
+    ],
     type: [String],
   })
   @IsOptional()
   @IsArray({ message: 'Las categorías deben ser un array' })
-  @IsUUID('4', { each: true, message: 'Cada ID de categoría debe ser un UUID válido' })
+  @IsUUID('4', {
+    each: true,
+    message: 'Cada ID de categoría debe ser un UUID válido',
+  })
   categoryIds?: string[];
 
   @ApiProperty({
@@ -58,7 +64,10 @@ export class CreateSponsoredGoalDto {
     example: '2024-01-01',
   })
   @IsNotEmpty({ message: 'La fecha de inicio es requerida' })
-  @IsDateString({}, { message: 'La fecha de inicio debe tener un formato válido' })
+  @IsDateString(
+    {},
+    { message: 'La fecha de inicio debe tener un formato válido' },
+  )
   startDate: string;
 
   @ApiProperty({
@@ -76,7 +85,8 @@ export class CreateSponsoredGoalDto {
   })
   @IsNotEmpty({ message: 'El método de verificación es requerido' })
   @IsEnum(VerificationMethod, {
-    message: 'El método de verificación debe ser uno de: qr, checklist, manual, external_api',
+    message:
+      'El método de verificación debe ser uno de: qr, checklist, manual, external_api',
   })
   verificationMethod: VerificationMethod;
 

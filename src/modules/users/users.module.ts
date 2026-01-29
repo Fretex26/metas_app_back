@@ -11,20 +11,17 @@ import { CategoriesModule } from '../categories/categories.module';
 
 /**
  * Módulo de usuarios
- * 
+ *
  * Proporciona funcionalidades para gestión de usuarios:
  * - Crear usuarios
  * - Obtener perfil
  * - Actualizar perfil
- * 
+ *
  * Es global para que SponsorStatusGuard pueda resolver IUserRepository en cualquier módulo.
  */
 @Global()
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserOrmEntity]),
-    CategoriesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([UserOrmEntity]), CategoriesModule],
   controllers: [UsersController],
   providers: [
     // Repositorio

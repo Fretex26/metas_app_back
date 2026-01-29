@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IMilestoneRepository } from '../../domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
@@ -10,7 +15,7 @@ import type { IDailyEntryRepository } from '../../../daily-entries/domain/reposi
 
 /**
  * Caso de uso para eliminar un milestone
- * 
+ *
  * Elimina en cascada:
  * - Todos los sprints del milestone
  * - Todas las reviews de esos sprints
@@ -68,13 +73,16 @@ export class DeleteMilestoneUseCase {
       }
 
       // Eliminar retrospective si existe (relación 1:1)
-      const retrospective = await this.retrospectiveRepository.findBySprintId(sprint.id);
+      const retrospective = await this.retrospectiveRepository.findBySprintId(
+        sprint.id,
+      );
       if (retrospective) {
         await this.retrospectiveRepository.delete(retrospective.id);
       }
 
       // Eliminar daily entries relacionados con el sprint
-      const dailyEntriesBySprint = await this.dailyEntryRepository.findBySprintId(sprint.id);
+      const dailyEntriesBySprint =
+        await this.dailyEntryRepository.findBySprintId(sprint.id);
       for (const dailyEntry of dailyEntriesBySprint) {
         await this.dailyEntryRepository.delete(dailyEntry.id);
       }
@@ -89,13 +97,17 @@ export class DeleteMilestoneUseCase {
     // Para cada task, eliminar sus checklist items y daily entries
     for (const task of tasks) {
       // Eliminar checklist items
-      const checklistItems = await this.checklistItemRepository.findByTaskId(task.id);
+      const checklistItems = await this.checklistItemRepository.findByTaskId(
+        task.id,
+      );
       for (const checklistItem of checklistItems) {
         await this.checklistItemRepository.delete(checklistItem.id);
       }
 
       // Eliminar daily entries relacionados con la task
-      const dailyEntriesByTask = await this.dailyEntryRepository.findByTaskId(task.id);
+      const dailyEntriesByTask = await this.dailyEntryRepository.findByTaskId(
+        task.id,
+      );
       for (const dailyEntry of dailyEntriesByTask) {
         await this.dailyEntryRepository.delete(dailyEntry.id);
       }

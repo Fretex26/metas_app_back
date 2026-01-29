@@ -28,7 +28,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de tasks
- * 
+ *
  * Proporciona funcionalidades para gestión de tasks dentro de sprints:
  * - Crear tasks (validar que el periodo no exceda el del sprint)
  * - Listar tasks de un sprint

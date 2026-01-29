@@ -86,7 +86,7 @@ export class CreateProjectDto {
 
   @ApiPropertyOptional({
     description: 'Presupuesto del proyecto',
-    example: 1000.50,
+    example: 1000.5,
   })
   @IsOptional()
   @IsNumber({}, { message: 'El presupuesto debe ser un número' })

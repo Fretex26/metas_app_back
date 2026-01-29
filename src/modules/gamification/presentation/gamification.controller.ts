@@ -35,9 +35,9 @@ import { UpdateUserRewardStatusUseCase } from '../application/use-cases/update-u
 
 /**
  * Controlador REST para gamificación (puntos y transacciones)
- * 
+ *
  * Permite consultar la billetera de puntos y el historial de transacciones
- * 
+ *
  * @apiTag gamification
  */
 @ApiTags('gamification')
@@ -69,9 +69,7 @@ export class GamificationController {
   async getWallet(
     @CurrentUser() user: UserPayload,
   ): Promise<WalletResponseDto> {
-    const wallet = await this.getWalletUseCase.execute(
-      user.userId || user.uid,
-    );
+    const wallet = await this.getWalletUseCase.execute(user.userId || user.uid);
     return {
       id: wallet.id,
       userId: wallet.userId,

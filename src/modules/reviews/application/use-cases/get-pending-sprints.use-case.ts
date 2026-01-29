@@ -30,10 +30,11 @@ export class GetPendingSprintsUseCase {
     today.setHours(0, 0, 0, 0);
 
     // Obtener todos los sprints del usuario con endDate <= hoy
-    const sprints = await this.sprintRepository.findByUserIdWithEndDateBeforeOrEqual(
-      userId,
-      today,
-    );
+    const sprints =
+      await this.sprintRepository.findByUserIdWithEndDateBeforeOrEqual(
+        userId,
+        today,
+      );
 
     const pendingSprints: PendingSprintsResponseDto[] = [];
 
@@ -59,8 +60,9 @@ export class GetPendingSprintsUseCase {
       const hasReview = review !== null;
 
       // Verificar si tiene retrospectiva
-      const retrospective =
-        await this.retrospectiveRepository.findBySprintId(sprint.id);
+      const retrospective = await this.retrospectiveRepository.findBySprintId(
+        sprint.id,
+      );
       const hasRetrospective = retrospective !== null;
 
       // Solo agregar si falta review o retrospectiva (o ambas)

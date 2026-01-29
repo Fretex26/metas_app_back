@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 /**
  * DTO de respuesta para Reward
- * 
+ *
  * Representa una recompensa que puede ser otorgada a usuarios.
  * Los campos opcionales pueden ser null.
  */

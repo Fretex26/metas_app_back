@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -25,25 +26,31 @@ import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.inte
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateSponsoredGoalDto } from '../application/dto/create-sponsored-goal.dto';
+import { UpdateSponsoredGoalDto } from '../application/dto/update-sponsored-goal.dto';
 import { SponsoredGoalResponseDto } from '../application/dto/sponsored-goal-response.dto';
 import { UpdateEnrollmentStatusDto } from '../application/dto/update-enrollment-status.dto';
 import { EnrollmentResponseDto } from '../application/dto/enrollment-response.dto';
 import { CategoryResponseDto } from '../../categories/application/dto/category-response.dto';
 import { CreateSponsoredGoalUseCase } from '../application/use-cases/create-sponsored-goal.use-case';
+import { ListSponsorSponsoredGoalsUseCase } from '../application/use-cases/list-sponsor-sponsored-goals.use-case';
+import { GetSponsoredGoalByIdUseCase } from '../application/use-cases/get-sponsored-goal-by-id.use-case';
+import { UpdateSponsoredGoalUseCase } from '../application/use-cases/update-sponsored-goal.use-case';
+import { DeleteSponsoredGoalUseCase } from '../application/use-cases/delete-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from '../application/use-cases/list-available-sponsored-goals.use-case';
 import { FilterSponsoredGoalsByCategoriesUseCase } from '../application/use-cases/filter-sponsored-goals-by-categories.use-case';
 import { EnrollInSponsoredGoalUseCase } from '../application/use-cases/enroll-in-sponsored-goal.use-case';
 import { UpdateEnrollmentStatusUseCase } from '../application/use-cases/update-enrollment-status.use-case';
 import { VerifyMilestoneCompletionUseCase } from '../application/use-cases/verify-milestone-completion.use-case';
 import { GetUserSponsoredProjectsUseCase } from '../application/use-cases/get-user-sponsored-projects.use-case';
+import { GetSponsoredProjectMilestonesUseCase } from '../application/use-cases/get-sponsored-project-milestones.use-case';
 import { ProjectResponseDto } from '../../projects/application/dto/project-response.dto';
 import { MilestoneResponseDto } from '../../milestones/application/dto/milestone-response.dto';
 
 /**
  * Controlador REST para gestión de sponsored goals
- * 
+ *
  * Permite crear objetivos patrocinados y listar objetivos disponibles
- * 
+ *
  * @apiTag sponsored-goals
  */
 @ApiTags('sponsored-goals')
@@ -54,12 +61,17 @@ import { MilestoneResponseDto } from '../../milestones/application/dto/milestone
 export class SponsoredGoalsController {
   constructor(
     private readonly createSponsoredGoalUseCase: CreateSponsoredGoalUseCase,
+    private readonly listSponsorSponsoredGoalsUseCase: ListSponsorSponsoredGoalsUseCase,
+    private readonly getSponsoredGoalByIdUseCase: GetSponsoredGoalByIdUseCase,
+    private readonly updateSponsoredGoalUseCase: UpdateSponsoredGoalUseCase,
+    private readonly deleteSponsoredGoalUseCase: DeleteSponsoredGoalUseCase,
     private readonly listAvailableSponsoredGoalsUseCase: ListAvailableSponsoredGoalsUseCase,
     private readonly filterSponsoredGoalsByCategoriesUseCase: FilterSponsoredGoalsByCategoriesUseCase,
     private readonly enrollInSponsoredGoalUseCase: EnrollInSponsoredGoalUseCase,
     private readonly updateEnrollmentStatusUseCase: UpdateEnrollmentStatusUseCase,
     private readonly verifyMilestoneCompletionUseCase: VerifyMilestoneCompletionUseCase,
     private readonly getUserSponsoredProjectsUseCase: GetUserSponsoredProjectsUseCase,
+    private readonly getSponsoredProjectMilestonesUseCase: GetSponsoredProjectMilestonesUseCase,
   ) {}
 
   /**
@@ -83,7 +95,8 @@ export class SponsoredGoalsController {
   })
   @ApiResponse({
     status: 403,
-    description: 'Solo los patrocinadores aprobados pueden crear objetivos patrocinados',
+    description:
+      'Solo los patrocinadores aprobados pueden crear objetivos patrocinados',
   })
   async createSponsoredGoal(
     @Body() createSponsoredGoalDto: CreateSponsoredGoalDto,
@@ -94,6 +107,33 @@ export class SponsoredGoalsController {
       user.userId || user.uid,
     );
     return this.toResponseDto(sponsoredGoal);
+  }
+
+  /**
+   * Lista los objetivos patrocinados del sponsor autenticado (solo sponsors).
+   */
+  @Get()
+  @ApiOperation({
+    summary: 'Listar mis objetivos patrocinados',
+    description:
+      'Obtiene la lista de objetivos patrocinados creados por el sponsor autenticado.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de objetivos patrocinados del sponsor',
+    type: [SponsoredGoalResponseDto],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No se encontró perfil de patrocinador',
+  })
+  async listSponsorSponsoredGoals(
+    @CurrentUser() user: UserPayload,
+  ): Promise<SponsoredGoalResponseDto[]> {
+    const goals = await this.listSponsorSponsoredGoalsUseCase.execute(
+      user.userId || user.uid,
+    );
+    return goals.map((g) => this.toResponseDto(g));
   }
 
   /**
@@ -110,7 +150,8 @@ export class SponsoredGoalsController {
     required: false,
     description: 'IDs de categorías para filtrar (separados por coma)',
     type: String,
-    example: '123e4567-e89b-12d3-a456-426614174000,223e4567-e89b-12d3-a456-426614174001',
+    example:
+      '123e4567-e89b-12d3-a456-426614174000,223e4567-e89b-12d3-a456-426614174001',
   })
   @ApiResponse({
     status: 200,
@@ -123,13 +164,125 @@ export class SponsoredGoalsController {
     let goals;
     if (categoryIds) {
       const categoryIdsArray = categoryIds.split(',').map((id) => id.trim());
-      goals = await this.filterSponsoredGoalsByCategoriesUseCase.execute(
-        categoryIdsArray,
-      );
+      goals =
+        await this.filterSponsoredGoalsByCategoriesUseCase.execute(
+          categoryIdsArray,
+        );
     } else {
       goals = await this.listAvailableSponsoredGoalsUseCase.execute();
     }
     return goals.map((goal) => this.toResponseDto(goal));
+  }
+
+  /**
+   * Obtiene un objetivo patrocinado por ID (solo el sponsor dueño).
+   */
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Obtener objetivo patrocinado por ID',
+    description:
+      'Obtiene el detalle de un objetivo patrocinado. Solo el sponsor creador puede acceder.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del objetivo patrocinado',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Objetivo patrocinado',
+    type: SponsoredGoalResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Objetivo patrocinado no encontrado',
+  })
+  @ApiResponse({ status: 403, description: 'No tienes permiso para acceder' })
+  async getSponsoredGoalById(
+    @Param('id') id: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<SponsoredGoalResponseDto> {
+    const goal = await this.getSponsoredGoalByIdUseCase.execute(
+      id,
+      user.userId || user.uid,
+    );
+    return this.toResponseDto(goal);
+  }
+
+  /**
+   * Actualiza un objetivo patrocinado (solo el sponsor dueño).
+   */
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Actualizar objetivo patrocinado',
+    description:
+      'Actualiza un objetivo patrocinado. Solo el sponsor creador puede modificarlo. Solo se envían los campos a cambiar.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del objetivo patrocinado',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Objetivo patrocinado actualizado',
+    type: SponsoredGoalResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Objetivo patrocinado no encontrado',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permiso para actualizarlo',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validación fallida (fechas, categorías, etc.)',
+  })
+  async updateSponsoredGoal(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateSponsoredGoalDto,
+    @CurrentUser() user: UserPayload,
+  ): Promise<SponsoredGoalResponseDto> {
+    const goal = await this.updateSponsoredGoalUseCase.execute(
+      id,
+      user.userId || user.uid,
+      updateDto,
+    );
+    return this.toResponseDto(goal);
+  }
+
+  /**
+   * Elimina un objetivo patrocinado (solo el sponsor dueño).
+   */
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Eliminar objetivo patrocinado',
+    description:
+      'Elimina un objetivo patrocinado. Solo el sponsor creador puede eliminarlo.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del objetivo patrocinado',
+    type: String,
+  })
+  @ApiResponse({ status: 204, description: 'Eliminado correctamente' })
+  @ApiResponse({
+    status: 404,
+    description: 'Objetivo patrocinado no encontrado',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permiso para eliminarlo',
+  })
+  async deleteSponsoredGoal(
+    @Param('id') id: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<void> {
+    await this.deleteSponsoredGoalUseCase.execute(id, user.userId || user.uid);
   }
 
   /**
@@ -246,7 +399,8 @@ export class SponsoredGoalsController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Solo se pueden verificar milestones de proyectos patrocinados',
+    description:
+      'Solo se pueden verificar milestones de proyectos patrocinados',
   })
   async verifyMilestoneCompletion(
     @Param('milestoneId') milestoneId: string,
@@ -264,6 +418,54 @@ export class SponsoredGoalsController {
       status: milestone.status as any,
       createdAt: milestone.createdAt,
     };
+  }
+
+  /**
+   * Obtiene las milestones de un proyecto patrocinado (solo para sponsors)
+   */
+  @Get('projects/:projectId/milestones')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtener milestones de un proyecto patrocinado',
+    description:
+      'Permite a un sponsor ver las milestones de un proyecto patrocinado de un usuario',
+  })
+  @ApiParam({
+    name: 'projectId',
+    description: 'ID del proyecto patrocinado',
+    type: 'string',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de milestones del proyecto patrocinado',
+    type: [MilestoneResponseDto],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Proyecto no encontrado',
+  })
+  @ApiResponse({
+    status: 403,
+    description:
+      'Solo los patrocinadores pueden ver milestones de proyectos patrocinados',
+  })
+  async getSponsoredProjectMilestones(
+    @Param('projectId') projectId: string,
+    @CurrentUser() user: UserPayload,
+  ): Promise<MilestoneResponseDto[]> {
+    const milestones = await this.getSponsoredProjectMilestonesUseCase.execute(
+      projectId,
+      user.userId || user.uid,
+    );
+    return milestones.map((milestone) => ({
+      id: milestone.id,
+      projectId: milestone.projectId,
+      name: milestone.name,
+      description: milestone.description,
+      status: milestone.status as any,
+      rewardId: milestone.rewardId ?? null,
+      createdAt: milestone.createdAt,
+    }));
   }
 
   /**

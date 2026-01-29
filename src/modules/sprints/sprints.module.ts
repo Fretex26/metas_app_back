@@ -21,7 +21,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de sprints
- * 
+ *
  * Proporciona funcionalidades para gestión de sprints dentro de milestones:
  * - Crear sprints (máximo 4 semanas por sprint)
  * - Listar sprints de un milestone

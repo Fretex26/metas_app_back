@@ -11,7 +11,7 @@ import { Reward } from '../../domain/entities/reward.entity';
 
 /**
  * Caso de uso para obtener una reward específica por ID
- * 
+ *
  * Verifica que la reward pertenezca al usuario (esté asociada a alguno de sus proyectos o milestones).
  * Si no pertenece al usuario, lanza ForbiddenException.
  * Si no existe, lanza NotFoundException.
@@ -35,9 +35,8 @@ export class GetRewardByIdUseCase {
     // Obtener todos los milestones de los proyectos del usuario
     const userMilestones: Array<{ rewardId: string | null }> = [];
     for (const projectId of projectIds) {
-      const milestones = await this.milestoneRepository.findByProjectId(
-        projectId,
-      );
+      const milestones =
+        await this.milestoneRepository.findByProjectId(projectId);
       userMilestones.push(...milestones);
     }
 

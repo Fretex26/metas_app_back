@@ -42,14 +42,16 @@ export class CategoryRepositoryImpl implements ICategoryRepository {
     const allCategories = await this.categoryRepository
       .createQueryBuilder('category')
       .getMany();
-    
+
     // Comparar cada categoría con el nombre normalizado
     const normalizedCategory = allCategories.find((cat) => {
       const catNormalized = this.normalizeCategoryName(cat.name);
       return catNormalized.toLowerCase() === normalizedLower;
     });
-    
-    return normalizedCategory ? CategoryMapper.toDomain(normalizedCategory) : null;
+
+    return normalizedCategory
+      ? CategoryMapper.toDomain(normalizedCategory)
+      : null;
   }
 
   /**

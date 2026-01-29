@@ -19,10 +19,8 @@ export class UserRepositoryImpl implements IUserRepository {
   ) {}
 
   async create(user: User): Promise<User> {
-    const ormEntity = this.userRepository.create(
-      UserMapper.toOrmEntity(user),
-    );
-    
+    const ormEntity = this.userRepository.create(UserMapper.toOrmEntity(user));
+
     // Crear relaciones con categorías si existen
     if (user.categories && user.categories.length > 0) {
       ormEntity.userCategories = user.categories.map((cat) => {
@@ -33,14 +31,16 @@ export class UserRepositoryImpl implements IUserRepository {
         return userCategory;
       });
     }
-    
+
     const savedEntity = await this.userRepository.save(ormEntity);
     // Recargar con relaciones
     const reloaded = await this.userRepository.findOne({
       where: { id: savedEntity.id },
       relations: ['userCategories', 'userCategories.category'],
     });
-    return reloaded ? UserMapper.toDomain(reloaded) : UserMapper.toDomain(savedEntity);
+    return reloaded
+      ? UserMapper.toDomain(reloaded)
+      : UserMapper.toDomain(savedEntity);
   }
 
   async findById(id: string): Promise<User | null> {
@@ -78,7 +78,7 @@ export class UserRepositoryImpl implements IUserRepository {
     }
 
     Object.assign(ormEntity, UserMapper.toOrmEntity(user));
-    
+
     // Actualizar categorías si existen
     if (user.categories) {
       // Eliminar relaciones existentes
@@ -87,7 +87,7 @@ export class UserRepositoryImpl implements IUserRepository {
           userId: user.id,
         });
       }
-      
+
       // Crear nuevas relaciones
       ormEntity.userCategories = user.categories.map((cat) => {
         const userCategory = new UserCategoryOrmEntity();
@@ -98,14 +98,16 @@ export class UserRepositoryImpl implements IUserRepository {
         return userCategory;
       });
     }
-    
+
     const updatedEntity = await this.userRepository.save(ormEntity);
     // Recargar con relaciones
     const reloaded = await this.userRepository.findOne({
       where: { id: updatedEntity.id },
       relations: ['userCategories', 'userCategories.category'],
     });
-    return reloaded ? UserMapper.toDomain(reloaded) : UserMapper.toDomain(updatedEntity);
+    return reloaded
+      ? UserMapper.toDomain(reloaded)
+      : UserMapper.toDomain(updatedEntity);
   }
 
   async delete(id: string): Promise<void> {

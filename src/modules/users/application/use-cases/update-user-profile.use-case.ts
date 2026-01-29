@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+} from '@nestjs/common';
 import type { IUserRepository } from '../../domain/repositories/user.repository';
 import type { ICategoryRepository } from '../../../categories/domain/repositories/category.repository';
 import { User } from '../../domain/entities/user.entity';
@@ -38,7 +43,9 @@ export class UpdateUserProfileUseCase {
     let categories = user.categories || [];
     if (updateUserDto.categoryIds !== undefined) {
       if (updateUserDto.categoryIds.length > 0) {
-        categories = await this.categoryRepository.findByIds(updateUserDto.categoryIds);
+        categories = await this.categoryRepository.findByIds(
+          updateUserDto.categoryIds,
+        );
         if (categories.length !== updateUserDto.categoryIds.length) {
           throw new BadRequestException(
             'Una o más categorías especificadas no existen',

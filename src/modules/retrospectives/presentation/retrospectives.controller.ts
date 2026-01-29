@@ -29,9 +29,9 @@ import { GetPublicRetrospectivesUseCase } from '../application/use-cases/get-pub
 
 /**
  * Controlador REST para gestión de retrospectives
- * 
+ *
  * Permite crear y obtener retrospectivas de sprints
- * 
+ *
  * @apiTag retrospectives
  */
 @ApiTags('retrospectives')
@@ -108,7 +108,8 @@ export class RetrospectivesController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Sprint no encontrado o no existe retrospectiva para este sprint',
+    description:
+      'Sprint no encontrado o no existe retrospectiva para este sprint',
   })
   @ApiResponse({
     status: 403,

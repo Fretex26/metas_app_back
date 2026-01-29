@@ -12,9 +12,9 @@ import { GetPublicRetrospectivesUseCase } from '../application/use-cases/get-pub
 
 /**
  * Controlador REST para retrospectivas públicas
- * 
+ *
  * Permite obtener retrospectivas públicas sin necesidad de ser el dueño
- * 
+ *
  * @apiTag retrospectives
  */
 @ApiTags('retrospectives')
@@ -41,8 +41,7 @@ export class PublicRetrospectivesController {
     type: [RetrospectiveResponseDto],
   })
   async getPublicRetrospectives(): Promise<RetrospectiveResponseDto[]> {
-    const retrospectives =
-      await this.getPublicRetrospectivesUseCase.execute();
+    const retrospectives = await this.getPublicRetrospectivesUseCase.execute();
     return retrospectives.map((retrospective) =>
       this.toResponseDto(retrospective),
     );

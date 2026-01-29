@@ -27,7 +27,10 @@ export class CategoryOrmEntity {
   createdAt: Date;
 
   // Relaciones
-  @OneToMany(() => UserCategoryOrmEntity, (userCategory) => userCategory.category)
+  @OneToMany(
+    () => UserCategoryOrmEntity,
+    (userCategory) => userCategory.category,
+  )
   userCategories: UserCategoryOrmEntity[];
 
   @ManyToMany(() => SponsoredGoalOrmEntity, (goal) => goal.categories)

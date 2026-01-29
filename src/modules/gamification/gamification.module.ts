@@ -28,7 +28,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de gamificación
- * 
+ *
  * Proporciona funcionalidades para el sistema de gamificación:
  * - Billetera de puntos
  * - Historial de transacciones de puntos

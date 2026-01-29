@@ -18,7 +18,9 @@ export class UserMapper {
       ormEntity.firebaseUid,
       ormEntity.role as 'user' | 'sponsor' | 'admin',
       ormEntity.userCategories
-        ? ormEntity.userCategories.map((uc) => CategoryMapper.toDomain(uc.category))
+        ? ormEntity.userCategories.map((uc) =>
+            CategoryMapper.toDomain(uc.category),
+          )
         : [],
       ormEntity.createdAt,
       ormEntity.updatedAt,

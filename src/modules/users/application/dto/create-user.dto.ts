@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsArray,
+  IsUUID,
+} from 'class-validator';
 import { UserRole } from '../../../../shared/types/enums';
 
 /**
@@ -23,7 +31,8 @@ export class CreateUserDto {
   email: string;
 
   @ApiPropertyOptional({
-    description: 'UID de Firebase Authentication (se obtiene automáticamente del token, no enviar en el body)',
+    description:
+      'UID de Firebase Authentication (se obtiene automáticamente del token, no enviar en el body)',
     example: 'firebase-uid-12345',
     readOnly: true,
   })
@@ -43,11 +52,17 @@ export class CreateUserDto {
 
   @ApiPropertyOptional({
     description: 'IDs de las categorías de interés del usuario',
-    example: ['123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001'],
+    example: [
+      '123e4567-e89b-12d3-a456-426614174000',
+      '223e4567-e89b-12d3-a456-426614174001',
+    ],
     type: [String],
   })
   @IsOptional()
   @IsArray({ message: 'Las categorías deben ser un array' })
-  @IsUUID('4', { each: true, message: 'Cada ID de categoría debe ser un UUID válido' })
+  @IsUUID('4', {
+    each: true,
+    message: 'Cada ID de categoría debe ser un UUID válido',
+  })
   categoryIds?: string[];
 }

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IProjectRepository } from '../../domain/repositories/project.repository';
 import { Project } from '../../domain/entities/project.entity';
 import { UpdateProjectDto } from '../dto/update-project.dto';

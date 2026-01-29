@@ -34,12 +34,16 @@ export class CreateUserUseCase {
   async execute(createUserDto: CreateUserDto): Promise<User> {
     // Validar que firebaseUid esté presente (debe venir del token)
     if (!createUserDto.firebaseUid) {
-      throw new BadRequestException('El Firebase UID es requerido y debe obtenerse del token de autenticación');
+      throw new BadRequestException(
+        'El Firebase UID es requerido y debe obtenerse del token de autenticación',
+      );
     }
 
     // No permitir autoregistro como admin por el flujo público
     if (createUserDto.role === UserRole.ADMIN) {
-      throw new ForbiddenException('No se puede registrar como administrador por este medio');
+      throw new ForbiddenException(
+        'No se puede registrar como administrador por este medio',
+      );
     }
 
     // Verificar si el email ya existe
@@ -61,7 +65,9 @@ export class CreateUserUseCase {
     // Validar y obtener categorías si se proporcionan
     let categories: Category[] = [];
     if (createUserDto.categoryIds && createUserDto.categoryIds.length > 0) {
-      categories = await this.categoryRepository.findByIds(createUserDto.categoryIds);
+      categories = await this.categoryRepository.findByIds(
+        createUserDto.categoryIds,
+      );
       if (categories.length !== createUserDto.categoryIds.length) {
         throw new BadRequestException(
           'Una o más categorías especificadas no existen',

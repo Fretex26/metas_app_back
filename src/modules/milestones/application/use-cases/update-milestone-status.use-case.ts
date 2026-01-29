@@ -11,17 +11,17 @@ import { MilestoneStatus, TaskStatus } from '../../../../shared/types/enums';
 
 /**
  * Caso de uso para actualizar automáticamente el estado de una milestone
- * 
+ *
  * Lógica:
  * - PENDING: ninguna task completada (todas en PENDING)
  * - IN_PROGRESS: al menos una task en IN_PROGRESS o COMPLETED (pero no todas COMPLETED)
- * - COMPLETED: 
+ * - COMPLETED:
  *   - Para proyectos personales: automáticamente cuando todas las tasks estén COMPLETED
  *   - Para proyectos patrocinados: solo cuando el sponsor lo verifique (no se actualiza automáticamente aquí)
- * 
+ *
  * Si una milestone está COMPLETED y una task pasa a IN_PROGRESS, la milestone también cambia a IN_PROGRESS
  * (excepto para proyectos patrocinados donde solo el sponsor puede cambiar el estado)
- * 
+ *
  * Nota: Este caso de uso se debe llamar cuando se actualice el estado de una task.
  */
 @Injectable()
@@ -134,11 +134,15 @@ export class UpdateMilestoneStatusUseCase {
       milestone.createdAt,
     );
 
-    const savedMilestone = await this.milestoneRepository.update(updatedMilestone);
+    const savedMilestone =
+      await this.milestoneRepository.update(updatedMilestone);
 
     // Si el milestone se completó y tiene un reward, actualizar el UserReward a CLAIMED
     if (newStatus === MilestoneStatus.COMPLETED && savedMilestone.rewardId) {
-      await this.rewardService.claimReward(project.userId, savedMilestone.rewardId);
+      await this.rewardService.claimReward(
+        project.userId,
+        savedMilestone.rewardId,
+      );
     }
 
     // Actualizar automáticamente el estado del proyecto después de actualizar el milestone

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { ISponsorRepository } from '../../domain/repositories/sponsor.repository';
 import { Sponsor } from '../../domain/entities/sponsor.entity';
 import { UpdateSponsorDto } from '../dto/update-sponsor.dto';

@@ -38,9 +38,9 @@ import { EnableSponsorUseCase } from '../application/use-cases/enable-sponsor.us
 
 /**
  * Controlador REST para gestión administrativa de patrocinadores
- * 
+ *
  * Solo accesible por usuarios con rol ADMIN
- * 
+ *
  * @apiTag admin
  */
 @ApiTags('admin')
@@ -66,7 +66,8 @@ export class AdminController {
   @Get('pending')
   @ApiOperation({
     summary: 'Listar sponsors pendientes',
-    description: 'Obtiene la lista de todos los sponsors que están pendientes de aprobación',
+    description:
+      'Obtiene la lista de todos los sponsors que están pendientes de aprobación',
   })
   @ApiResponse({
     status: 200,
@@ -84,7 +85,8 @@ export class AdminController {
   @Get()
   @ApiOperation({
     summary: 'Listar todos los sponsors',
-    description: 'Obtiene la lista de todos los sponsors, opcionalmente filtrados por estado',
+    description:
+      'Obtiene la lista de todos los sponsors, opcionalmente filtrados por estado',
   })
   @ApiQuery({
     name: 'status',
@@ -218,7 +220,8 @@ export class AdminController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Deshabilitar sponsor',
-    description: 'Deshabilita un sponsor que está aprobado, bloqueando su acceso a funcionalidades',
+    description:
+      'Deshabilita un sponsor que está aprobado, bloqueando su acceso a funcionalidades',
   })
   @ApiParam({
     name: 'sponsorId',
@@ -256,7 +259,8 @@ export class AdminController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Habilitar sponsor',
-    description: 'Habilita un sponsor que está deshabilitado, restaurando su acceso a funcionalidades',
+    description:
+      'Habilita un sponsor que está deshabilitado, restaurando su acceso a funcionalidades',
   })
   @ApiParam({
     name: 'sponsorId',
