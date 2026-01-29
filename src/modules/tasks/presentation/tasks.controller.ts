@@ -34,10 +34,10 @@ import { DeleteTaskUseCase } from '../application/use-cases/delete-task.use-case
 
 /**
  * Controlador REST para gestión de tasks
- * 
+ *
  * Permite crear, listar, obtener, actualizar y eliminar tasks
  * Las tasks siempre pertenecen a un milestone y opcionalmente a un sprint
- * 
+ *
  * @apiTag tasks
  */
 @ApiTags('tasks')
@@ -60,7 +60,8 @@ export class TasksController {
   @Get()
   @ApiOperation({
     summary: 'Listar tasks del milestone',
-    description: 'Obtiene la lista de todas las tareas de un milestone específico',
+    description:
+      'Obtiene la lista de todas las tareas de un milestone específico',
   })
   @ApiParam({
     name: 'milestoneId',
@@ -112,7 +113,8 @@ export class TasksController {
   })
   @ApiResponse({
     status: 400,
-    description: 'El periodo de la tarea excede el del sprint, el sprint no pertenece al milestone, o las fechas son inválidas',
+    description:
+      'El periodo de la tarea excede el del sprint, el sprint no pertenece al milestone, o las fechas son inválidas',
   })
   async createTask(
     @Param('milestoneId') milestoneId: string,

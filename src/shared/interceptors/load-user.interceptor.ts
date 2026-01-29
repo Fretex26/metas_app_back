@@ -11,7 +11,7 @@ import type { IUserRepository } from '../../modules/users/domain/repositories/us
 /**
  * Interceptor para cargar el usuario completo desde la base de datos
  * y adjuntarlo al request para que el RolesGuard funcione correctamente
- * 
+ *
  * Este interceptor debe ejecutarse después del FirebaseAuthGuard
  */
 @Injectable()

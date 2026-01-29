@@ -14,9 +14,7 @@ export interface ISponsorEnrollmentRepository {
     userEmail: string,
     sponsorId: string,
   ): Promise<SponsorEnrollment[]>;
-  findBySponsoredGoalId(
-    sponsoredGoalId: string,
-  ): Promise<SponsorEnrollment[]>;
+  findBySponsoredGoalId(sponsoredGoalId: string): Promise<SponsorEnrollment[]>;
   update(enrollment: SponsorEnrollment): Promise<SponsorEnrollment>;
   delete(id: string): Promise<void>;
 }

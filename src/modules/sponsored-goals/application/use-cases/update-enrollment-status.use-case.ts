@@ -78,14 +78,12 @@ export class UpdateEnrollmentStatusUseCase {
       enrollment.enrolledAt,
     );
 
-    const savedEnrollment = await this.enrollmentRepository.update(
-      updatedEnrollment,
-    );
+    const savedEnrollment =
+      await this.enrollmentRepository.update(updatedEnrollment);
 
     // Actualizar isActive del proyecto asociado
-    const project = await this.projectRepository.findByEnrollmentId(
-      enrollmentId,
-    );
+    const project =
+      await this.projectRepository.findByEnrollmentId(enrollmentId);
     if (project) {
       const updatedProject = new Project(
         project.id,

@@ -7,9 +7,7 @@ import { SponsorEnrollmentOrmEntity } from './sponsor-enrollment.orm-entity';
 import { SponsorEnrollmentMapper } from '../mappers/sponsor-enrollment.mapper';
 
 @Injectable()
-export class SponsorEnrollmentRepositoryImpl
-  implements ISponsorEnrollmentRepository
-{
+export class SponsorEnrollmentRepositoryImpl implements ISponsorEnrollmentRepository {
   constructor(
     @InjectRepository(SponsorEnrollmentOrmEntity)
     private readonly enrollmentRepository: Repository<SponsorEnrollmentOrmEntity>,
@@ -77,9 +75,7 @@ export class SponsorEnrollmentRepositoryImpl
       where: { id: enrollment.id },
     });
     if (!ormEntity) {
-      throw new Error(
-        `SponsorEnrollment with id ${enrollment.id} not found`,
-      );
+      throw new Error(`SponsorEnrollment with id ${enrollment.id} not found`);
     }
     Object.assign(ormEntity, SponsorEnrollmentMapper.toOrmEntity(enrollment));
     const updatedEntity = await this.enrollmentRepository.save(ormEntity);

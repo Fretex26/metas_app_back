@@ -21,7 +21,10 @@ export class UserRewardRepositoryImpl implements IUserRewardRepository {
     return ormEntity ? UserRewardMapper.toDomain(ormEntity) : null;
   }
 
-  async findByIdWithReward(id: string): Promise<{ userReward: UserReward; rewardSponsorId: string | null } | null> {
+  async findByIdWithReward(id: string): Promise<{
+    userReward: UserReward;
+    rewardSponsorId: string | null;
+  } | null> {
     const ormEntity = await this.userRewardRepository.findOne({
       where: { id },
       relations: ['reward', 'reward.sponsor'],
@@ -54,7 +57,7 @@ export class UserRewardRepositoryImpl implements IUserRewardRepository {
   async create(userReward: UserReward): Promise<UserReward> {
     const ormEntity = this.userRewardRepository.create(
       UserRewardMapper.toOrmEntity(userReward),
-    ) as UserRewardOrmEntity;
+    );
     const savedEntity = await this.userRewardRepository.save(ormEntity);
     return UserRewardMapper.toDomain(savedEntity);
   }

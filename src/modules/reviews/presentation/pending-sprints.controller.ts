@@ -45,8 +45,6 @@ export class PendingSprintsController {
   async getPendingSprints(
     @CurrentUser() user: UserPayload,
   ): Promise<PendingSprintsResponseDto[]> {
-    return await this.getPendingSprintsUseCase.execute(
-      user.userId || user.uid,
-    );
+    return await this.getPendingSprintsUseCase.execute(user.userId || user.uid);
   }
 }

@@ -32,7 +32,10 @@ export class CreateSprintDto {
 
   @ApiPropertyOptional({
     description: 'Criterios de aceptación',
-    example: { nombre: 'Criterio 1', descripcion: 'Todos los componentes deben estar diseñados y aprobados' },
+    example: {
+      nombre: 'Criterio 1',
+      descripcion: 'Todos los componentes deben estar diseñados y aprobados',
+    },
   })
   @IsOptional()
   @IsObject({ message: 'Los criterios de aceptación deben ser un objeto JSON' })
@@ -43,7 +46,10 @@ export class CreateSprintDto {
     example: '2024-01-01',
   })
   @IsNotEmpty({ message: 'La fecha de inicio es requerida' })
-  @IsDateString({}, { message: 'La fecha de inicio debe tener un formato válido' })
+  @IsDateString(
+    {},
+    { message: 'La fecha de inicio debe tener un formato válido' },
+  )
   startDate: string;
 
   @ApiProperty({

@@ -33,9 +33,8 @@ export class CreateCategoryUseCase {
     const normalizedName = normalizeCategoryName(createCategoryDto.name);
 
     // Verificar que no existe una categoría con el mismo nombre normalizado
-    const existingCategory = await this.categoryRepository.findByNameNormalized(
-      normalizedName,
-    );
+    const existingCategory =
+      await this.categoryRepository.findByNameNormalized(normalizedName);
     if (existingCategory) {
       throw new ConflictException(
         `Ya existe una categoría con el nombre "${existingCategory.name}". Los nombres de categorías no distinguen entre mayúsculas y minúsculas ni espacios.`,

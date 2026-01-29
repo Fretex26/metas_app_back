@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+} from '@nestjs/common';
 import type { ISprintRepository } from '../../domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';

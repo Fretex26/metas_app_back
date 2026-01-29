@@ -53,7 +53,7 @@ export class CreateSponsorUseCase {
       userId,
       createSponsorDto.businessName,
       createSponsorDto.description,
-      createSponsorDto.category,
+      createSponsorDto.category ?? '',
       createSponsorDto.logoUrl || null,
       createSponsorDto.contactEmail,
       SponsorStatus.PENDING,

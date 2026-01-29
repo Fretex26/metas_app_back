@@ -7,6 +7,10 @@ import { VerificationEventOrmEntity } from './infrastructure/persistence/verific
 import { SponsoredGoalRepositoryImpl } from './infrastructure/persistence/sponsored-goal.repository.impl';
 import type { ISponsoredGoalRepository } from './domain/repositories/sponsored-goal.repository';
 import { CreateSponsoredGoalUseCase } from './application/use-cases/create-sponsored-goal.use-case';
+import { ListSponsorSponsoredGoalsUseCase } from './application/use-cases/list-sponsor-sponsored-goals.use-case';
+import { GetSponsoredGoalByIdUseCase } from './application/use-cases/get-sponsored-goal-by-id.use-case';
+import { UpdateSponsoredGoalUseCase } from './application/use-cases/update-sponsored-goal.use-case';
+import { DeleteSponsoredGoalUseCase } from './application/use-cases/delete-sponsored-goal.use-case';
 import { ListAvailableSponsoredGoalsUseCase } from './application/use-cases/list-available-sponsored-goals.use-case';
 import { FilterSponsoredGoalsByCategoriesUseCase } from './application/use-cases/filter-sponsored-goals-by-categories.use-case';
 import { EnrollInSponsoredGoalUseCase } from './application/use-cases/enroll-in-sponsored-goal.use-case';
@@ -14,6 +18,7 @@ import { DuplicateSponsoredProjectUseCase } from './application/use-cases/duplic
 import { UpdateEnrollmentStatusUseCase } from './application/use-cases/update-enrollment-status.use-case';
 import { VerifyMilestoneCompletionUseCase } from './application/use-cases/verify-milestone-completion.use-case';
 import { GetUserSponsoredProjectsUseCase } from './application/use-cases/get-user-sponsored-projects.use-case';
+import { GetSponsoredProjectMilestonesUseCase } from './application/use-cases/get-sponsored-project-milestones.use-case';
 import { SponsorEnrollmentRepositoryImpl } from './infrastructure/persistence/sponsor-enrollment.repository.impl';
 import type { ISponsorEnrollmentRepository } from './domain/repositories/sponsor-enrollment.repository';
 import { SponsorsModule } from '../sponsors/sponsors.module';
@@ -27,12 +32,12 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de sponsored goals
- * 
+ *
  * Proporciona funcionalidades para gestión de objetivos patrocinados:
+ * - CRUD de objetivos por el sponsor: listar los suyos, obtener por ID, actualizar, eliminar
  * - Crear objetivos patrocinados (solo sponsors aprobados)
- * - Listar objetivos disponibles
- * 
- * Nota: Los enrollments y verification events se manejarán en futuras iteraciones
+ * - Listar objetivos disponibles para inscripción (todos o filtrados por categorías)
+ * - Inscripción, enrollments y verificación de milestones
  */
 @Module({
   imports: [
@@ -64,6 +69,10 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     LoadUserInterceptor,
     // Use cases
     CreateSponsoredGoalUseCase,
+    ListSponsorSponsoredGoalsUseCase,
+    GetSponsoredGoalByIdUseCase,
+    UpdateSponsoredGoalUseCase,
+    DeleteSponsoredGoalUseCase,
     ListAvailableSponsoredGoalsUseCase,
     FilterSponsoredGoalsByCategoriesUseCase,
     DuplicateSponsoredProjectUseCase,
@@ -71,10 +80,8 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     UpdateEnrollmentStatusUseCase,
     VerifyMilestoneCompletionUseCase,
     GetUserSponsoredProjectsUseCase,
+    GetSponsoredProjectMilestonesUseCase,
   ],
-  exports: [
-    'ISponsoredGoalRepository',
-    'ISponsorEnrollmentRepository',
-  ],
+  exports: ['ISponsoredGoalRepository', 'ISponsorEnrollmentRepository'],
 })
 export class SponsoredGoalsModule {}

@@ -27,10 +27,7 @@ export class GetUserSponsoredProjectsUseCase {
     private readonly projectRepository: IProjectRepository,
   ) {}
 
-  async execute(
-    userEmail: string,
-    sponsorUserId: string,
-  ): Promise<Project[]> {
+  async execute(userEmail: string, sponsorUserId: string): Promise<Project[]> {
     // Verificar que el usuario existe
     const user = await this.userRepository.findByEmail(userEmail);
     if (!user) {
@@ -46,10 +43,11 @@ export class GetUserSponsoredProjectsUseCase {
     }
 
     // Obtener enrollments del usuario con el sponsor específico
-    const enrollments = await this.enrollmentRepository.findByUserEmailAndSponsor(
-      userEmail,
-      sponsor.id,
-    );
+    const enrollments =
+      await this.enrollmentRepository.findByUserEmailAndSponsor(
+        userEmail,
+        sponsor.id,
+      );
 
     // Obtener los proyectos asociados a estos enrollments
     const projects: Project[] = [];

@@ -23,9 +23,9 @@ import { GetRewardByIdUseCase } from '../application/use-cases/get-reward-by-id.
 
 /**
  * Controlador REST para Rewards (Recompensas)
- * 
+ *
  * Permite a los usuarios obtener sus recompensas asociadas a proyectos y milestones.
- * 
+ *
  * @apiTag rewards
  */
 @ApiTags('rewards')
@@ -41,7 +41,7 @@ export class RewardsController {
 
   /**
    * Obtiene todas las rewards del usuario autenticado
-   * 
+   *
    * Retorna todas las rewards asociadas a los proyectos y milestones del usuario.
    * Elimina duplicados si una reward aparece tanto en un proyecto como en un milestone.
    */
@@ -78,7 +78,7 @@ export class RewardsController {
 
   /**
    * Obtiene una reward específica por su ID
-   * 
+   *
    * Verifica que la reward pertenezca al usuario (esté asociada a alguno de sus proyectos o milestones).
    * Si no pertenece al usuario, retorna 403 Forbidden.
    * Si no existe, retorna 404 Not Found.

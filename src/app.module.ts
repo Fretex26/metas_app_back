@@ -25,7 +25,7 @@ import { SponsorStatusGuardModule } from './shared/sponsor-status-guard.module';
 
 /**
  * Módulo principal de la aplicación
- * 
+ *
  * Configura los módulos globales necesarios:
  * - ConfigModule: Gestión de variables de entorno
  * - TypeOrmModule: Conexión a PostgreSQL

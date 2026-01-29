@@ -55,6 +55,26 @@ export class DailyEntryRepositoryImpl implements IDailyEntryRepository {
     return ormEntity ? DailyEntryMapper.toDomain(ormEntity) : null;
   }
 
+  async findByUserIdAndDateAndSprintId(
+    userId: string,
+    date: Date,
+    sprintId: string,
+  ): Promise<DailyEntry | null> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const ormEntity = await this.dailyEntryRepository.findOne({
+      where: {
+        userId,
+        sprintId,
+        createdAt: Between(startOfDay, endOfDay),
+      },
+    });
+    return ormEntity ? DailyEntryMapper.toDomain(ormEntity) : null;
+  }
+
   async findByTaskId(taskId: string): Promise<DailyEntry[]> {
     const ormEntities = await this.dailyEntryRepository.find({
       where: { taskId },

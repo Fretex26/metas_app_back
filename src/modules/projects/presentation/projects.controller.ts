@@ -36,9 +36,9 @@ import { ProjectProgressResponseDto } from '../../reviews/application/dto/projec
 
 /**
  * Controlador REST para gestión de proyectos personales
- * 
+ *
  * Permite a los usuarios crear, listar, obtener, actualizar y eliminar sus proyectos
- * 
+ *
  * @apiTag projects
  */
 @ApiTags('projects')
@@ -62,7 +62,8 @@ export class ProjectsController {
   @Get()
   @ApiOperation({
     summary: 'Listar proyectos del usuario',
-    description: 'Obtiene la lista de todos los proyectos del usuario autenticado',
+    description:
+      'Obtiene la lista de todos los proyectos del usuario autenticado',
   })
   @ApiResponse({
     status: 200,

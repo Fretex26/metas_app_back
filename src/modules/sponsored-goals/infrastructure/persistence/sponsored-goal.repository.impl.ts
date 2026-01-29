@@ -8,9 +8,7 @@ import { SponsoredGoalMapper } from '../mappers/sponsored-goal.mapper';
 import { CategoryOrmEntity } from '../../../categories/infrastructure/persistence/category.orm-entity';
 
 @Injectable()
-export class SponsoredGoalRepositoryImpl
-  implements ISponsoredGoalRepository
-{
+export class SponsoredGoalRepositoryImpl implements ISponsoredGoalRepository {
   constructor(
     @InjectRepository(SponsoredGoalOrmEntity)
     private readonly sponsoredGoalRepository: Repository<SponsoredGoalOrmEntity>,
@@ -34,7 +32,9 @@ export class SponsoredGoalRepositoryImpl
       where: { id: savedEntity.id },
       relations: ['sponsor', 'categories'],
     });
-    return reloaded ? SponsoredGoalMapper.toDomain(reloaded) : SponsoredGoalMapper.toDomain(savedEntity);
+    return reloaded
+      ? SponsoredGoalMapper.toDomain(reloaded)
+      : SponsoredGoalMapper.toDomain(savedEntity);
   }
 
   async findById(id: string): Promise<SponsoredGoal | null> {
@@ -96,9 +96,7 @@ export class SponsoredGoalRepositoryImpl
       relations: ['categories'],
     });
     if (!ormEntity) {
-      throw new Error(
-        `SponsoredGoal with id ${sponsoredGoal.id} not found`,
-      );
+      throw new Error(`SponsoredGoal with id ${sponsoredGoal.id} not found`);
     }
     Object.assign(ormEntity, SponsoredGoalMapper.toOrmEntity(sponsoredGoal));
     // Actualizar categorías si existen
@@ -115,7 +113,9 @@ export class SponsoredGoalRepositoryImpl
       where: { id: updatedEntity.id },
       relations: ['sponsor', 'categories'],
     });
-    return reloaded ? SponsoredGoalMapper.toDomain(reloaded) : SponsoredGoalMapper.toDomain(updatedEntity);
+    return reloaded
+      ? SponsoredGoalMapper.toDomain(reloaded)
+      : SponsoredGoalMapper.toDomain(updatedEntity);
   }
 
   async delete(id: string): Promise<void> {

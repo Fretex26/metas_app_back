@@ -34,9 +34,9 @@ import { DeleteChecklistItemUseCase } from '../application/use-cases/delete-chec
 
 /**
  * Controlador REST para gestión de checklist items
- * 
+ *
  * Permite crear, listar, obtener, actualizar y eliminar checklist items de una task
- * 
+ *
  * @apiTag checklist-items
  */
 @ApiTags('checklist-items')
@@ -59,7 +59,8 @@ export class ChecklistItemsController {
   @Get()
   @ApiOperation({
     summary: 'Listar checklist items de una task',
-    description: 'Obtiene la lista de todos los checklist items de una task específica',
+    description:
+      'Obtiene la lista de todos los checklist items de una task específica',
   })
   @ApiParam({
     name: 'taskId',
@@ -210,6 +211,7 @@ export class ChecklistItemsController {
       checklistItemId,
       user.userId || user.uid,
       updateChecklistItemDto,
+      user.role,
     );
     return this.toResponseDto(checklistItem);
   }

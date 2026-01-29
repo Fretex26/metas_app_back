@@ -1,5 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, MinLength, IsArray, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  MinLength,
+  IsArray,
+  IsUUID,
+} from 'class-validator';
 
 /**
  * DTO para actualizar un usuario existente
@@ -16,11 +22,17 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional({
     description: 'IDs de las categorías de interés del usuario',
-    example: ['123e4567-e89b-12d3-a456-426614174000', '223e4567-e89b-12d3-a456-426614174001'],
+    example: [
+      '123e4567-e89b-12d3-a456-426614174000',
+      '223e4567-e89b-12d3-a456-426614174001',
+    ],
     type: [String],
   })
   @IsOptional()
   @IsArray({ message: 'Las categorías deben ser un array' })
-  @IsUUID('4', { each: true, message: 'Cada ID de categoría debe ser un UUID válido' })
+  @IsUUID('4', {
+    each: true,
+    message: 'Cada ID de categoría debe ser un UUID válido',
+  })
   categoryIds?: string[];
 }

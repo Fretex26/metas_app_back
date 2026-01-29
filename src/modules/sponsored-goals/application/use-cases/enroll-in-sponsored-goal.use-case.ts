@@ -30,9 +30,8 @@ export class EnrollInSponsoredGoalUseCase {
     userId: string,
   ): Promise<SponsorEnrollment> {
     // Verificar que el objetivo patrocinado existe
-    const sponsoredGoal = await this.sponsoredGoalRepository.findById(
-      sponsoredGoalId,
-    );
+    const sponsoredGoal =
+      await this.sponsoredGoalRepository.findById(sponsoredGoalId);
     if (!sponsoredGoal) {
       throw new NotFoundException('Objetivo patrocinado no encontrado');
     }
@@ -50,9 +49,8 @@ export class EnrollInSponsoredGoalUseCase {
     }
 
     // Verificar cupo disponible
-    const enrollments = await this.enrollmentRepository.findBySponsoredGoalId(
-      sponsoredGoalId,
-    );
+    const enrollments =
+      await this.enrollmentRepository.findBySponsoredGoalId(sponsoredGoalId);
     const activeEnrollments = enrollments.filter(
       (e) => e.status === EnrollmentStatus.ACTIVE,
     );

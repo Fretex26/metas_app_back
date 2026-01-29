@@ -6,7 +6,7 @@ import { Reward } from '../../domain/entities/reward.entity';
 
 /**
  * Caso de uso para obtener todas las rewards del usuario
- * 
+ *
  * Obtiene todas las rewards asociadas a los proyectos y milestones del usuario.
  * Elimina duplicados si una reward aparece tanto en un proyecto como en un milestone.
  */

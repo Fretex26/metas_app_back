@@ -23,7 +23,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de milestones
- * 
+ *
  * Proporciona funcionalidades para gestión de milestones dentro de proyectos:
  * - Crear milestones
  * - Listar milestones de un proyecto

@@ -18,7 +18,8 @@ export class PointsTransactionResponseDto {
   userId: string;
 
   @ApiProperty({
-    description: 'Cambio de puntos (positivo para ganancias, negativo para gastos)',
+    description:
+      'Cambio de puntos (positivo para ganancias, negativo para gastos)',
     example: 10,
   })
   change: number;

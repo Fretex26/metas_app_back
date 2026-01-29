@@ -19,12 +19,10 @@ export class RewardService {
    * Si ya existe un UserReward para este usuario y reward, lo actualiza a DELIVERED
    * Si no existe, crea uno nuevo con estado DELIVERED
    */
-  async grantReward(
-    userId: string,
-    rewardId: string,
-  ): Promise<UserReward> {
+  async grantReward(userId: string, rewardId: string): Promise<UserReward> {
     // Buscar si ya existe un UserReward para este usuario y reward
-    const existingUserRewards = await this.userRewardRepository.findByUserId(userId);
+    const existingUserRewards =
+      await this.userRewardRepository.findByUserId(userId);
     const existingUserReward = existingUserRewards.find(
       (ur) => ur.rewardId === rewardId,
     );
@@ -61,12 +59,10 @@ export class RewardService {
    * Si ya existe un UserReward para este usuario y reward, lo actualiza a CLAIMED
    * Si no existe, crea uno nuevo con estado CLAIMED
    */
-  async claimReward(
-    userId: string,
-    rewardId: string,
-  ): Promise<UserReward> {
+  async claimReward(userId: string, rewardId: string): Promise<UserReward> {
     // Buscar si ya existe un UserReward para este usuario y reward
-    const existingUserRewards = await this.userRewardRepository.findByUserId(userId);
+    const existingUserRewards =
+      await this.userRewardRepository.findByUserId(userId);
     const existingUserReward = existingUserRewards.find(
       (ur) => ur.rewardId === rewardId,
     );

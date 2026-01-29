@@ -11,7 +11,7 @@ export class SponsorEnrollmentMapper {
       ormEntity.id,
       ormEntity.sponsoredGoalId,
       ormEntity.userId,
-      ormEntity.status as EnrollmentStatus,
+      ormEntity.status,
       ormEntity.enrolledAt,
     );
   }
@@ -23,7 +23,7 @@ export class SponsorEnrollmentMapper {
       id: domainEntity.id,
       sponsoredGoalId: domainEntity.sponsoredGoalId,
       userId: domainEntity.userId,
-      status: domainEntity.status as EnrollmentStatus,
+      status: domainEntity.status,
     };
   }
 

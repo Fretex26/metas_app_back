@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IRetrospectiveRepository } from '../../domain/repositories/retrospective.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -21,10 +26,7 @@ export class GetSprintRetrospectiveUseCase {
     private readonly projectRepository: IProjectRepository,
   ) {}
 
-  async execute(
-    sprintId: string,
-    userId: string,
-  ): Promise<Retrospective> {
+  async execute(sprintId: string, userId: string): Promise<Retrospective> {
     // Verificar que el sprint existe
     const sprint = await this.sprintRepository.findById(sprintId);
     if (!sprint) {

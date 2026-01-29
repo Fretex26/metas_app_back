@@ -28,9 +28,9 @@ import { GetSprintReviewUseCase } from '../application/use-cases/get-sprint-revi
 
 /**
  * Controlador REST para gestión de reviews
- * 
+ *
  * Permite crear y obtener reviews de sprints
- * 
+ *
  * @apiTag reviews
  */
 @ApiTags('reviews')

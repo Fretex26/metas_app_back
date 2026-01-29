@@ -34,9 +34,9 @@ import { DeleteMilestoneUseCase } from '../application/use-cases/delete-mileston
 
 /**
  * Controlador REST para gestión de milestones
- * 
+ *
  * Permite crear, listar, obtener, actualizar y eliminar milestones de un proyecto
- * 
+ *
  * @apiTag milestones
  */
 @ApiTags('milestones')
@@ -59,7 +59,8 @@ export class MilestonesController {
   @Get()
   @ApiOperation({
     summary: 'Listar milestones del proyecto',
-    description: 'Obtiene la lista de todos los milestones de un proyecto específico',
+    description:
+      'Obtiene la lista de todos los milestones de un proyecto específico',
   })
   @ApiParam({
     name: 'projectId',

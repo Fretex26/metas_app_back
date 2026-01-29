@@ -14,7 +14,7 @@ export class GetUserProjectsUseCase {
 
   async execute(userId: string): Promise<Project[]> {
     const projects = await this.projectRepository.findByUserId(userId);
-    
+
     // Filtrar proyectos: solo mostrar proyectos personales (sponsoredGoalId IS NULL)
     // o proyectos patrocinados que estén activos (isActive = true)
     return projects.filter(

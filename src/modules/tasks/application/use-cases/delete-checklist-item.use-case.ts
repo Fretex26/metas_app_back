@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IChecklistItemRepository } from '../../domain/repositories/checklist-item.repository';
 import type { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -23,7 +28,8 @@ export class DeleteChecklistItemUseCase {
   ) {}
 
   async execute(checklistItemId: string, userId: string): Promise<void> {
-    const checklistItem = await this.checklistItemRepository.findById(checklistItemId);
+    const checklistItem =
+      await this.checklistItemRepository.findById(checklistItemId);
     if (!checklistItem) {
       throw new NotFoundException('Checklist item no encontrado');
     }
@@ -36,12 +42,16 @@ export class DeleteChecklistItemUseCase {
         throw new NotFoundException('Tarea no encontrada');
       }
 
-      const milestone = await this.milestoneRepository.findById(task.milestoneId);
+      const milestone = await this.milestoneRepository.findById(
+        task.milestoneId,
+      );
       if (!milestone) {
         throw new NotFoundException('Milestone no encontrada');
       }
 
-      const project = await this.projectRepository.findById(milestone.projectId);
+      const project = await this.projectRepository.findById(
+        milestone.projectId,
+      );
       if (!project || project.userId !== userId) {
         throw new ForbiddenException(
           'No tienes permiso para eliminar este checklist item',

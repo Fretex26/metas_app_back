@@ -18,7 +18,9 @@ export class CreateSponsorDto {
   })
   @IsNotEmpty({ message: 'El nombre de la empresa es requerido' })
   @IsString({ message: 'El nombre de la empresa debe ser una cadena de texto' })
-  @MaxLength(255, { message: 'El nombre de la empresa no puede exceder 255 caracteres' })
+  @MaxLength(255, {
+    message: 'El nombre de la empresa no puede exceder 255 caracteres',
+  })
   businessName: string;
 
   @ApiProperty({
@@ -29,15 +31,15 @@ export class CreateSponsorDto {
   @IsString({ message: 'La descripción debe ser una cadena de texto' })
   description: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Categoría de la empresa',
     example: 'Technology',
     maxLength: 100,
   })
-  @IsNotEmpty({ message: 'La categoría es requerida' })
+  @IsOptional()
   @IsString({ message: 'La categoría debe ser una cadena de texto' })
   @MaxLength(100, { message: 'La categoría no puede exceder 100 caracteres' })
-  category: string;
+  category?: string;
 
   @ApiPropertyOptional({
     description: 'URL del logo de la empresa',

@@ -9,10 +9,10 @@ import { Request, Response } from 'express';
 
 /**
  * Filtro global de excepciones HTTP
- * 
+ *
  * Maneja todas las excepciones HTTP y las convierte en respuestas JSON
  * formateadas sin exponer información sensible
- * 
+ *
  * @example
  * ```typescript
  * // En main.ts

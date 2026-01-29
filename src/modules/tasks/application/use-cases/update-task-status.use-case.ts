@@ -8,12 +8,12 @@ import { UpdateMilestoneStatusUseCase } from '../../../milestones/application/us
 
 /**
  * Caso de uso para actualizar automáticamente el estado de una task
- * 
+ *
  * Lógica:
  * - PENDING: ninguna checklist item completada o no hay checklist items
  * - IN_PROGRESS: al menos una checklist item completada pero no todas
  * - COMPLETED: todas las checklist items requeridas están completadas
- * 
+ *
  * Este caso de uso se debe llamar cuando se actualice un checklist item.
  */
 @Injectable()
@@ -36,8 +36,9 @@ export class UpdateTaskStatusUseCase {
     }
 
     // Obtener todos los checklist items de la task
-    const checklistItems = await this.checklistItemRepository.findByTaskId(taskId);
-    
+    const checklistItems =
+      await this.checklistItemRepository.findByTaskId(taskId);
+
     let newStatus: TaskStatus;
 
     if (checklistItems.length === 0) {
@@ -45,28 +46,38 @@ export class UpdateTaskStatusUseCase {
       newStatus = TaskStatus.PENDING;
     } else {
       const requiredItems = checklistItems.filter((item) => item.isRequired);
-      
+
       if (requiredItems.length > 0) {
         // Si hay items requeridos, verificar si todos están marcados
-        const allRequiredChecked = requiredItems.every((item) => item.isChecked === true);
-        
+        const allRequiredChecked = requiredItems.every(
+          (item) => item.isChecked === true,
+        );
+
         if (allRequiredChecked) {
           newStatus = TaskStatus.COMPLETED;
         } else {
           // Verificar si al menos uno está marcado
-          const atLeastOneChecked = requiredItems.some((item) => item.isChecked === true);
-          newStatus = atLeastOneChecked ? TaskStatus.IN_PROGRESS : TaskStatus.PENDING;
+          const atLeastOneChecked = requiredItems.some(
+            (item) => item.isChecked === true,
+          );
+          newStatus = atLeastOneChecked
+            ? TaskStatus.IN_PROGRESS
+            : TaskStatus.PENDING;
         }
       } else {
         // Si no hay items requeridos, verificar si todos los items están marcados
         const allChecked = checklistItems.every((item) => item.isChecked);
-        
+
         if (allChecked && checklistItems.length > 0) {
           newStatus = TaskStatus.COMPLETED;
         } else {
           // Verificar si al menos uno está marcado
-          const atLeastOneChecked = checklistItems.some((item) => item.isChecked);
-          newStatus = atLeastOneChecked ? TaskStatus.IN_PROGRESS : TaskStatus.PENDING;
+          const atLeastOneChecked = checklistItems.some(
+            (item) => item.isChecked,
+          );
+          newStatus = atLeastOneChecked
+            ? TaskStatus.IN_PROGRESS
+            : TaskStatus.PENDING;
         }
       }
     }

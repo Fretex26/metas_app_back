@@ -9,7 +9,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de estadísticas
- * 
+ *
  * Proporciona funcionalidades para consultar estadísticas del usuario:
  * - Estadísticas generales del usuario (puntos, badges, proyectos, tareas)
  */

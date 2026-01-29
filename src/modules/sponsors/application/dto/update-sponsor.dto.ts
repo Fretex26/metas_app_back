@@ -1,10 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsString,
-  IsEmail,
-  MaxLength,
-} from 'class-validator';
+import { IsOptional, IsString, IsEmail, MaxLength } from 'class-validator';
 
 /**
  * DTO para actualizar un sponsor existente
