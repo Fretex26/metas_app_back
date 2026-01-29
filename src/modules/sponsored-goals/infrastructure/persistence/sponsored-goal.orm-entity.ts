@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  JoinTable,
   OneToMany,
   ManyToMany,
 } from 'typeorm';
@@ -65,6 +66,11 @@ export class SponsoredGoalOrmEntity {
 
   // Relaciones
   @ManyToMany(() => CategoryOrmEntity, (category) => category.sponsoredGoals)
+  @JoinTable({
+    name: 'sponsored_goal_categories',
+    joinColumn: { name: 'sponsored_goal_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+  })
   categories: CategoryOrmEntity[];
 
   // @OneToMany(() => SponsorEnrollmentOrmEntity, (enrollment) => enrollment.sponsoredGoal)

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IChecklistItemRepository } from '../../domain/repositories/checklist-item.repository';
 import type { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -59,7 +64,8 @@ export class CreateChecklistItemUseCase {
       new Date(),
     );
 
-    const savedChecklistItem = await this.checklistItemRepository.create(checklistItem);
+    const savedChecklistItem =
+      await this.checklistItemRepository.create(checklistItem);
 
     // Actualizar el estado de la task automáticamente después de crear el checklist item
     await this.updateTaskStatusUseCase.execute(taskId);

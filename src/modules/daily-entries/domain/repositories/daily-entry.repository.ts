@@ -8,6 +8,12 @@ export interface IDailyEntryRepository {
   findById(id: string): Promise<DailyEntry | null>;
   findByUserId(userId: string): Promise<DailyEntry[]>;
   findByUserIdAndDate(userId: string, date: Date): Promise<DailyEntry | null>;
+  /** Entrada del usuario para una fecha y un sprint. Cada daily entry pertenece a un sprint. */
+  findByUserIdAndDateAndSprintId(
+    userId: string,
+    date: Date,
+    sprintId: string,
+  ): Promise<DailyEntry | null>;
   findByTaskId(taskId: string): Promise<DailyEntry[]>;
   findBySprintId(sprintId: string): Promise<DailyEntry[]>;
   update(dailyEntry: DailyEntry): Promise<DailyEntry>;

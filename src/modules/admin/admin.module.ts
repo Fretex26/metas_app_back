@@ -17,7 +17,7 @@ import { RolesGuard } from '../../shared/guards/roles.guard';
 
 /**
  * Módulo de administración
- * 
+ *
  * Proporciona funcionalidades para gestión administrativa:
  * - Aprobar/rechazar sponsors
  * - Habilitar/deshabilitar sponsors

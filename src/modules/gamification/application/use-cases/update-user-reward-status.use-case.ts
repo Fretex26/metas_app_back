@@ -31,7 +31,8 @@ export class UpdateUserRewardStatusUseCase {
     sponsorUserId: string,
   ): Promise<UserReward> {
     // Verificar que el user reward existe con la relación reward y sponsor
-    const result = await this.userRewardRepository.findByIdWithReward(userRewardId);
+    const result =
+      await this.userRewardRepository.findByIdWithReward(userRewardId);
 
     if (!result) {
       throw new NotFoundException('Recompensa de usuario no encontrada');

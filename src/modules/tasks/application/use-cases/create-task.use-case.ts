@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Inject,
+} from '@nestjs/common';
 import type { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -25,10 +30,7 @@ export class CreateTaskUseCase {
     private readonly projectRepository: IProjectRepository,
   ) {}
 
-  async execute(
-    createTaskDto: CreateTaskDto,
-    userId: string,
-  ): Promise<Task> {
+  async execute(createTaskDto: CreateTaskDto, userId: string): Promise<Task> {
     // Verificar que el milestone existe y pertenece al usuario
     const milestone = await this.milestoneRepository.findById(
       createTaskDto.milestoneId,

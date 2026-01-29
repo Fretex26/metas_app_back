@@ -54,7 +54,10 @@ export class CreateTaskDto {
     example: '2024-01-01',
   })
   @IsNotEmpty({ message: 'La fecha de inicio es requerida' })
-  @IsDateString({}, { message: 'La fecha de inicio debe tener un formato válido' })
+  @IsDateString(
+    {},
+    { message: 'La fecha de inicio debe tener un formato válido' },
+  )
   startDate: string;
 
   @ApiProperty({

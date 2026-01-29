@@ -54,9 +54,8 @@ export class CategoriesController {
   async createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CategoryResponseDto> {
-    const category = await this.createCategoryUseCase.execute(
-      createCategoryDto,
-    );
+    const category =
+      await this.createCategoryUseCase.execute(createCategoryDto);
     return this.toResponseDto(category);
   }
 

@@ -9,7 +9,6 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
-  ParseDatePipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,6 +24,7 @@ import { LoadUserInterceptor } from '../../../shared/interceptors/load-user.inte
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
 import type { UserPayload } from '../../../shared/decorators/current-user.decorator';
 import { CreateDailyEntryDto } from '../application/dto/create-daily-entry.dto';
+import { GetDailyEntryByDateQueryDto } from '../application/dto/get-daily-entry-by-date-query.dto';
 import { DailyEntryResponseDto } from '../application/dto/daily-entry-response.dto';
 import { CreateDailyEntryUseCase } from '../application/use-cases/create-daily-entry.use-case';
 import { GetUserDailyEntriesUseCase } from '../application/use-cases/get-user-daily-entries.use-case';
@@ -32,9 +32,9 @@ import { GetDailyEntryByDateUseCase } from '../application/use-cases/get-daily-e
 
 /**
  * Controlador REST para gestión de daily entries
- * 
+ *
  * Permite crear y consultar entradas diarias del usuario
- * 
+ *
  * @apiTag daily-entries
  */
 @ApiTags('daily-entries')
@@ -57,7 +57,7 @@ export class DailyEntriesController {
   @ApiOperation({
     summary: 'Crear entrada diaria',
     description:
-      'Crea una nueva entrada diaria para el usuario. Las entradas diarias permiten registrar el progreso y reflexiones del día.',
+      'Crea una nueva entrada diaria para el usuario en el sprint indicado. sprintId es obligatorio: cada daily entry pertenece a un sprint. Solo se permite una entrada por usuario por día por sprint.',
   })
   @ApiResponse({
     status: 201,
@@ -99,17 +99,26 @@ export class DailyEntriesController {
   }
 
   /**
-   * Obtiene una entrada diaria por fecha
+   * Obtiene una entrada diaria por fecha y sprint.
+   * sprintId es obligatorio: cada daily entry pertenece a un sprint; sin filtrar por sprint
+   * se podría devolver la entrada de otro sprint (p. ej. en la página de detalle del sprint).
    */
   @Get('date/:date')
   @ApiOperation({
-    summary: 'Obtener entrada diaria por fecha',
-    description: 'Obtiene la entrada diaria del usuario para una fecha específica',
+    summary: 'Obtener entrada diaria por fecha y sprint',
+    description:
+      'Obtiene la entrada diaria del usuario para una fecha y un sprint. Requiere query param sprintId. Devuelve 404 si no existe entrada para esa fecha en ese sprint.',
   })
   @ApiParam({
     name: 'date',
     description: 'Fecha en formato YYYY-MM-DD',
     example: '2024-01-01',
+  })
+  @ApiQuery({
+    name: 'sprintId',
+    description: 'ID del sprint. Obligatorio. La entrada diaria pertenece a un sprint.',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+    required: true,
   })
   @ApiResponse({
     status: 200,
@@ -117,19 +126,26 @@ export class DailyEntriesController {
     type: DailyEntryResponseDto,
   })
   @ApiResponse({
+    status: 400,
+    description: 'sprintId ausente o no válido',
+  })
+  @ApiResponse({
     status: 404,
-    description: 'No se encontró entrada diaria para esa fecha',
+    description:
+      'No se encontró entrada diaria para esa fecha en el sprint indicado',
   })
   async getDailyEntryByDate(
     @Param('date') date: string,
+    @Query() query: GetDailyEntryByDateQueryDto,
     @CurrentUser() user: UserPayload,
-  ): Promise<DailyEntryResponseDto | null> {
+  ): Promise<DailyEntryResponseDto> {
     const dateObj = new Date(date);
     const dailyEntry = await this.getDailyEntryByDateUseCase.execute(
       user.userId || user.uid,
       dateObj,
+      query.sprintId,
     );
-    return dailyEntry ? this.toResponseDto(dailyEntry) : null;
+    return this.toResponseDto(dailyEntry);
   }
 
   /**

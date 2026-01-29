@@ -36,9 +36,9 @@ import { GetSprintTasksUseCase } from '../../tasks/application/use-cases/get-spr
 
 /**
  * Controlador REST para gestión de sprints
- * 
+ *
  * Permite crear, listar, obtener, actualizar y eliminar sprints de un milestone
- * 
+ *
  * @apiTag sprints
  */
 @ApiTags('sprints')
@@ -62,7 +62,8 @@ export class SprintsController {
   @Get()
   @ApiOperation({
     summary: 'Listar sprints del milestone',
-    description: 'Obtiene la lista de todos los sprints de un milestone específico',
+    description:
+      'Obtiene la lista de todos los sprints de un milestone específico',
   })
   @ApiParam({
     name: 'milestoneId',
@@ -115,7 +116,8 @@ export class SprintsController {
   })
   @ApiResponse({
     status: 400,
-    description: 'El periodo del sprint excede 4 semanas o las fechas son inválidas',
+    description:
+      'El periodo del sprint excede 4 semanas o las fechas son inválidas',
   })
   async createSprint(
     @Param('milestoneId') milestoneId: string,
@@ -296,10 +298,7 @@ export class SprintsController {
     @Param('id') sprintId: string,
     @CurrentUser() user: UserPayload,
   ): Promise<void> {
-    await this.deleteSprintUseCase.execute(
-      sprintId,
-      user.userId || user.uid,
-    );
+    await this.deleteSprintUseCase.execute(sprintId, user.userId || user.uid);
   }
 
   /**

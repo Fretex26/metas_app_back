@@ -46,16 +46,12 @@ export class RetrospectiveRepositoryImpl implements IRetrospectiveRepository {
     return RetrospectiveMapper.toDomainList(ormEntities);
   }
 
-  async update(
-    retrospective: Retrospective,
-  ): Promise<Retrospective> {
+  async update(retrospective: Retrospective): Promise<Retrospective> {
     const ormEntity = await this.retrospectiveRepository.findOne({
       where: { id: retrospective.id },
     });
     if (!ormEntity) {
-      throw new Error(
-        `Retrospective with id ${retrospective.id} not found`,
-      );
+      throw new Error(`Retrospective with id ${retrospective.id} not found`);
     }
     Object.assign(ormEntity, RetrospectiveMapper.toOrmEntity(retrospective));
     const updatedEntity = await this.retrospectiveRepository.save(ormEntity);

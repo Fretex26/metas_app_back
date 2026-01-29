@@ -7,17 +7,13 @@ import { PointsTransactionOrmEntity } from './points-transaction.orm-entity';
 import { PointsTransactionMapper } from '../mappers/points-transaction.mapper';
 
 @Injectable()
-export class PointsTransactionRepositoryImpl
-  implements IPointsTransactionRepository
-{
+export class PointsTransactionRepositoryImpl implements IPointsTransactionRepository {
   constructor(
     @InjectRepository(PointsTransactionOrmEntity)
     private readonly pointsTransactionRepository: Repository<PointsTransactionOrmEntity>,
   ) {}
 
-  async create(
-    transaction: PointsTransaction,
-  ): Promise<PointsTransaction> {
+  async create(transaction: PointsTransaction): Promise<PointsTransaction> {
     const ormEntity = this.pointsTransactionRepository.create(
       PointsTransactionMapper.toOrmEntity(transaction),
     );

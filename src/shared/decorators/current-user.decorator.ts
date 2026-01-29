@@ -2,9 +2,9 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 /**
  * Decorador para obtener el usuario autenticado desde el request
- * 
+ *
  * El usuario se adjunta al request por el FirebaseAuthGuard
- * 
+ *
  * @example
  * ```typescript
  * @Get('profile')

@@ -15,7 +15,7 @@ import { UpdateTaskStatusUseCase } from './update-task-status.use-case';
 
 /**
  * Caso de uso para marcar una tarea como completada manualmente
- * 
+ *
  * Este caso de uso verifica que todos los checklist items requeridos estén marcados
  * y actualiza el estado de la task a COMPLETED.
  * El estado de la milestone se actualiza automáticamente.

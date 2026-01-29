@@ -23,7 +23,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de proyectos
- * 
+ *
  * Proporciona funcionalidades para gestión de proyectos personales:
  * - Crear proyectos (máximo 6 por usuario)
  * - Listar proyectos del usuario

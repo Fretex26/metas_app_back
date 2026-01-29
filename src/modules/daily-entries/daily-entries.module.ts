@@ -14,7 +14,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de daily entries
- * 
+ *
  * Proporciona funcionalidades para gestión de entradas diarias:
  * - Crear entrada diaria
  * - Listar entradas diarias del usuario

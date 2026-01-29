@@ -20,9 +20,7 @@ export class DailyEntryMapper {
     );
   }
 
-  static toOrmEntity(
-    domainEntity: DailyEntry,
-  ): Partial<DailyEntryOrmEntity> {
+  static toOrmEntity(domainEntity: DailyEntry): Partial<DailyEntryOrmEntity> {
     return {
       id: domainEntity.id,
       userId: domainEntity.userId,

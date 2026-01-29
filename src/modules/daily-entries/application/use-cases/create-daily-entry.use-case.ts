@@ -18,16 +18,19 @@ export class CreateDailyEntryUseCase {
     createDailyEntryDto: CreateDailyEntryDto,
     userId: string,
   ): Promise<DailyEntry> {
-    // Validar que no exista ya una entrada diaria para el día actual
+    // Validar que no exista ya una entrada diaria para el día actual en este sprint.
+    // Cada daily entry pertenece a un sprint; se permite una por usuario por día por sprint.
     const today = new Date();
-    const existingEntry = await this.dailyEntryRepository.findByUserIdAndDate(
-      userId,
-      today,
-    );
+    const existingEntry =
+      await this.dailyEntryRepository.findByUserIdAndDateAndSprintId(
+        userId,
+        today,
+        createDailyEntryDto.sprintId,
+      );
 
     if (existingEntry) {
       throw new ConflictException(
-        'Ya existe una entrada diaria para el día de hoy. Solo se permite una entrada diaria por día.',
+        'Ya existe una entrada diaria para hoy en este sprint. Solo se permite una por día y sprint.',
       );
     }
 

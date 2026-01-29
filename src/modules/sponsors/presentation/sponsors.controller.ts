@@ -30,9 +30,9 @@ import { UpdateSponsorProfileUseCase } from '../application/use-cases/update-spo
 
 /**
  * Controlador REST para gestión de sponsors (perfiles de patrocinadores)
- * 
+ *
  * Permite a los usuarios solicitar ser patrocinadores y gestionar su perfil
- * 
+ *
  * @apiTag sponsors
  */
 @ApiTags('sponsors')
@@ -84,8 +84,7 @@ export class SponsorsController {
   @SponsorStatusExempt()
   @ApiOperation({
     summary: 'Obtener perfil de patrocinador',
-    description:
-      'Obtiene el perfil de patrocinador del usuario autenticado',
+    description: 'Obtiene el perfil de patrocinador del usuario autenticado',
   })
   @ApiResponse({
     status: 200,

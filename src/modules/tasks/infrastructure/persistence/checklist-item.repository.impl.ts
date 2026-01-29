@@ -7,9 +7,7 @@ import { ChecklistItemOrmEntity } from './checklist-item.orm-entity';
 import { ChecklistItemMapper } from '../mappers/checklist-item.mapper';
 
 @Injectable()
-export class ChecklistItemRepositoryImpl
-  implements IChecklistItemRepository
-{
+export class ChecklistItemRepositoryImpl implements IChecklistItemRepository {
   constructor(
     @InjectRepository(ChecklistItemOrmEntity)
     private readonly checklistItemRepository: Repository<ChecklistItemOrmEntity>,
@@ -53,9 +51,7 @@ export class ChecklistItemRepositoryImpl
       where: { id: checklistItem.id },
     });
     if (!ormEntity) {
-      throw new Error(
-        `ChecklistItem with id ${checklistItem.id} not found`,
-      );
+      throw new Error(`ChecklistItem with id ${checklistItem.id} not found`);
     }
     Object.assign(ormEntity, ChecklistItemMapper.toOrmEntity(checklistItem));
     const updatedEntity = await this.checklistItemRepository.save(ormEntity);

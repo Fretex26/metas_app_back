@@ -5,7 +5,9 @@ import { UserReward } from '../entities/user-reward.entity';
  */
 export interface IUserRewardRepository {
   findById(id: string): Promise<UserReward | null>;
-  findByIdWithReward(id: string): Promise<{ userReward: UserReward; rewardSponsorId: string | null } | null>;
+  findByIdWithReward(
+    id: string,
+  ): Promise<{ userReward: UserReward; rewardSponsorId: string | null } | null>;
   findByRewardId(rewardId: string): Promise<UserReward[]>;
   findByUserId(userId: string): Promise<UserReward[]>;
   create(userReward: UserReward): Promise<UserReward>;

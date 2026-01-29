@@ -1,10 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  IsBoolean,
-  IsOptional,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsBoolean, IsOptional } from 'class-validator';
 
 /**
  * DTO para crear un nuevo retrospective
@@ -12,10 +7,13 @@ import {
 export class CreateRetrospectiveDto {
   @ApiProperty({
     description: 'Lo que salió bien durante el sprint',
-    example: 'Completamos todas las tareas planificadas y la comunicación fue excelente',
+    example:
+      'Completamos todas las tareas planificadas y la comunicación fue excelente',
   })
   @IsNotEmpty({ message: 'El campo "lo que salió bien" es requerido' })
-  @IsString({ message: 'El campo "lo que salió bien" debe ser una cadena de texto' })
+  @IsString({
+    message: 'El campo "lo que salió bien" debe ser una cadena de texto',
+  })
   whatWentWell: string;
 
   @ApiProperty({
@@ -23,7 +21,9 @@ export class CreateRetrospectiveDto {
     example: 'Tuvimos algunos problemas con la integración de APIs externas',
   })
   @IsNotEmpty({ message: 'El campo "lo que salió mal" es requerido' })
-  @IsString({ message: 'El campo "lo que salió mal" debe ser una cadena de texto' })
+  @IsString({
+    message: 'El campo "lo que salió mal" debe ser una cadena de texto',
+  })
   whatWentWrong: string;
 
   @ApiPropertyOptional({
@@ -35,7 +35,8 @@ export class CreateRetrospectiveDto {
   improvements?: string;
 
   @ApiPropertyOptional({
-    description: 'Indica si la retrospectiva es pública (visible para otros usuarios)',
+    description:
+      'Indica si la retrospectiva es pública (visible para otros usuarios)',
     example: false,
     default: false,
   })

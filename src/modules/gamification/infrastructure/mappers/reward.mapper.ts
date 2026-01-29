@@ -17,9 +17,7 @@ export class RewardMapper {
     );
   }
 
-  static toOrmEntity(
-    domainEntity: Reward,
-  ): Partial<RewardOrmEntity> {
+  static toOrmEntity(domainEntity: Reward): Partial<RewardOrmEntity> {
     return {
       id: domainEntity.id,
       sponsorId: domainEntity.sponsorId,

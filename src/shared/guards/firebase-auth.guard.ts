@@ -8,10 +8,10 @@ import { FirebaseAdminProvider } from '../../config/firebase-admin.provider';
 
 /**
  * Guard para validar tokens de Firebase Authentication
- * 
+ *
  * Este guard valida el token JWT de Firebase presente en el header Authorization
  * y adjunta la información del usuario al request
- * 
+ *
  * @example
  * ```typescript
  * @UseGuards(FirebaseAuthGuard)
@@ -29,8 +29,14 @@ export class FirebaseAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
 
-    console.log('FirebaseAuthGuard: Verificando autenticación para', request.url);
-    console.log('FirebaseAuthGuard: Authorization header presente:', !!authHeader);
+    console.log(
+      'FirebaseAuthGuard: Verificando autenticación para',
+      request.url,
+    );
+    console.log(
+      'FirebaseAuthGuard: Authorization header presente:',
+      !!authHeader,
+    );
 
     if (!authHeader) {
       throw new UnauthorizedException('Falta el header de autorización');
@@ -39,7 +45,9 @@ export class FirebaseAuthGuard implements CanActivate {
     const [bearer, token] = authHeader.split(' ');
 
     if (bearer !== 'Bearer' || !token) {
-      throw new UnauthorizedException('Formato de header de autorización inválido');
+      throw new UnauthorizedException(
+        'Formato de header de autorización inválido',
+      );
     }
 
     try {
@@ -47,7 +55,10 @@ export class FirebaseAuthGuard implements CanActivate {
       const auth = this.firebaseAdmin.getAuth();
       const decodedToken = await auth.verifyIdToken(token);
 
-      console.log('FirebaseAuthGuard: Token válido para usuario:', decodedToken.uid);
+      console.log(
+        'FirebaseAuthGuard: Token válido para usuario:',
+        decodedToken.uid,
+      );
 
       // Adjuntar información del usuario al request
       request.user = {
@@ -56,7 +67,10 @@ export class FirebaseAuthGuard implements CanActivate {
         // Aquí se pueden agregar más campos del token si es necesario
       };
 
-      console.log('FirebaseAuthGuard: request.user establecido:', { uid: request.user.uid, email: request.user.email });
+      console.log('FirebaseAuthGuard: request.user establecido:', {
+        uid: request.user.uid,
+        email: request.user.email,
+      });
 
       return true;
     } catch (error) {

@@ -16,7 +16,10 @@ export class GetProjectProgressUseCase {
     private readonly taskRepository: ITaskRepository,
   ) {}
 
-  async execute(projectId: string, userId: string): Promise<{
+  async execute(
+    projectId: string,
+    userId: string,
+  ): Promise<{
     progressPercentage: number;
     completedTasks: number;
     totalTasks: number;
@@ -29,7 +32,7 @@ export class GetProjectProgressUseCase {
 
     // Obtener todas las tareas del proyecto
     const projectTasks = await this.taskRepository.findByProjectId(projectId);
-    
+
     const totalTasks = projectTasks.length;
     const completedTasks = projectTasks.filter(
       (task) => task.status === TaskStatus.COMPLETED,

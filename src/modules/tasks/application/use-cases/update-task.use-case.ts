@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+  Inject,
+} from '@nestjs/common';
 import type { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -66,9 +72,10 @@ export class UpdateTaskUseCase {
 
     // Determinar el sprintId a usar (del DTO si se proporciona, sino el actual)
     // Si sprintId es undefined, mantener el actual; si es null, eliminar; si es string, usar ese
-    const sprintIdToUse = updateTaskDto.sprintId !== undefined 
-      ? updateTaskDto.sprintId 
-      : currentTask.sprintId;
+    const sprintIdToUse =
+      updateTaskDto.sprintId !== undefined
+        ? updateTaskDto.sprintId
+        : currentTask.sprintId;
 
     // Si se proporciona un sprintId (nuevo o existente), validar
     let sprint: Sprint | null = null;

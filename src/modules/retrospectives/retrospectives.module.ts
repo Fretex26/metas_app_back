@@ -16,7 +16,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
 
 /**
  * Módulo de retrospectives
- * 
+ *
  * Proporciona funcionalidades para gestión de retrospectivas de sprints:
  * - Crear retrospectiva de sprint (una por sprint)
  * - Obtener retrospectiva de sprint (pública o privada)

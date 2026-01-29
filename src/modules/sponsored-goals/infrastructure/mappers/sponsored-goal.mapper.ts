@@ -19,7 +19,7 @@ export class SponsoredGoalMapper {
         : [],
       ormEntity.startDate,
       ormEntity.endDate,
-      ormEntity.verificationMethod as VerificationMethod,
+      ormEntity.verificationMethod,
       ormEntity.rewardId,
       ormEntity.maxUsers,
       ormEntity.createdAt,
@@ -37,7 +37,7 @@ export class SponsoredGoalMapper {
       description: domainEntity.description,
       startDate: domainEntity.startDate,
       endDate: domainEntity.endDate,
-      verificationMethod: domainEntity.verificationMethod as VerificationMethod,
+      verificationMethod: domainEntity.verificationMethod,
       rewardId: domainEntity.rewardId,
       maxUsers: domainEntity.maxUsers,
     };

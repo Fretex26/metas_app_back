@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { IMilestoneRepository } from '../../domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import { Milestone } from '../../domain/entities/milestone.entity';
@@ -22,9 +27,8 @@ export class UpdateMilestoneUseCase {
     updateMilestoneDto: UpdateMilestoneDto,
   ): Promise<Milestone> {
     // Obtener el milestone actual
-    const currentMilestone = await this.milestoneRepository.findById(
-      milestoneId,
-    );
+    const currentMilestone =
+      await this.milestoneRepository.findById(milestoneId);
 
     if (!currentMilestone) {
       throw new NotFoundException('Milestone no encontrado');

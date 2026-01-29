@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { ISprintRepository } from '../../domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
@@ -8,12 +13,12 @@ import type { IDailyEntryRepository } from '../../../daily-entries/domain/reposi
 
 /**
  * Caso de uso para eliminar un sprint
- * 
+ *
  * Elimina en cascada:
  * - La review del sprint (si existe, relación 1:1)
  * - La retrospective del sprint (si existe, relación 1:1)
  * - Todos los daily entries relacionados con el sprint
- * 
+ *
  * Nota: Las tasks que tienen este sprintId NO se eliminan, solo quedan sin sprint asignado
  * (sprintId = null), ya que las tasks pertenecen al milestone, no al sprint.
  */
@@ -64,13 +69,15 @@ export class DeleteSprintUseCase {
     }
 
     // Eliminar retrospective si existe (relación 1:1)
-    const retrospective = await this.retrospectiveRepository.findBySprintId(sprintId);
+    const retrospective =
+      await this.retrospectiveRepository.findBySprintId(sprintId);
     if (retrospective) {
       await this.retrospectiveRepository.delete(retrospective.id);
     }
 
     // Eliminar daily entries relacionados con el sprint
-    const dailyEntries = await this.dailyEntryRepository.findBySprintId(sprintId);
+    const dailyEntries =
+      await this.dailyEntryRepository.findBySprintId(sprintId);
     for (const dailyEntry of dailyEntries) {
       await this.dailyEntryRepository.delete(dailyEntry.id);
     }

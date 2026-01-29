@@ -7,12 +7,12 @@ import { RewardService } from '../../../gamification/domain/services/reward.serv
 
 /**
  * Caso de uso para actualizar automáticamente el estado de un proyecto
- * 
+ *
  * Lógica:
  * - PENDING: ninguna checklist item completada (todas las milestones en PENDING)
  * - IN_PROGRESS: al menos una checklist item completada (al menos una milestone en IN_PROGRESS o COMPLETED, pero no todas COMPLETED)
  * - COMPLETED: todas las milestones están COMPLETED
- * 
+ *
  * Este caso de uso se debe llamar cuando se actualice el estado de una milestone.
  */
 @Injectable()
@@ -33,7 +33,8 @@ export class UpdateProjectStatusUseCase {
     }
 
     // Obtener todas las milestones del proyecto
-    const milestones = await this.milestoneRepository.findByProjectId(projectId);
+    const milestones =
+      await this.milestoneRepository.findByProjectId(projectId);
 
     // Si no hay milestones, el proyecto permanece en su estado actual o PENDING
     if (milestones.length === 0) {
@@ -114,7 +115,10 @@ export class UpdateProjectStatusUseCase {
 
     // Si el proyecto se completó y tiene un reward, actualizar el UserReward a CLAIMED
     if (newStatus === ProjectStatus.COMPLETED && savedProject.rewardId) {
-      await this.rewardService.claimReward(project.userId, savedProject.rewardId);
+      await this.rewardService.claimReward(
+        project.userId,
+        savedProject.rewardId,
+      );
     }
 
     return savedProject;

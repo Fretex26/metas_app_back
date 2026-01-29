@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+} from '@nestjs/common';
 import type { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
@@ -8,7 +13,7 @@ import type { IDailyEntryRepository } from '../../../daily-entries/domain/reposi
 
 /**
  * Caso de uso para eliminar un task
- * 
+ *
  * Elimina en cascada:
  * - Todos los checklist items de la task
  * - Todos los daily entries relacionados con la task
@@ -64,7 +69,8 @@ export class DeleteTaskUseCase {
     }
 
     // Obtener todos los checklist items de la task
-    const checklistItems = await this.checklistItemRepository.findByTaskId(taskId);
+    const checklistItems =
+      await this.checklistItemRepository.findByTaskId(taskId);
 
     // Eliminar todos los checklist items
     for (const checklistItem of checklistItems) {

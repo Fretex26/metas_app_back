@@ -7,10 +7,10 @@ import { LogActionUseCase } from './application/use-cases/log-action.use-case';
 
 /**
  * Módulo de auditoría
- * 
+ *
  * Proporciona funcionalidades para registrar logs de auditoría:
  * - Registrar acciones administrativas y cambios críticos
- * 
+ *
  * Nota: Este módulo se usa principalmente de forma interna para auditoría
  */
 @Module({

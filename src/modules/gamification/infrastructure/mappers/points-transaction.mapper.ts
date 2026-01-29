@@ -12,7 +12,7 @@ export class PointsTransactionMapper {
       ormEntity.userId,
       ormEntity.change,
       ormEntity.reason,
-      ormEntity.sourceType as PointsSourceType,
+      ormEntity.sourceType,
       ormEntity.sourceId,
       ormEntity.createdAt,
     );
@@ -26,7 +26,7 @@ export class PointsTransactionMapper {
       userId: domainEntity.userId,
       change: domainEntity.change,
       reason: domainEntity.reason,
-      sourceType: domainEntity.sourceType as PointsSourceType,
+      sourceType: domainEntity.sourceType,
       sourceId: domainEntity.sourceId,
     };
   }

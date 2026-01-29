@@ -18,7 +18,11 @@ export class FirebaseAdminProvider implements OnModuleInit {
   onModuleInit() {
     const firebaseConfig = this.configService.get('firebase');
 
-    if (!firebaseConfig.projectId || !firebaseConfig.privateKey || !firebaseConfig.clientEmail) {
+    if (
+      !firebaseConfig.projectId ||
+      !firebaseConfig.privateKey ||
+      !firebaseConfig.clientEmail
+    ) {
       throw new Error(
         'Firebase configuration is missing. Please check your environment variables.',
       );

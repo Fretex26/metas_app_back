@@ -2,18 +2,20 @@ import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import type { ISponsoredGoalRepository } from '../../domain/repositories/sponsored-goal.repository';
 import type { IProjectRepository } from '../../../projects/domain/repositories/project.repository';
 import type { IMilestoneRepository } from '../../../milestones/domain/repositories/milestone.repository';
-import type { ISprintRepository } from '../../../sprints/domain/repositories/sprint.repository';
 import type { ITaskRepository } from '../../../tasks/domain/repositories/task.repository';
+import type { IChecklistItemRepository } from '../../../tasks/domain/repositories/checklist-item.repository';
 import { Project } from '../../../projects/domain/entities/project.entity';
 import { Milestone } from '../../../milestones/domain/entities/milestone.entity';
-import { Sprint } from '../../../sprints/domain/entities/sprint.entity';
 import { Task } from '../../../tasks/domain/entities/task.entity';
+import { ChecklistItem } from '../../../tasks/domain/entities/checklist-item.entity';
 import { MilestoneStatus, TaskStatus } from '../../../../shared/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
- * Caso de uso para duplicar un proyecto patrocinado completo
- * Duplica el proyecto con todas sus milestones, sprints y tasks
+ * Caso de uso para duplicar un proyecto patrocinado completo.
+ * Los proyectos de sponsors tienen milestones, tasks y checklists (sin sprints).
+ * Los sprints los crean los usuarios después de inscribirse.
+ * Duplica: proyecto → milestones → tasks (sprintId null) → checklist items por task.
  */
 @Injectable()
 export class DuplicateSponsoredProjectUseCase {
@@ -24,10 +26,10 @@ export class DuplicateSponsoredProjectUseCase {
     private readonly projectRepository: IProjectRepository,
     @Inject('IMilestoneRepository')
     private readonly milestoneRepository: IMilestoneRepository,
-    @Inject('ISprintRepository')
-    private readonly sprintRepository: ISprintRepository,
     @Inject('ITaskRepository')
     private readonly taskRepository: ITaskRepository,
+    @Inject('IChecklistItemRepository')
+    private readonly checklistItemRepository: IChecklistItemRepository,
   ) {}
 
   async execute(
@@ -36,9 +38,8 @@ export class DuplicateSponsoredProjectUseCase {
     enrollmentId: string,
   ): Promise<Project> {
     // Obtener el sponsored goal
-    const sponsoredGoal = await this.sponsoredGoalRepository.findById(
-      sponsoredGoalId,
-    );
+    const sponsoredGoal =
+      await this.sponsoredGoalRepository.findById(sponsoredGoalId);
     if (!sponsoredGoal) {
       throw new NotFoundException('Objetivo patrocinado no encontrado');
     }
@@ -77,72 +78,57 @@ export class DuplicateSponsoredProjectUseCase {
       originalProject.id,
     );
 
-    // Mapa para rastrear los IDs antiguos y nuevos de milestones y sprints
-    const milestoneMap = new Map<string, string>();
-    const sprintMap = new Map<string, string>();
-
-    // Duplicar milestones
+    // Duplicar milestones → tasks (sprintId null) → checklist items por task
     for (const originalMilestone of originalMilestones) {
       const duplicatedMilestone = new Milestone(
         uuidv4(),
         savedProject.id,
         originalMilestone.name,
         originalMilestone.description,
-        MilestoneStatus.PENDING, // Estado inicial siempre PENDING
-        originalMilestone.rewardId, // Mantener la referencia al reward del sponsor
+        MilestoneStatus.PENDING,
+        originalMilestone.rewardId,
         new Date(),
       );
 
       const savedMilestone =
         await this.milestoneRepository.create(duplicatedMilestone);
-      milestoneMap.set(originalMilestone.id, savedMilestone.id);
 
-      // Obtener sprints del milestone original
-      const originalSprints = await this.sprintRepository.findByMilestoneId(
+      const originalTasks = await this.taskRepository.findByMilestoneId(
         originalMilestone.id,
       );
 
-      // Duplicar sprints
-      for (const originalSprint of originalSprints) {
-        const duplicatedSprint = new Sprint(
+      for (const originalTask of originalTasks) {
+        const duplicatedTask = new Task(
           uuidv4(),
           savedMilestone.id,
-          originalSprint.name,
-          originalSprint.description,
-          originalSprint.acceptanceCriteria,
-          originalSprint.startDate,
-          originalSprint.endDate,
-          originalSprint.resourcesAvailable,
-          originalSprint.resourcesNeeded,
+          null, // sprintId: los sprints los crea el usuario después
+          originalTask.name,
+          originalTask.description,
+          TaskStatus.PENDING,
+          originalTask.startDate,
+          originalTask.endDate,
+          originalTask.resourcesAvailable,
+          originalTask.resourcesNeeded,
+          originalTask.incentivePoints,
           new Date(),
         );
 
-        const savedSprint = await this.sprintRepository.create(duplicatedSprint);
-        sprintMap.set(originalSprint.id, savedSprint.id);
+        const savedTask = await this.taskRepository.create(duplicatedTask);
 
-        // Obtener tasks del sprint original
-        const originalTasks = await this.taskRepository.findBySprintId(
-          originalSprint.id,
+        const checklistItems = await this.checklistItemRepository.findByTaskId(
+          originalTask.id,
         );
-
-        // Duplicar tasks
-        for (const originalTask of originalTasks) {
-          const duplicatedTask = new Task(
+        for (const item of checklistItems) {
+          const duplicatedItem = new ChecklistItem(
             uuidv4(),
-            savedMilestone.id, // milestoneId
-            savedSprint.id, // sprintId (puede ser null si la tarea no está en un sprint)
-            originalTask.name,
-            originalTask.description,
-            TaskStatus.PENDING, // Las tareas duplicadas siempre empiezan en PENDING
-            originalTask.startDate,
-            originalTask.endDate,
-            originalTask.resourcesAvailable,
-            originalTask.resourcesNeeded,
-            originalTask.incentivePoints,
+            savedTask.id,
+            null, // sponsoredGoalId: pertenecen a la task duplicada
+            item.description,
+            item.isRequired,
+            false, // isChecked: siempre sin marcar al duplicar
             new Date(),
           );
-
-          await this.taskRepository.create(duplicatedTask);
+          await this.checklistItemRepository.create(duplicatedItem);
         }
       }
     }

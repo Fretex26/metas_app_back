@@ -8,9 +8,9 @@ export const ROLES_KEY = 'roles';
 
 /**
  * Decorador para especificar los roles requeridos para acceder a un endpoint
- * 
+ *
  * @param roles - Roles permitidos para acceder al endpoint
- * 
+ *
  * @example
  * ```typescript
  * @Get('admin-only')
