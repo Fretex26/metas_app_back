@@ -18,7 +18,7 @@ export default registerAs(
     synchronize: process.env.NODE_ENV === 'development', // Solo en desarrollo
     logging: process.env.NODE_ENV === 'development',
     migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
-    migrationsRun: false,
+    migrationsRun: false, // Se ejecutan con: npm run migration:run (antes de start en deploy)
     ssl:
       process.env.NODE_ENV === 'production'
         ? { rejectUnauthorized: false }
