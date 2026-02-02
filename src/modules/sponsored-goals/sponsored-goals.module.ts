@@ -5,7 +5,6 @@ import { SponsoredGoalOrmEntity } from './infrastructure/persistence/sponsored-g
 import { SponsorEnrollmentOrmEntity } from './infrastructure/persistence/sponsor-enrollment.orm-entity';
 import { VerificationEventOrmEntity } from './infrastructure/persistence/verification-event.orm-entity';
 import { SponsoredGoalRepositoryImpl } from './infrastructure/persistence/sponsored-goal.repository.impl';
-import type { ISponsoredGoalRepository } from './domain/repositories/sponsored-goal.repository';
 import { CreateSponsoredGoalUseCase } from './application/use-cases/create-sponsored-goal.use-case';
 import { ListSponsorSponsoredGoalsUseCase } from './application/use-cases/list-sponsor-sponsored-goals.use-case';
 import { GetSponsoredGoalByIdUseCase } from './application/use-cases/get-sponsored-goal-by-id.use-case';
@@ -20,7 +19,6 @@ import { VerifyMilestoneCompletionUseCase } from './application/use-cases/verify
 import { GetUserSponsoredProjectsUseCase } from './application/use-cases/get-user-sponsored-projects.use-case';
 import { GetSponsoredProjectMilestonesUseCase } from './application/use-cases/get-sponsored-project-milestones.use-case';
 import { SponsorEnrollmentRepositoryImpl } from './infrastructure/persistence/sponsor-enrollment.repository.impl';
-import type { ISponsorEnrollmentRepository } from './domain/repositories/sponsor-enrollment.repository';
 import { SponsorsModule } from '../sponsors/sponsors.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { MilestonesModule } from '../milestones/milestones.module';

@@ -41,11 +41,7 @@ export class UpdateMilestoneStatusUseCase {
     private readonly updateProjectStatusUseCase: UpdateProjectStatusUseCase,
   ) {}
 
-  async execute(
-    milestoneId: string,
-    completedTasksCount?: number,
-    totalTasksCount?: number,
-  ): Promise<Milestone> {
+  async execute(milestoneId: string): Promise<Milestone> {
     // Obtener el milestone
     const milestone = await this.milestoneRepository.findById(milestoneId);
     if (!milestone) {
@@ -74,9 +70,6 @@ export class UpdateMilestoneStatusUseCase {
     ).length;
     const inProgressTasks = allTasks.filter(
       (task) => task.status === TaskStatus.IN_PROGRESS,
-    ).length;
-    const pendingTasks = allTasks.filter(
-      (task) => task.status === TaskStatus.PENDING,
     ).length;
 
     // Determinar el nuevo estado

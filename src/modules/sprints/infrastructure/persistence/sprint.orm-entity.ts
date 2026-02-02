@@ -5,8 +5,6 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
-  OneToOne,
 } from 'typeorm';
 import { MilestoneOrmEntity } from '../../../milestones/infrastructure/persistence/milestone.orm-entity';
 

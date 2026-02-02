@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SprintsController } from './presentation/sprints.controller';
 import { SprintOrmEntity } from './infrastructure/persistence/sprint.orm-entity';
 import { SprintRepositoryImpl } from './infrastructure/persistence/sprint.repository.impl';
-import type { ISprintRepository } from './domain/repositories/sprint.repository';
 import { CreateSprintUseCase } from './application/use-cases/create-sprint.use-case';
 import { GetMilestoneSprintsUseCase } from './application/use-cases/get-milestone-sprints.use-case';
 import { GetSprintByIdUseCase } from './application/use-cases/get-sprint-by-id.use-case';

@@ -6,7 +6,6 @@ import {
   IsNumber,
   IsDateString,
   IsObject,
-  IsUUID,
   MaxLength,
   ValidateNested,
   IsUrl,

@@ -1,6 +1,5 @@
 import { Sponsor } from '../../domain/entities/sponsor.entity';
 import { SponsorOrmEntity } from '../persistence/sponsor.orm-entity';
-import { SponsorStatus } from '../../../../shared/types/enums';
 
 /**
  * Mapper para convertir entre entidades de dominio y entidades ORM de Sponsor
