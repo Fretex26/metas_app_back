@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DailyEntriesController } from './presentation/daily-entries.controller';
 import { DailyEntryOrmEntity } from './infrastructure/persistence/daily-entry.orm-entity';
 import { DailyEntryRepositoryImpl } from './infrastructure/persistence/daily-entry.repository.impl';
-import type { IDailyEntryRepository } from './domain/repositories/daily-entry.repository';
 import { CreateDailyEntryUseCase } from './application/use-cases/create-daily-entry.use-case';
 import { GetUserDailyEntriesUseCase } from './application/use-cases/get-user-daily-entries.use-case';
 import { GetDailyEntryByDateUseCase } from './application/use-cases/get-daily-entry-by-date.use-case';

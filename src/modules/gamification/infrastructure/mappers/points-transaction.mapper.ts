@@ -1,6 +1,5 @@
 import { PointsTransaction } from '../../domain/entities/points-transaction.entity';
 import { PointsTransactionOrmEntity } from '../persistence/points-transaction.orm-entity';
-import { PointsSourceType } from '../../../../shared/types/enums';
 
 /**
  * Mapper para convertir entre entidades de dominio y entidades ORM de PointsTransaction

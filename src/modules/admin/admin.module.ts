@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminController } from './presentation/admin.controller';
 import { SponsorOrmEntity } from '../sponsors/infrastructure/persistence/sponsor.orm-entity';
 import { AdminRepositoryImpl } from './infrastructure/persistence/admin.repository.impl';
-import type { IAdminRepository } from './domain/repositories/admin.repository';
 import { GetPendingSponsorsUseCase } from './application/use-cases/get-pending-sponsors.use-case';
 import { ListAllSponsorsUseCase } from './application/use-cases/list-all-sponsors.use-case';
 import { GetSponsorDetailsUseCase } from './application/use-cases/get-sponsor-details.use-case';

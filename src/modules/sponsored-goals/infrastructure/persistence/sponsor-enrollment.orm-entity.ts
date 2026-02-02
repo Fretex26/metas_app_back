@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
   Index,
 } from 'typeorm';
 import { SponsoredGoalOrmEntity } from './sponsored-goal.orm-entity';

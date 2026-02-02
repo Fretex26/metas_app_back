@@ -4,7 +4,6 @@ import { RetrospectivesController } from './presentation/retrospectives.controll
 import { PublicRetrospectivesController } from './presentation/public-retrospectives.controller';
 import { RetrospectiveOrmEntity } from './infrastructure/persistence/retrospective.orm-entity';
 import { RetrospectiveRepositoryImpl } from './infrastructure/persistence/retrospective.repository.impl';
-import type { IRetrospectiveRepository } from './domain/repositories/retrospective.repository';
 import { CreateRetrospectiveUseCase } from './application/use-cases/create-retrospective.use-case';
 import { GetSprintRetrospectiveUseCase } from './application/use-cases/get-sprint-retrospective.use-case';
 import { GetPublicRetrospectivesUseCase } from './application/use-cases/get-public-retrospectives.use-case';

@@ -6,7 +6,6 @@ import {
   ManyToOne,
   JoinColumn,
   JoinTable,
-  OneToMany,
   ManyToMany,
 } from 'typeorm';
 import { SponsorOrmEntity } from '../../../sponsors/infrastructure/persistence/sponsor.orm-entity';

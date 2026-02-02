@@ -1,6 +1,5 @@
 import { SponsorEnrollment } from '../../domain/entities/sponsor-enrollment.entity';
 import { SponsorEnrollmentOrmEntity } from '../persistence/sponsor-enrollment.orm-entity';
-import { EnrollmentStatus } from '../../../../shared/types/enums';
 
 /**
  * Mapper para convertir entre entidades de dominio y entidades ORM de SponsorEnrollment

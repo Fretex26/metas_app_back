@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MilestonesController } from './presentation/milestones.controller';
 import { MilestoneOrmEntity } from './infrastructure/persistence/milestone.orm-entity';
 import { MilestoneRepositoryImpl } from './infrastructure/persistence/milestone.repository.impl';
-import type { IMilestoneRepository } from './domain/repositories/milestone.repository';
 import { CreateMilestoneUseCase } from './application/use-cases/create-milestone.use-case';
 import { GetProjectMilestonesUseCase } from './application/use-cases/get-project-milestones.use-case';
 import { GetMilestoneByIdUseCase } from './application/use-cases/get-milestone-by-id.use-case';

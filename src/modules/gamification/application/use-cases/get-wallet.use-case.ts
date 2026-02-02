@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import type { IPointsWalletRepository } from '../../domain/repositories/points-wallet.repository';
 import { PointsWallet } from '../../domain/entities/points-wallet.entity';
 import { v4 as uuidv4 } from 'uuid';

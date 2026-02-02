@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsController } from './presentation/projects.controller';
 import { ProjectOrmEntity } from './infrastructure/persistence/project.orm-entity';
 import { ProjectRepositoryImpl } from './infrastructure/persistence/project.repository.impl';
-import type { IProjectRepository } from './domain/repositories/project.repository';
 import { ProjectDomainService } from './domain/services/project.domain-service';
 import { CreateProjectUseCase } from './application/use-cases/create-project.use-case';
 import { GetUserProjectsUseCase } from './application/use-cases/get-user-projects.use-case';

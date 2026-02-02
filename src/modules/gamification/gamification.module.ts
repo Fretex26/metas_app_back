@@ -10,10 +10,6 @@ import { PointsWalletRepositoryImpl } from './infrastructure/persistence/points-
 import { PointsTransactionRepositoryImpl } from './infrastructure/persistence/points-transaction.repository.impl';
 import { UserRewardRepositoryImpl } from './infrastructure/persistence/user-reward.repository.impl';
 import { RewardRepositoryImpl } from './infrastructure/persistence/reward.repository.impl';
-import type { IPointsWalletRepository } from './domain/repositories/points-wallet.repository';
-import type { IPointsTransactionRepository } from './domain/repositories/points-transaction.repository';
-import type { IUserRewardRepository } from './domain/repositories/user-reward.repository';
-import type { IRewardRepository } from './domain/repositories/reward.repository';
 import { GetWalletUseCase } from './application/use-cases/get-wallet.use-case';
 import { GetTransactionsUseCase } from './application/use-cases/get-transactions.use-case';
 import { UpdateUserRewardStatusUseCase } from './application/use-cases/update-user-reward-status.use-case';

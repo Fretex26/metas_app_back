@@ -30,7 +30,6 @@ import { UpdateSponsoredGoalDto } from '../application/dto/update-sponsored-goal
 import { SponsoredGoalResponseDto } from '../application/dto/sponsored-goal-response.dto';
 import { UpdateEnrollmentStatusDto } from '../application/dto/update-enrollment-status.dto';
 import { EnrollmentResponseDto } from '../application/dto/enrollment-response.dto';
-import { CategoryResponseDto } from '../../categories/application/dto/category-response.dto';
 import { CreateSponsoredGoalUseCase } from '../application/use-cases/create-sponsored-goal.use-case';
 import { ListSponsorSponsoredGoalsUseCase } from '../application/use-cases/list-sponsor-sponsored-goals.use-case';
 import { GetSponsoredGoalByIdUseCase } from '../application/use-cases/get-sponsored-goal-by-id.use-case';
