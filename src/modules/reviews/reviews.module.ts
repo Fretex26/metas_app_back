@@ -4,7 +4,6 @@ import { ReviewsController } from './presentation/reviews.controller';
 import { PendingSprintsController } from './presentation/pending-sprints.controller';
 import { ReviewOrmEntity } from './infrastructure/persistence/review.orm-entity';
 import { ReviewRepositoryImpl } from './infrastructure/persistence/review.repository.impl';
-import type { IReviewRepository } from './domain/repositories/review.repository';
 import { CreateReviewUseCase } from './application/use-cases/create-review.use-case';
 import { GetSprintReviewUseCase } from './application/use-cases/get-sprint-review.use-case';
 import { GetProjectProgressUseCase } from './application/use-cases/get-project-progress.use-case';

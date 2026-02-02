@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  Inject,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import type { ISponsoredGoalRepository } from '../../domain/repositories/sponsored-goal.repository';
 import type { ISponsorRepository } from '../../../sponsors/domain/repositories/sponsor.repository';
 import { SponsoredGoal } from '../../domain/entities/sponsored-goal.entity';

@@ -69,9 +69,6 @@ export class UpdateProjectStatusUseCase {
     const inProgressMilestones = milestones.filter(
       (m) => m.status === MilestoneStatus.IN_PROGRESS,
     ).length;
-    const pendingMilestones = milestones.filter(
-      (m) => m.status === MilestoneStatus.PENDING,
-    ).length;
 
     // Determinar el nuevo estado
     let newStatus: ProjectStatus;

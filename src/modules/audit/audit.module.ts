@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuditLogOrmEntity } from './infrastructure/persistence/audit-log.orm-entity';
 import { AuditLogRepositoryImpl } from './infrastructure/persistence/audit-log.repository.impl';
-import type { IAuditLogRepository } from './domain/repositories/audit-log.repository';
 import { LogActionUseCase } from './application/use-cases/log-action.use-case';
 
 /**

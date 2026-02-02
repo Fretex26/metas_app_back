@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import { SprintOrmEntity } from '../../../sprints/infrastructure/persistence/sprint.orm-entity';
 import { MilestoneOrmEntity } from '../../../milestones/infrastructure/persistence/milestone.orm-entity';

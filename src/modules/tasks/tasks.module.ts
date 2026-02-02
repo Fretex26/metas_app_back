@@ -6,8 +6,6 @@ import { TaskOrmEntity } from './infrastructure/persistence/task.orm-entity';
 import { ChecklistItemOrmEntity } from './infrastructure/persistence/checklist-item.orm-entity';
 import { TaskRepositoryImpl } from './infrastructure/persistence/task.repository.impl';
 import { ChecklistItemRepositoryImpl } from './infrastructure/persistence/checklist-item.repository.impl';
-import type { ITaskRepository } from './domain/repositories/task.repository';
-import type { IChecklistItemRepository } from './domain/repositories/checklist-item.repository';
 import { CreateTaskUseCase } from './application/use-cases/create-task.use-case';
 import { GetMilestoneTasksUseCase } from './application/use-cases/get-milestone-tasks.use-case';
 import { GetTaskByIdUseCase } from './application/use-cases/get-task-by-id.use-case';

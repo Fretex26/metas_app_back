@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import { ProjectOrmEntity } from '../../../projects/infrastructure/persistence/project.orm-entity';
 import { MilestoneStatus } from '../../../../shared/types/enums';

@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from './presentation/users.controller';
 import { UserOrmEntity } from './infrastructure/persistence/user.orm-entity';
 import { UserRepositoryImpl } from './infrastructure/persistence/user.repository.impl';
-import { IUserRepository } from './domain/repositories/user.repository';
 import { CreateUserUseCase } from './application/use-cases/create-user.use-case';
 import { GetUserProfileUseCase } from './application/use-cases/get-user-profile.use-case';
 import { UpdateUserProfileUseCase } from './application/use-cases/update-user-profile.use-case';

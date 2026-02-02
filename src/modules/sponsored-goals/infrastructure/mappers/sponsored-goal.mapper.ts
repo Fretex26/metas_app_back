@@ -1,6 +1,5 @@
 import { SponsoredGoal } from '../../domain/entities/sponsored-goal.entity';
 import { SponsoredGoalOrmEntity } from '../persistence/sponsored-goal.orm-entity';
-import { VerificationMethod } from '../../../../shared/types/enums';
 import { CategoryMapper } from '../../../categories/infrastructure/mappers/category.mapper';
 
 /**
