@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Request, Response, NextFunction } from 'express';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
 
@@ -15,6 +16,12 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN || '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+  });
+
+  // Cerrar conexión explícitamente tras cada respuesta (evita que el cliente quede esperando en Android/Flutter)
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Connection', 'close');
+    next();
   });
 
   // Prefijo global para todas las rutas
