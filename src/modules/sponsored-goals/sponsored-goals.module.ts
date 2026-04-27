@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SponsoredGoalsController } from './presentation/sponsored-goals.controller';
 import { SponsoredGoalOrmEntity } from './infrastructure/persistence/sponsored-goal.orm-entity';
@@ -46,7 +46,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
       VerificationEventOrmEntity,
     ]),
     SponsorsModule,
-    ProjectsModule,
+    forwardRef(() => ProjectsModule),
     MilestonesModule,
     SprintsModule,
     TasksModule,

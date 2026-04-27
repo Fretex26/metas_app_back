@@ -12,6 +12,7 @@ import type { IChecklistItemRepository } from '../../../tasks/domain/repositorie
 import type { IReviewRepository } from '../../../reviews/domain/repositories/review.repository';
 import type { IRetrospectiveRepository } from '../../../retrospectives/domain/repositories/retrospective.repository';
 import type { IDailyEntryRepository } from '../../../daily-entries/domain/repositories/daily-entry.repository';
+import type { ISponsorEnrollmentRepository } from '../../../sponsored-goals/domain/repositories/sponsor-enrollment.repository';
 
 /**
  * Caso de uso para eliminar un proyecto
@@ -44,6 +45,8 @@ export class DeleteProjectUseCase {
     private readonly retrospectiveRepository: IRetrospectiveRepository,
     @Inject('IDailyEntryRepository')
     private readonly dailyEntryRepository: IDailyEntryRepository,
+    @Inject('ISponsorEnrollmentRepository')
+    private readonly sponsorEnrollmentRepository: ISponsorEnrollmentRepository,
   ) {}
 
   async execute(projectId: string, userId: string): Promise<void> {
@@ -60,6 +63,8 @@ export class DeleteProjectUseCase {
         'No tienes permiso para eliminar este proyecto',
       );
     }
+
+    const enrollmentId = project.enrollmentId;
 
     // Obtener todos los milestones del proyecto
     const milestones =
@@ -134,5 +139,9 @@ export class DeleteProjectUseCase {
 
     // Finalmente eliminar el proyecto
     await this.projectRepository.delete(projectId);
+
+    if (enrollmentId) {
+      await this.sponsorEnrollmentRepository.delete(enrollmentId);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { SponsoredGoalsModule } from '../sponsored-goals/sponsored-goals.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsController } from './presentation/projects.controller';
 import { ProjectOrmEntity } from './infrastructure/persistence/project.orm-entity';
@@ -41,6 +42,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     forwardRef(() => DailyEntriesModule), // Para eliminar daily entries en cascada
     GamificationModule,
     UsersModule, // Para usar el repositorio de usuarios en LoadUserInterceptor
+    forwardRef(() => SponsoredGoalsModule),
   ],
   controllers: [ProjectsController],
   providers: [

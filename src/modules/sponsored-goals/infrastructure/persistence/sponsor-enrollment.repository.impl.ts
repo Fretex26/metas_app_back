@@ -5,12 +5,15 @@ import type { ISponsorEnrollmentRepository } from '../../domain/repositories/spo
 import { SponsorEnrollment } from '../../domain/entities/sponsor-enrollment.entity';
 import { SponsorEnrollmentOrmEntity } from './sponsor-enrollment.orm-entity';
 import { SponsorEnrollmentMapper } from '../mappers/sponsor-enrollment.mapper';
+import { VerificationEventOrmEntity } from './verification-event.orm-entity';
 
 @Injectable()
 export class SponsorEnrollmentRepositoryImpl implements ISponsorEnrollmentRepository {
   constructor(
     @InjectRepository(SponsorEnrollmentOrmEntity)
     private readonly enrollmentRepository: Repository<SponsorEnrollmentOrmEntity>,
+    @InjectRepository(VerificationEventOrmEntity)
+    private readonly verificationEventRepository: Repository<VerificationEventOrmEntity>,
   ) {}
 
   async create(enrollment: SponsorEnrollment): Promise<SponsorEnrollment> {
@@ -83,6 +86,7 @@ export class SponsorEnrollmentRepositoryImpl implements ISponsorEnrollmentReposi
   }
 
   async delete(id: string): Promise<void> {
+    await this.verificationEventRepository.delete({ enrollmentId: id });
     await this.enrollmentRepository.delete(id);
   }
 }
