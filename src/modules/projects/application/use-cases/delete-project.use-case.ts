@@ -72,7 +72,8 @@ export class DeleteProjectUseCase {
         milestone.id,
       );
 
-      // Para cada sprint, eliminar reviews, retrospectives y daily entries
+      // Para cada sprint, eliminar reviews, retrospectives y daily entries.
+      // No eliminar sprint aún porque puede estar referenciado por tasks.
       for (const sprint of sprints) {
         // Eliminar review si existe (relación 1:1)
         const review = await this.reviewRepository.findBySprintId(sprint.id);
@@ -95,8 +96,6 @@ export class DeleteProjectUseCase {
           await this.dailyEntryRepository.delete(dailyEntry.id);
         }
 
-        // Eliminar el sprint
-        await this.sprintRepository.delete(sprint.id);
       }
 
       // Obtener todas las tasks del milestone
@@ -122,6 +121,11 @@ export class DeleteProjectUseCase {
 
         // Eliminar la task
         await this.taskRepository.delete(task.id);
+      }
+
+      // Ahora que no hay tasks apuntando a los sprints, eliminarlos
+      for (const sprint of sprints) {
+        await this.sprintRepository.delete(sprint.id);
       }
 
       // Eliminar el milestone

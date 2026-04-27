@@ -19,11 +19,12 @@ export class GetDailyEntryByDateUseCase {
     date: Date,
     sprintId: string,
   ): Promise<DailyEntry> {
-    const entry = await this.dailyEntryRepository.findByUserIdAndDateAndSprintId(
-      userId,
-      date,
-      sprintId,
-    );
+    const entry =
+      await this.dailyEntryRepository.findByUserIdAndDateAndSprintId(
+        userId,
+        date,
+        sprintId,
+      );
     if (!entry) {
       throw new NotFoundException(
         `No se encontró entrada diaria para la fecha indicada en este sprint`,

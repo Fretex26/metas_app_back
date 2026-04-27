@@ -40,8 +40,10 @@ import { FilterSponsoredGoalsByCategoriesUseCase } from '../application/use-case
 import { EnrollInSponsoredGoalUseCase } from '../application/use-cases/enroll-in-sponsored-goal.use-case';
 import { UpdateEnrollmentStatusUseCase } from '../application/use-cases/update-enrollment-status.use-case';
 import { VerifyMilestoneCompletionUseCase } from '../application/use-cases/verify-milestone-completion.use-case';
+import { UpdateSponsoredMilestoneStatusUseCase } from '../application/use-cases/update-sponsored-milestone-status.use-case';
 import { GetUserSponsoredProjectsUseCase } from '../application/use-cases/get-user-sponsored-projects.use-case';
 import { GetSponsoredProjectMilestonesUseCase } from '../application/use-cases/get-sponsored-project-milestones.use-case';
+import { UpdateMilestoneStatusDto } from '../application/dto/update-milestone-status.dto';
 import { ProjectResponseDto } from '../../projects/application/dto/project-response.dto';
 import { MilestoneResponseDto } from '../../milestones/application/dto/milestone-response.dto';
 
@@ -69,6 +71,7 @@ export class SponsoredGoalsController {
     private readonly enrollInSponsoredGoalUseCase: EnrollInSponsoredGoalUseCase,
     private readonly updateEnrollmentStatusUseCase: UpdateEnrollmentStatusUseCase,
     private readonly verifyMilestoneCompletionUseCase: VerifyMilestoneCompletionUseCase,
+    private readonly updateSponsoredMilestoneStatusUseCase: UpdateSponsoredMilestoneStatusUseCase,
     private readonly getUserSponsoredProjectsUseCase: GetUserSponsoredProjectsUseCase,
     private readonly getSponsoredProjectMilestonesUseCase: GetSponsoredProjectMilestonesUseCase,
   ) {}
@@ -415,6 +418,59 @@ export class SponsoredGoalsController {
       name: milestone.name,
       description: milestone.description,
       status: milestone.status as any,
+      createdAt: milestone.createdAt,
+    };
+  }
+
+  /**
+   * Actualiza el estado de una milestone patrocinada (solo para sponsors)
+   */
+  @Patch('milestones/:milestoneId/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Actualizar estado de milestone patrocinada',
+    description:
+      'Permite a un sponsor cambiar el estado de una milestone patrocinada a pending, in_progress o completed',
+  })
+  @ApiParam({
+    name: 'milestoneId',
+    description: 'ID de la milestone',
+    type: 'string',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estado de milestone actualizado exitosamente',
+    type: MilestoneResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Milestone no encontrada',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'No tienes permiso para actualizar esta milestone',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El proyecto no es patrocinado o método no es manual',
+  })
+  async updateSponsoredMilestoneStatus(
+    @Param('milestoneId') milestoneId: string,
+    @Body() updateMilestoneStatusDto: UpdateMilestoneStatusDto,
+    @CurrentUser() user: UserPayload,
+  ): Promise<MilestoneResponseDto> {
+    const milestone = await this.updateSponsoredMilestoneStatusUseCase.execute(
+      milestoneId,
+      user.userId || user.uid,
+      updateMilestoneStatusDto.status,
+    );
+    return {
+      id: milestone.id,
+      projectId: milestone.projectId,
+      name: milestone.name,
+      description: milestone.description,
+      status: milestone.status as any,
+      rewardId: milestone.rewardId ?? null,
       createdAt: milestone.createdAt,
     };
   }

@@ -16,6 +16,7 @@ import { EnrollInSponsoredGoalUseCase } from './application/use-cases/enroll-in-
 import { DuplicateSponsoredProjectUseCase } from './application/use-cases/duplicate-sponsored-project.use-case';
 import { UpdateEnrollmentStatusUseCase } from './application/use-cases/update-enrollment-status.use-case';
 import { VerifyMilestoneCompletionUseCase } from './application/use-cases/verify-milestone-completion.use-case';
+import { UpdateSponsoredMilestoneStatusUseCase } from './application/use-cases/update-sponsored-milestone-status.use-case';
 import { GetUserSponsoredProjectsUseCase } from './application/use-cases/get-user-sponsored-projects.use-case';
 import { GetSponsoredProjectMilestonesUseCase } from './application/use-cases/get-sponsored-project-milestones.use-case';
 import { SponsorEnrollmentRepositoryImpl } from './infrastructure/persistence/sponsor-enrollment.repository.impl';
@@ -77,6 +78,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
     EnrollInSponsoredGoalUseCase,
     UpdateEnrollmentStatusUseCase,
     VerifyMilestoneCompletionUseCase,
+    UpdateSponsoredMilestoneStatusUseCase,
     GetUserSponsoredProjectsUseCase,
     GetSponsoredProjectMilestonesUseCase,
   ],

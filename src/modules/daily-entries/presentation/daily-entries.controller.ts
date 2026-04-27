@@ -116,7 +116,8 @@ export class DailyEntriesController {
   })
   @ApiQuery({
     name: 'sprintId',
-    description: 'ID del sprint. Obligatorio. La entrada diaria pertenece a un sprint.',
+    description:
+      'ID del sprint. Obligatorio. La entrada diaria pertenece a un sprint.',
     example: '123e4567-e89b-12d3-a456-426614174000',
     required: true,
   })
