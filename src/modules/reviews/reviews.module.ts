@@ -27,7 +27,7 @@ import { LoadUserInterceptor } from '../../shared/interceptors/load-user.interce
   imports: [
     TypeOrmModule.forFeature([ReviewOrmEntity]),
     forwardRef(() => SprintsModule),
-    MilestonesModule,
+    forwardRef(() => MilestonesModule),
     forwardRef(() => ProjectsModule),
     forwardRef(() => TasksModule),
     forwardRef(() => RetrospectivesModule),
