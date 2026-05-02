@@ -3,6 +3,7 @@ import type { IDailyEntryRepository } from '../../domain/repositories/daily-entr
 import { DailyEntry } from '../../domain/entities/daily-entry.entity';
 import { CreateDailyEntryDto } from '../dto/create-daily-entry.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { utcYmdFromDate } from '../../../../shared/utils/daily-entry-day-bounds.util';
 
 /**
  * Caso de uso para crear un nuevo daily entry
@@ -18,14 +19,17 @@ export class CreateDailyEntryUseCase {
     createDailyEntryDto: CreateDailyEntryDto,
     userId: string,
   ): Promise<DailyEntry> {
-    // Validar que no exista ya una entrada diaria para el día actual en este sprint.
-    // Cada daily entry pertenece a un sprint; se permite una por usuario por día por sprint.
-    const today = new Date();
+    // Misma fecha civil y desfase que el cliente (evita desajuste con la zona del servidor).
+    const timeZoneOffsetMinutes =
+      createDailyEntryDto.timezoneOffsetMinutes ?? 0;
+    const dateYmd =
+      createDailyEntryDto.localDate?.trim() || utcYmdFromDate(new Date());
     const existingEntry =
       await this.dailyEntryRepository.findByUserIdAndDateAndSprintId(
         userId,
-        today,
+        dateYmd,
         createDailyEntryDto.sprintId,
+        timeZoneOffsetMinutes,
       );
 
     if (existingEntry) {

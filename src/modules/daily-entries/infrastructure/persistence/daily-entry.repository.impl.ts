@@ -5,6 +5,7 @@ import type { IDailyEntryRepository } from '../../domain/repositories/daily-entr
 import { DailyEntry } from '../../domain/entities/daily-entry.entity';
 import { DailyEntryOrmEntity } from './daily-entry.orm-entity';
 import { DailyEntryMapper } from '../mappers/daily-entry.mapper';
+import { getCreatedAtBoundsForCalendarDay } from '../../../../shared/utils/daily-entry-day-bounds.util';
 
 @Injectable()
 export class DailyEntryRepositoryImpl implements IDailyEntryRepository {
@@ -39,17 +40,18 @@ export class DailyEntryRepositoryImpl implements IDailyEntryRepository {
 
   async findByUserIdAndDate(
     userId: string,
-    date: Date,
+    dateYmd: string,
+    timeZoneOffsetMinutes: number,
   ): Promise<DailyEntry | null> {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    const { start, end } = getCreatedAtBoundsForCalendarDay(
+      dateYmd,
+      timeZoneOffsetMinutes,
+    );
 
     const ormEntity = await this.dailyEntryRepository.findOne({
       where: {
         userId,
-        createdAt: Between(startOfDay, endOfDay),
+        createdAt: Between(start, end),
       },
     });
     return ormEntity ? DailyEntryMapper.toDomain(ormEntity) : null;
@@ -57,19 +59,20 @@ export class DailyEntryRepositoryImpl implements IDailyEntryRepository {
 
   async findByUserIdAndDateAndSprintId(
     userId: string,
-    date: Date,
+    dateYmd: string,
     sprintId: string,
+    timeZoneOffsetMinutes: number,
   ): Promise<DailyEntry | null> {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    const { start, end } = getCreatedAtBoundsForCalendarDay(
+      dateYmd,
+      timeZoneOffsetMinutes,
+    );
 
     const ormEntity = await this.dailyEntryRepository.findOne({
       where: {
         userId,
         sprintId,
-        createdAt: Between(startOfDay, endOfDay),
+        createdAt: Between(start, end),
       },
     });
     return ormEntity ? DailyEntryMapper.toDomain(ormEntity) : null;

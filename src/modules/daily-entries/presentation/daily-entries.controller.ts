@@ -140,11 +140,12 @@ export class DailyEntriesController {
     @Query() query: GetDailyEntryByDateQueryDto,
     @CurrentUser() user: UserPayload,
   ): Promise<DailyEntryResponseDto> {
-    const dateObj = new Date(date);
+    const offset = query.timezoneOffsetMinutes ?? 0;
     const dailyEntry = await this.getDailyEntryByDateUseCase.execute(
       user.userId || user.uid,
-      dateObj,
+      date,
       query.sprintId,
+      offset,
     );
     return this.toResponseDto(dailyEntry);
   }

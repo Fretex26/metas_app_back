@@ -1,5 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsOptional, IsUUID, Max, Min } from 'class-validator';
 
 /**
  * Query params para obtener daily entry por fecha.
@@ -15,4 +16,16 @@ export class GetDailyEntryByDateQueryDto {
   @IsNotEmpty({ message: 'sprintId es obligatorio' })
   @IsUUID('4', { message: 'sprintId debe ser un UUID válido' })
   sprintId: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Desfase del cliente respecto a UTC en minutos (p. ej. DateTime.timeZoneOffset.inMinutes en Flutter). Si se omite, se usa 0 (día civil interpretado en UTC).',
+    example: 120,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(-840)
+  @Max(840)
+  timezoneOffsetMinutes?: number;
 }

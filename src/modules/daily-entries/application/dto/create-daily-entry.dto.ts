@@ -5,7 +5,12 @@ import {
   IsOptional,
   IsEnum,
   IsUUID,
+  IsInt,
+  Min,
+  Max,
+  Matches,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Difficulty, EnergyChange } from '../../../../shared/types/enums';
 
 /**
@@ -65,4 +70,27 @@ export class CreateDailyEntryDto {
     message: 'El cambio de energía debe ser: increased, stable o decreased',
   })
   energyChange: EnergyChange;
+
+  @ApiPropertyOptional({
+    description:
+      'Fecha civil local del daily (YYYY-MM-DD). Recomendado para alinear "hoy" con el dispositivo.',
+    example: '2026-05-02',
+  })
+  @IsOptional()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: 'localDate debe ser YYYY-MM-DD',
+  })
+  localDate?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Desfase respecto a UTC en minutos (DateTime.timeZoneOffset.inMinutes en Flutter).',
+    example: 120,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(-840)
+  @Max(840)
+  timezoneOffsetMinutes?: number;
 }

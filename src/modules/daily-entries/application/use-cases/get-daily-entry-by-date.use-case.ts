@@ -16,14 +16,16 @@ export class GetDailyEntryByDateUseCase {
 
   async execute(
     userId: string,
-    date: Date,
+    dateYmd: string,
     sprintId: string,
+    timeZoneOffsetMinutes: number,
   ): Promise<DailyEntry> {
     const entry =
       await this.dailyEntryRepository.findByUserIdAndDateAndSprintId(
         userId,
-        date,
+        dateYmd,
         sprintId,
+        timeZoneOffsetMinutes,
       );
     if (!entry) {
       throw new NotFoundException(
